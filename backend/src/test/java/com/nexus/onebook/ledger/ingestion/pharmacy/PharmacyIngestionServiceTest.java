@@ -113,7 +113,7 @@ class PharmacyIngestionServiceTest {
     }
 
     @Test
-    void ingestBulkPaymentRequests_multiplRequests_returnsAggregatedResponse() {
+    void ingestBulkPaymentRequests_multipleRequests_returnsAggregatedResponse() {
         FinancialEvent event = buildEvent();
         when(gateway.ingest(anyString(), any(), anyString())).thenReturn(event);
 

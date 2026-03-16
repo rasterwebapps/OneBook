@@ -6,6 +6,8 @@ import com.nexus.onebook.ledger.model.VaultDocument;
 import com.nexus.onebook.ledger.repository.JournalTransactionRepository;
 import com.nexus.onebook.ledger.repository.VaultDocumentRepository;
 import com.nexus.onebook.ledger.security.FieldEncryptionService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -26,13 +29,16 @@ public class DocumentVaultService {
     private final VaultDocumentRepository documentRepository;
     private final JournalTransactionRepository transactionRepository;
     private final FieldEncryptionService encryptionService;
+    private final ObjectMapper objectMapper;
 
     public DocumentVaultService(VaultDocumentRepository documentRepository,
                                  JournalTransactionRepository transactionRepository,
-                                 FieldEncryptionService encryptionService) {
+                                 FieldEncryptionService encryptionService,
+                                 ObjectMapper objectMapper) {
         this.documentRepository = documentRepository;
         this.transactionRepository = transactionRepository;
         this.encryptionService = encryptionService;
+        this.objectMapper = objectMapper;
     }
 
     /**
@@ -95,7 +101,12 @@ public class DocumentVaultService {
     public VaultDocument storeDocumentWithOriginalPath(DocumentUploadRequest request, String originalPath) {
         VaultDocument document = storeDocument(request);
         if (originalPath != null && !originalPath.isBlank()) {
-            document.setMetadata("{\"originalPath\":\"" + originalPath.replace("\"", "\\\"") + "\"}");
+            try {
+                String metadataJson = objectMapper.writeValueAsString(Map.of("originalPath", originalPath));
+                document.setMetadata(metadataJson);
+            } catch (JsonProcessingException e) {
+                throw new IllegalStateException("Failed to serialize document metadata", e);
+            }
             documentRepository.save(document);
         }
         return document;

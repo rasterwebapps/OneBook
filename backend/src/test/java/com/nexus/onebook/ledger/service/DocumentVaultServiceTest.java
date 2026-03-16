@@ -6,10 +6,12 @@ import com.nexus.onebook.ledger.model.VaultDocument;
 import com.nexus.onebook.ledger.repository.JournalTransactionRepository;
 import com.nexus.onebook.ledger.repository.VaultDocumentRepository;
 import com.nexus.onebook.ledger.security.FieldEncryptionService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
@@ -28,6 +30,8 @@ class DocumentVaultServiceTest {
     private JournalTransactionRepository transactionRepository;
     @Mock
     private FieldEncryptionService encryptionService;
+    @Spy
+    private ObjectMapper objectMapper;
 
     @InjectMocks
     private DocumentVaultService documentVaultService;
@@ -139,5 +143,41 @@ class DocumentVaultServiceTest {
     void verifyChecksum_tamperedContent_returnsFalse() {
         String checksum = documentVaultService.computeChecksum("original");
         assertFalse(documentVaultService.verifyChecksum("tampered", checksum));
+    }
+
+    @Test
+    void storeDocumentWithOriginalPath_preservesMinioPathInMetadata() {
+        DocumentUploadRequest request = new DocumentUploadRequest(
+                "tenant-1", "invoice.pdf", "application/pdf",
+                2048576L, "abc123checksum", null, "pharmacy-system");
+
+        when(documentRepository.save(any(VaultDocument.class)))
+                .thenAnswer(inv -> inv.getArgument(0));
+
+        VaultDocument result = documentVaultService.storeDocumentWithOriginalPath(
+                request, "/minio-bucket/pharmacy/invoices/2026/invoice.pdf");
+
+        assertNotNull(result);
+        assertNotNull(result.getMetadata());
+        assertTrue(result.getMetadata().contains("originalPath"));
+        assertTrue(result.getMetadata().contains("/minio-bucket/pharmacy/invoices/2026/invoice.pdf"));
+        // Should have been saved twice: once in storeDocument, once after setting metadata
+        verify(documentRepository, times(2)).save(any(VaultDocument.class));
+    }
+
+    @Test
+    void storeDocumentWithOriginalPath_nullOriginalPath_doesNotUpdateMetadata() {
+        DocumentUploadRequest request = new DocumentUploadRequest(
+                "tenant-1", "invoice.pdf", "application/pdf",
+                2048576L, "abc123checksum", null, "pharmacy-system");
+
+        when(documentRepository.save(any(VaultDocument.class)))
+                .thenAnswer(inv -> inv.getArgument(0));
+
+        VaultDocument result = documentVaultService.storeDocumentWithOriginalPath(request, null);
+
+        assertNotNull(result);
+        // Should only be saved once (by storeDocument)
+        verify(documentRepository, times(1)).save(any(VaultDocument.class));
     }
 }
