@@ -6,6 +6,7 @@ import com.nexus.onebook.ledger.ingestion.connector.CorporateCardService;
 import com.nexus.onebook.ledger.ingestion.connector.HrmPayrollConnector;
 import com.nexus.onebook.ledger.ingestion.connector.InventoryEventListener;
 import com.nexus.onebook.ledger.ingestion.dto.*;
+import com.nexus.onebook.ledger.ingestion.externalapp.ExternalAppIngestionService;
 import com.nexus.onebook.ledger.ingestion.gateway.AdapterRegistry;
 import com.nexus.onebook.ledger.ingestion.gateway.FinancialEventGateway;
 import com.nexus.onebook.ledger.ingestion.model.AdapterType;
@@ -22,7 +23,8 @@ import java.util.List;
 /**
  * REST controller for the Universal Ingestion Layer.
  * Provides endpoints for financial event ingestion, OCR invoice processing,
- * 3-way matching, corporate card sync, and connector event handling.
+ * 3-way matching, corporate card sync, connector event handling,
+ * and external application payment request ingestion (Pharmacy, Lab, Stores, HIS, etc.).
  */
 @RestController
 @RequestMapping("/api/ingestion")
@@ -35,6 +37,7 @@ public class IngestionController {
     private final CorporateCardService corporateCardService;
     private final HrmPayrollConnector hrmPayrollConnector;
     private final InventoryEventListener inventoryEventListener;
+    private final ExternalAppIngestionService externalAppIngestionService;
 
     public IngestionController(FinancialEventGateway gateway,
                                AdapterRegistry adapterRegistry,
@@ -42,7 +45,8 @@ public class IngestionController {
                                ThreeWayMatchingService matchingService,
                                CorporateCardService corporateCardService,
                                HrmPayrollConnector hrmPayrollConnector,
-                               InventoryEventListener inventoryEventListener) {
+                               InventoryEventListener inventoryEventListener,
+                               ExternalAppIngestionService externalAppIngestionService) {
         this.gateway = gateway;
         this.adapterRegistry = adapterRegistry;
         this.ocrInvoiceService = ocrInvoiceService;
@@ -50,6 +54,7 @@ public class IngestionController {
         this.corporateCardService = corporateCardService;
         this.hrmPayrollConnector = hrmPayrollConnector;
         this.inventoryEventListener = inventoryEventListener;
+        this.externalAppIngestionService = externalAppIngestionService;
     }
 
     // --- Financial Event Gateway ---
@@ -134,4 +139,37 @@ public class IngestionController {
                 .body(new FinancialEventResponse(event.getEventUuid(), event.getStatus(),
                         "Inventory event processed"));
     }
+
+    // --- External Application Payment Request APIs ---
+    // Common endpoints for all integrated external apps: Pharmacy, Lab, Stores, HIS, etc.
+    // The applicationName field in the request body identifies the source system.
+
+    @PostMapping("/payment-requests")
+    public ResponseEntity<ExternalAppPaymentResponse> ingestExternalAppPaymentRequest(
+            @Valid @RequestBody ExternalAppPaymentRequest request) {
+        ExternalAppPaymentResponse response = externalAppIngestionService.ingestPaymentRequest(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/payment-requests/bulk")
+    public ResponseEntity<BulkExternalAppPaymentResponse> ingestBulkExternalAppPaymentRequests(
+            @Valid @RequestBody BulkExternalAppPaymentRequest request) {
+        BulkExternalAppPaymentResponse response = externalAppIngestionService.ingestBulkPaymentRequests(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping("/payment-requests/{requestId}/status")
+    public ResponseEntity<PaymentStatusResponse> getExternalAppPaymentStatus(
+            @PathVariable String requestId) {
+        PaymentStatusResponse status = externalAppIngestionService.getPaymentStatus(requestId);
+        return ResponseEntity.ok(status);
+    }
+
+    @PostMapping("/documents/{documentId}/ocr")
+    public ResponseEntity<OcrProcessingResponse> processDocumentOcr(
+            @PathVariable Long documentId) {
+        OcrProcessingResponse response = externalAppIngestionService.processDocumentOcr(documentId);
+        return ResponseEntity.ok(response);
+    }
 }
+
