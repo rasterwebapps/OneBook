@@ -16,6 +16,18 @@ interface HealthResponse {
   };
 }
 
+interface Tenant {
+  id: string;
+  name: string;
+  role: string;
+}
+
+const TENANTS: Tenant[] = [
+  { id: 'nexus', name: 'Nexus Corp', role: 'Payer' },
+  { id: 'alpha', name: 'Alpha Ventures', role: 'Payer' },
+  { id: 'beta', name: 'Beta Holdings', role: 'Tenant' },
+];
+
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, RouterLink, RouterLinkActive, CommandPaletteComponent, LanguageSwitcherComponent],
@@ -33,6 +45,15 @@ export class AppComponent implements OnInit {
   postgresqlStatus = signal('Checking...');
   redisStatus = signal('Checking...');
   sidebarCollapsed = signal(false);
+
+  tenants = signal<Tenant[]>(TENANTS);
+  selectedTenant = signal<Tenant>(TENANTS[0]);
+  tenantDropdownOpen = signal(false);
+
+  sectionAccounting = signal(true);
+  sectionReports = signal(true);
+  sectionManagement = signal(true);
+  sectionIntelligence = signal(true);
 
   statusMessage = computed(() =>
     `${this.title()} — Backend: ${this.backendStatus()}`
@@ -65,5 +86,23 @@ export class AppComponent implements OnInit {
 
   toggleSidebar(): void {
     this.sidebarCollapsed.update(v => !v);
+  }
+
+  toggleTenantDropdown(): void {
+    this.tenantDropdownOpen.update(v => !v);
+  }
+
+  selectTenant(tenant: Tenant): void {
+    this.selectedTenant.set(tenant);
+    this.tenantDropdownOpen.set(false);
+  }
+
+  toggleSection(section: 'accounting' | 'reports' | 'management' | 'intelligence'): void {
+    switch (section) {
+      case 'accounting': this.sectionAccounting.update(v => !v); break;
+      case 'reports': this.sectionReports.update(v => !v); break;
+      case 'management': this.sectionManagement.update(v => !v); break;
+      case 'intelligence': this.sectionIntelligence.update(v => !v); break;
+    }
   }
 }
