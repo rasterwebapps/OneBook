@@ -2,6 +2,17 @@
 
 This directory contains instruction files for specialist sub-agents designed to manage context, enforce domain boundaries, and maintain engineering quality across the Nexus Universal platform.
 
+## Memory Bank Integration
+
+**⚡ Before starting any task, read [`CLAUDE.md`](../../CLAUDE.md)** — the AI memory bank entry point.  
+It provides accumulated project intelligence, current state, and navigation to all memory files.
+
+**At the end of every task, update:**
+1. `memory-bank/activecontext.md` — what changed this session
+2. `memory-bank/progress.md` — if milestone items were completed
+3. `memory-bank/systempatterns.md` — if new patterns were established
+4. `memory-bank/troubleshooting.md` — if bugs were found and fixed
+
 ## Purpose
 
 Each agent instruction file provides:
@@ -29,20 +40,24 @@ Each agent instruction file provides:
 ## Usage
 
 When working on the OneBook codebase:
-1. Identify which domain your task belongs to
-2. Review the relevant agent instruction file
-3. Follow the patterns, conventions, and standards defined
-4. If working across multiple domains, consult the Sub-Agent Interaction Matrix in `sub-agents.md`
+1. **Read `CLAUDE.md`** — start every session here to load project context
+2. Identify which domain your task belongs to
+3. Review the relevant agent instruction file
+4. Follow the patterns, conventions, and standards defined
+5. If working across multiple domains, consult the Sub-Agent Interaction Matrix in `sub-agents.md`
+6. **Update memory bank** at end of session — keep context alive for next session
 
 ## Updates
 
 These instruction files should be kept in sync with:
+- `CLAUDE.md` — AI memory bank entry point
+- `memory-bank/` — Persistent session memory files
 - `sub-agents.md` - Overall sub-agent architecture and interaction matrix
 - `docs/developer-guide.md` - General developer onboarding guide
 - `CONTRIBUTING.md` - Contribution guidelines
 - Code examples in the repository
 
-When adding new patterns or conventions, update the relevant agent instruction file(s).
+When adding new patterns or conventions, update the relevant agent instruction file(s) AND the memory bank.
 
 ## Maintaining Agent Ownership
 

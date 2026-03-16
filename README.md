@@ -2,6 +2,24 @@
 
 A sector-agnostic, Zero-Trust, High-Performance Accounting OS.
 
+## 🤖 AI Memory Bank
+
+This project uses a **CLAUDE.md memory bank** — a persistent AI context system that allows AI agents to continue from accumulated project intelligence rather than starting from zero each session.
+
+| File | Purpose |
+|------|---------|
+| [`CLAUDE.md`](CLAUDE.md) | **Start here** — AI entry point, navigation, critical rules |
+| [`memory-bank/projectbrief.md`](memory-bank/projectbrief.md) | Project vision, goals, original requirements |
+| [`memory-bank/techcontext.md`](memory-bank/techcontext.md) | Stack, setup, build & test commands |
+| [`memory-bank/systempatterns.md`](memory-bank/systempatterns.md) | Architecture decisions, design patterns |
+| [`memory-bank/activecontext.md`](memory-bank/activecontext.md) | Current session state, recent changes |
+| [`memory-bank/progress.md`](memory-bank/progress.md) | Milestone status, feature tracker |
+| [`memory-bank/troubleshooting.md`](memory-bank/troubleshooting.md) | Known issues, past bugs, fixes |
+
+> **For AI agents:** Read `CLAUDE.md` first. Update `memory-bank/activecontext.md` at the end of every task.
+
+---
+
 ## Tech Stack
 
 | Layer       | Technology                        |
@@ -32,6 +50,7 @@ OneBook/
 | [API Documentation](docs/api-documentation.md) | REST API reference for all endpoints |
 | [Developer Guide](docs/developer-guide.md) | Onboarding, setup, coding standards |
 | [Operational Runbook](docs/operational-runbook.md) | Deployment, monitoring, troubleshooting |
+| [Tally Features](tally_features.md) | Tally feature parity reference and breakdown |
 | [Sub-Agent Instructions](.github/agents/README.md) | Design patterns and conventions for 10 specialist agents |
 | [Agent Ownership Maintenance](.github/agents/MAINTENANCE.md) | **⚠️ How to update agent ownership when adding new code** |
 
