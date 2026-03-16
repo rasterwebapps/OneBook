@@ -10,6 +10,8 @@ Each sub-agent is a domain-expert role with a clear scope, a defined set of file
 
 **✅ Agent Instructions Available:** Detailed instruction files for all 10 sub-agents are available in [`.github/agents/`](.github/agents/). Each file contains scope, responsibilities, design patterns, best practices, and collaboration guidelines. See [Agent Instructions README](.github/agents/README.md) and [Design Requirements Index](.github/agents/INDEX.md) for quick reference.
 
+**🧠 Memory Bank Available:** This project uses a persistent AI memory bank at [`CLAUDE.md`](CLAUDE.md) and [`memory-bank/`](memory-bank/). All agents MUST read `CLAUDE.md` at the start of each session and update `memory-bank/activecontext.md` at the end.
+
 ---
 
 ## Why Sub-Agents?
@@ -21,12 +23,40 @@ Nexus Universal spans **7 backend packages**, **11 frontend modules**, **9 Flywa
 3. **Quality Enforcement:** Each agent enforces its domain's specific conventions and standards.
 4. **Context Budget:** The main orchestrator stays under ~5,000 tokens by delegating raw code inspection to specialists.
 5. **Design Requirements:** Each agent has detailed instruction files in `.github/agents/` with patterns, conventions, and examples.
+6. **Persistent Memory:** The memory bank in `memory-bank/` ensures agents continue from accumulated intelligence, not from zero.
+
+---
+
+## Memory Bank Protocol
+
+Every agent MUST follow this protocol for persistent context:
+
+### Session Start
+1. Read `CLAUDE.md` — understand project state, tech stack, critical rules
+2. Read `memory-bank/activecontext.md` — understand what changed recently
+3. Read `memory-bank/progress.md` — understand milestone and feature status
+4. Consult relevant `.github/agents/*.md` file for domain-specific patterns
+
+### During Session
+- Consult `memory-bank/systempatterns.md` for architecture decisions
+- Consult `memory-bank/troubleshooting.md` for known issues
+- Follow patterns from `memory-bank/techcontext.md`
+
+### Session End (REQUIRED)
+1. Update `memory-bank/activecontext.md` — record what was done, what changed
+2. Update `memory-bank/progress.md` — if any milestone items were completed
+3. Update `memory-bank/systempatterns.md` — if new patterns or decisions were made
+4. Update `memory-bank/troubleshooting.md` — if bugs were found and fixed
+5. Update `.github/agents/*.md` — if new services/controllers/modules were added
+6. Run `.github/scripts/validate-agent-ownership.sh` — confirm ownership is complete
 
 ---
 
 ## Quick Reference
 
 For detailed design patterns and implementation guidelines, see:
+- [CLAUDE.md](CLAUDE.md) - **AI memory bank entry point** (read first)
+- [Memory Bank](memory-bank/) - Persistent project intelligence files
 - [Agent Instructions Directory](.github/agents/README.md) - Overview of all 10 agents
 - [Design Requirements Index](.github/agents/INDEX.md) - Quick reference by category
 - Individual agent files in `.github/agents/` - Comprehensive patterns and conventions
