@@ -21,9 +21,9 @@ You are responsible for the Universal Ingestion Layer that connects external sys
     - `DmsAdapter.java` - Automotive dealer management systems
     - `Iso20022Adapter.java` - Banking ISO 20022 XML
     - `WebhookAdapter.java` - Generic SaaS webhooks
-    - `PharmacyAdapter.java` - Pharmacy & external application payment requests
-  - `pharmacy/` - Pharmacy integration service
-    - `PharmacyIngestionService.java` - Orchestrates pharmacy payment ingestion (single, bulk, status, OCR)
+    - `ExternalAppAdapter.java` - Common adapter for all external business apps (Pharmacy, Lab, Stores, HIS, etc.)
+  - `externalapp/` - Universal external application ingestion service
+    - `ExternalAppIngestionService.java` - Orchestrates payment ingestion for any external app (single, bulk, status, OCR); applicationName field identifies the source
   - `mapper/` - Data transformation
     - `UniversalMapper.java` - Normalizes events to double-entry format
   - `automation/` - Smart automation services

@@ -7,15 +7,23 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 /**
- * Request DTO for ingesting a payment request from an integrated Pharmacy application.
+ * Common request DTO for ingesting a payment request from any integrated external application
+ * (Pharmacy, Lab, Stores, HIS, or any other system).
+ * <p>
+ * The {@code applicationName} field identifies the source system (e.g. {@code PHARMACY},
+ * {@code LAB}, {@code STORE}, {@code HIS}), while the rest of the structure is shared
+ * across all external integrations. This common type replaces the need for per-application
+ * request DTOs and allows the OneBook ingestion layer to scale to new integrations
+ * without changing the API contract.
+ * <p>
  * Supports the complete maker-checker-approver-payer workflow.
  */
-public record PharmacyPaymentRequest(
+public record ExternalAppPaymentRequest(
 
         @NotBlank(message = "Tenant ID is required")
         String tenantId,
 
-        @NotBlank(message = "Application name is required")
+        @NotBlank(message = "Application name is required (e.g. PHARMACY, LAB, STORE, HIS)")
         String applicationName,
 
         @NotNull(message = "Payment data is required")

@@ -6,10 +6,10 @@ import com.nexus.onebook.ledger.ingestion.connector.CorporateCardService;
 import com.nexus.onebook.ledger.ingestion.connector.HrmPayrollConnector;
 import com.nexus.onebook.ledger.ingestion.connector.InventoryEventListener;
 import com.nexus.onebook.ledger.ingestion.dto.*;
+import com.nexus.onebook.ledger.ingestion.externalapp.ExternalAppIngestionService;
 import com.nexus.onebook.ledger.ingestion.gateway.AdapterRegistry;
 import com.nexus.onebook.ledger.ingestion.gateway.FinancialEventGateway;
 import com.nexus.onebook.ledger.ingestion.model.*;
-import com.nexus.onebook.ledger.ingestion.pharmacy.PharmacyIngestionService;
 import com.nexus.onebook.ledger.exception.GlobalExceptionHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +60,7 @@ class IngestionControllerTest {
     private InventoryEventListener inventoryEventListener;
 
     @MockitoBean
-    private PharmacyIngestionService pharmacyIngestionService;
+    private ExternalAppIngestionService externalAppIngestionService;
 
     @Test
     void ingestEvent_validRequest_returns201() throws Exception {
@@ -177,22 +177,24 @@ class IngestionControllerTest {
                 .andExpect(status().isOk());
     }
 
-    // --- Pharmacy API Tests ---
+    // --- External Application Payment Request API Tests ---
+    // These tests use applicationName to distinguish different source systems.
+    // The same endpoints serve Pharmacy, Lab, Stores, HIS, and any future integration.
 
     @Test
-    void ingestPharmacyPaymentRequest_validRequest_returns201() throws Exception {
-        PharmacyPaymentResponse response = new PharmacyPaymentResponse(
+    void ingestExternalAppPaymentRequest_pharmacySource_returns201() throws Exception {
+        ExternalAppPaymentResponse response = new ExternalAppPaymentResponse(
                 UUID.randomUUID().toString(), "RECEIVED",
                 "Payment request received successfully",
                 UUID.randomUUID().toString(), null);
 
-        when(pharmacyIngestionService.ingestPaymentRequest(any())).thenReturn(response);
+        when(externalAppIngestionService.ingestPaymentRequest(any())).thenReturn(response);
 
         mockMvc.perform(post("/api/ingestion/payment-requests")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
-                                    "tenantId": "pharmacy-branch-001",
+                                    "tenantId": "branch-001",
                                     "applicationName": "PHARMACY",
                                     "paymentData": {
                                         "invoiceNumber": "PH-INV-2026-001",
@@ -215,7 +217,36 @@ class IngestionControllerTest {
     }
 
     @Test
-    void ingestPharmacyPaymentRequest_missingTenantId_returns400() throws Exception {
+    void ingestExternalAppPaymentRequest_labSource_returns201() throws Exception {
+        ExternalAppPaymentResponse response = new ExternalAppPaymentResponse(
+                UUID.randomUUID().toString(), "RECEIVED",
+                "Payment request received successfully",
+                UUID.randomUUID().toString(), null);
+
+        when(externalAppIngestionService.ingestPaymentRequest(any())).thenReturn(response);
+
+        mockMvc.perform(post("/api/ingestion/payment-requests")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "tenantId": "lab-branch-001",
+                                    "applicationName": "LAB",
+                                    "paymentData": {
+                                        "invoiceNumber": "LAB-INV-2026-001",
+                                        "invoiceDate": "2026-03-16",
+                                        "payeeName": "Lab Reagents Pvt Ltd",
+                                        "amounts": { "payableAmount": 8500.00 },
+                                        "paymentMode": "RTGS",
+                                        "transactionType": "PURCHASE_PAYMENT"
+                                    }
+                                }
+                                """))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.status").value("RECEIVED"));
+    }
+
+    @Test
+    void ingestExternalAppPaymentRequest_missingTenantId_returns400() throws Exception {
         mockMvc.perform(post("/api/ingestion/payment-requests")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
@@ -230,45 +261,55 @@ class IngestionControllerTest {
     }
 
     @Test
-    void ingestBulkPharmacyPaymentRequests_validRequest_returns201() throws Exception {
-        BulkPharmacyPaymentResponse bulkResponse = new BulkPharmacyPaymentResponse(
+    void ingestBulkExternalAppPaymentRequests_mixedSources_returns201() throws Exception {
+        BulkExternalAppPaymentResponse bulkResponse = new BulkExternalAppPaymentResponse(
                 List.of(
-                        new PharmacyPaymentResponse(UUID.randomUUID().toString(), "RECEIVED",
+                        new ExternalAppPaymentResponse(UUID.randomUUID().toString(), "RECEIVED",
+                                "Payment request received successfully", UUID.randomUUID().toString(), null),
+                        new ExternalAppPaymentResponse(UUID.randomUUID().toString(), "RECEIVED",
                                 "Payment request received successfully", UUID.randomUUID().toString(), null)
-                ), 1, 1, 0);
+                ), 2, 2, 0);
 
-        when(pharmacyIngestionService.ingestBulkPaymentRequests(any())).thenReturn(bulkResponse);
+        when(externalAppIngestionService.ingestBulkPaymentRequests(any())).thenReturn(bulkResponse);
 
         mockMvc.perform(post("/api/ingestion/payment-requests/bulk")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
-                                    "tenantId": "pharmacy-branch-001",
+                                    "tenantId": "branch-001",
                                     "requests": [
                                         {
-                                            "tenantId": "pharmacy-branch-001",
+                                            "tenantId": "branch-001",
                                             "applicationName": "PHARMACY",
                                             "paymentData": {
                                                 "invoiceNumber": "PH-INV-001",
                                                 "amounts": { "payableAmount": 5000.00 }
+                                            }
+                                        },
+                                        {
+                                            "tenantId": "branch-001",
+                                            "applicationName": "LAB",
+                                            "paymentData": {
+                                                "invoiceNumber": "LAB-INV-001",
+                                                "amounts": { "payableAmount": 3000.00 }
                                             }
                                         }
                                     ]
                                 }
                                 """))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.totalReceived").value(1))
-                .andExpect(jsonPath("$.totalSucceeded").value(1))
+                .andExpect(jsonPath("$.totalReceived").value(2))
+                .andExpect(jsonPath("$.totalSucceeded").value(2))
                 .andExpect(jsonPath("$.totalFailed").value(0));
     }
 
     @Test
-    void getPharmacyPaymentStatus_validRequestId_returns200() throws Exception {
+    void getExternalAppPaymentStatus_validRequestId_returns200() throws Exception {
         UUID requestId = UUID.randomUUID();
         PaymentStatusResponse statusResponse = new PaymentStatusResponse(
                 requestId.toString(), "APPROVED", "PENDING_PAYMENT", null, null, null);
 
-        when(pharmacyIngestionService.getPaymentStatus(requestId.toString())).thenReturn(statusResponse);
+        when(externalAppIngestionService.getPaymentStatus(requestId.toString())).thenReturn(statusResponse);
 
         mockMvc.perform(get("/api/ingestion/payment-requests/{requestId}/status", requestId))
                 .andExpect(status().isOk())
@@ -284,7 +325,7 @@ class IngestionControllerTest {
                 "{\"fileName\":\"inv.pdf\"}",
                 "OCR processing completed for document: inv.pdf");
 
-        when(pharmacyIngestionService.processDocumentOcr(42L)).thenReturn(ocrResponse);
+        when(externalAppIngestionService.processDocumentOcr(42L)).thenReturn(ocrResponse);
 
         mockMvc.perform(post("/api/ingestion/documents/42/ocr"))
                 .andExpect(status().isOk())

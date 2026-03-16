@@ -15,21 +15,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Adapter for Pharmacy and other integrated external applications.
- * Parses the pharmacy payment request format and maps it to a normalised
- * {@link FinancialEvent} that drives the downstream journal entry workflow.
+ * Generic adapter for any integrated external business application.
+ * Handles the common {@code ExternalAppPaymentRequest} JSON format used by
+ * Pharmacy, Lab, Stores, HIS, ERP, and any other source system that sends
+ * payment requests to OneBook via the ingestion layer.
  * <p>
- * Expected JSON payload (PharmacyPaymentRequest serialized):
+ * The {@code applicationName} field inside the payload (e.g. {@code PHARMACY},
+ * {@code LAB}, {@code STORE}, {@code HIS}) identifies the specific source
+ * system at runtime and is preserved in {@code industryTags} for routing and audit.
+ * <p>
+ * Expected JSON payload ({@link com.nexus.onebook.ledger.ingestion.dto.ExternalAppPaymentRequest} serialized):
  * <pre>{@code
  * {
- *   "tenantId": "pharmacy-branch-001",
- *   "applicationName": "PHARMACY",
+ *   "tenantId": "branch-001",
+ *   "applicationName": "PHARMACY",   // or LAB, STORE, HIS, etc.
  *   "paymentData": {
- *     "invoiceNumber": "PH-INV-2026-001",
+ *     "invoiceNumber": "INV-2026-001",
  *     "invoiceDate": "2026-03-16",
- *     "payerName": "ABC Hospital Pharmacy",
+ *     "payerName": "ABC Hospital",
  *     "payeeType": "VENDOR",
- *     "payeeName": "XYZ Medical Supplies",
+ *     "payeeName": "XYZ Supplies",
  *     "bankDetails": { "accountNumber": "...", "ifscCode": "..." },
  *     "amounts": { "grossAmount": 15000.00, "payableAmount": 14250.00, ... },
  *     "paymentMode": "NEFT",
@@ -42,26 +47,28 @@ import java.util.Map;
  * }</pre>
  */
 @Component
-public class PharmacyAdapter implements FinancialEventAdapter {
+public class ExternalAppAdapter implements FinancialEventAdapter {
 
+    // Default account codes: 5000 = Purchases/Expenses, 2000 = Accounts Payable (Vendor Liability).
+    // These are resolved by UniversalMapper to actual ledger account IDs before posting.
     static final String DEFAULT_DEBIT_ACCOUNT_CODE = "5000";
     static final String DEFAULT_CREDIT_ACCOUNT_CODE = "2000";
 
     private final ObjectMapper objectMapper;
 
-    public PharmacyAdapter(ObjectMapper objectMapper) {
+    public ExternalAppAdapter(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
     @Override
     public AdapterType getAdapterType() {
-        return AdapterType.PHARMACY;
+        return AdapterType.EXTERNAL_APP;
     }
 
     @Override
     public FinancialEvent parse(String tenantId, String rawPayload) {
         if (rawPayload == null || rawPayload.isBlank()) {
-            throw new IllegalArgumentException("Pharmacy payload must not be empty");
+            throw new IllegalArgumentException("External app payload must not be empty");
         }
 
         try {
@@ -69,9 +76,10 @@ public class PharmacyAdapter implements FinancialEventAdapter {
             JsonNode paymentData = root.path("paymentData");
 
             if (paymentData.isMissingNode() || paymentData.isNull()) {
-                throw new IllegalArgumentException("Pharmacy payload missing required field: paymentData");
+                throw new IllegalArgumentException("External app payload missing required field: paymentData");
             }
 
+            String applicationName = optionalText(root, "applicationName", "EXTERNAL_APP");
             String transactionType = optionalText(paymentData, "transactionType", "PURCHASE_PAYMENT");
             String invoiceNumber = optionalText(paymentData, "invoiceNumber", "");
             String currency = "INR";
@@ -79,21 +87,21 @@ public class PharmacyAdapter implements FinancialEventAdapter {
             BigDecimal payableAmount = extractPayableAmount(paymentData);
             LocalDate eventDate = extractEventDate(paymentData);
 
-            FinancialEvent event = new FinancialEvent(tenantId, AdapterType.PHARMACY, transactionType);
+            FinancialEvent event = new FinancialEvent(tenantId, AdapterType.EXTERNAL_APP, transactionType);
             event.setAmount(payableAmount);
             event.setCurrency(currency);
             event.setEventDate(eventDate);
             event.setSourceReference(invoiceNumber);
-            event.setDescription(buildDescription(paymentData));
+            event.setDescription(buildDescription(applicationName, paymentData));
             event.setDebitAccountCode(DEFAULT_DEBIT_ACCOUNT_CODE);
             event.setCreditAccountCode(DEFAULT_CREDIT_ACCOUNT_CODE);
             event.setRawPayload(rawPayload);
-            event.setIndustryTags(buildIndustryTags(root, paymentData));
+            event.setIndustryTags(buildIndustryTags(root, paymentData, applicationName));
 
             return event;
 
         } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Invalid JSON in pharmacy payload: " + e.getMessage());
+            throw new IllegalArgumentException("Invalid JSON in external app payload: " + e.getMessage());
         }
     }
 
@@ -126,7 +134,7 @@ public class PharmacyAdapter implements FinancialEventAdapter {
         return LocalDate.now();
     }
 
-    private String buildDescription(JsonNode paymentData) {
+    private String buildDescription(String applicationName, JsonNode paymentData) {
         String payeeName = optionalText(paymentData, "payeeName", "");
         String invoiceNumber = optionalText(paymentData, "invoiceNumber", "");
         if (!payeeName.isBlank() && !invoiceNumber.isBlank()) {
@@ -135,14 +143,17 @@ public class PharmacyAdapter implements FinancialEventAdapter {
         if (!payeeName.isBlank()) {
             return "Payment to " + payeeName;
         }
-        return "Pharmacy purchase payment";
+        return applicationName + " purchase payment";
     }
 
-    private String buildIndustryTags(JsonNode root, JsonNode paymentData) throws JsonProcessingException {
+    private String buildIndustryTags(JsonNode root, JsonNode paymentData, String applicationName)
+            throws JsonProcessingException {
         Map<String, Object> tags = new HashMap<>();
 
+        // Source identification — key field distinguishing Pharmacy, Lab, Store, HIS, etc.
+        tags.put("applicationName", applicationName);
+
         // Payment information
-        tags.put("applicationName", optionalText(root, "applicationName", "PHARMACY"));
         tags.put("payerName", optionalText(paymentData, "payerName", ""));
         tags.put("payeeName", optionalText(paymentData, "payeeName", ""));
         tags.put("payeeType", optionalText(paymentData, "payeeType", ""));

@@ -8,9 +8,10 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 /**
- * Request DTO for bulk ingestion of pharmacy payment requests in a single API call.
+ * Request DTO for bulk ingestion of external application payment requests in a single API call.
+ * Common across all source applications (Pharmacy, Lab, Stores, HIS, etc.).
  */
-public record BulkPharmacyPaymentRequest(
+public record BulkExternalAppPaymentRequest(
 
         @NotBlank(message = "Tenant ID is required")
         String tenantId,
@@ -18,5 +19,5 @@ public record BulkPharmacyPaymentRequest(
         @NotNull
         @NotEmpty(message = "At least one payment request is required")
         @Valid
-        List<PharmacyPaymentRequest> requests
+        List<ExternalAppPaymentRequest> requests
 ) {}

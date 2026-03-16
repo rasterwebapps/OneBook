@@ -1,4 +1,4 @@
-package com.nexus.onebook.ledger.ingestion.pharmacy;
+package com.nexus.onebook.ledger.ingestion.externalapp;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,29 +18,37 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Pharmacy Integration Service — orchestrates the ingestion of payment requests
- * from Pharmacy and other integrated external applications.
+ * Universal External Application Ingestion Service.
+ * Orchestrates the ingestion of payment requests from any integrated external application —
+ * Pharmacy, Lab, Stores, HIS, ERP, or any future integration — through the common
+ * {@link ExternalAppPaymentRequest} format.
+ * <p>
+ * The {@code applicationName} field inside each request identifies the source system
+ * (e.g. {@code PHARMACY}, {@code LAB}, {@code STORE}, {@code HIS}). All source systems
+ * share the same ingestion pipeline, API endpoints, and workflow states. No new service
+ * or adapter is required to onboard a new external application; simply set a new
+ * {@code applicationName} value.
  * <p>
  * Workflow:
  * <ol>
- *   <li>Receive {@link PharmacyPaymentRequest} from the external system</li>
- *   <li>Route through {@link FinancialEventGateway} using the {@code PHARMACY} adapter</li>
- *   <li>Store invoice document metadata (preserving original MinIO path)</li>
- *   <li>Return a {@link PharmacyPaymentResponse} with event/workflow/document IDs</li>
+ *   <li>Receive {@link ExternalAppPaymentRequest} from the external system</li>
+ *   <li>Route through {@link FinancialEventGateway} using the {@code EXTERNAL_APP} adapter</li>
+ *   <li>Store invoice document metadata (preserving original MinIO path) in the Document Vault</li>
+ *   <li>Return an {@link ExternalAppPaymentResponse} with event/workflow/document IDs</li>
  * </ol>
  */
 @Service
-public class PharmacyIngestionService {
+public class ExternalAppIngestionService {
 
     private final FinancialEventGateway gateway;
     private final FinancialEventRepository eventRepository;
     private final DocumentVaultService documentVaultService;
     private final ObjectMapper objectMapper;
 
-    public PharmacyIngestionService(FinancialEventGateway gateway,
-                                    FinancialEventRepository eventRepository,
-                                    DocumentVaultService documentVaultService,
-                                    ObjectMapper objectMapper) {
+    public ExternalAppIngestionService(FinancialEventGateway gateway,
+                                       FinancialEventRepository eventRepository,
+                                       DocumentVaultService documentVaultService,
+                                       ObjectMapper objectMapper) {
         this.gateway = gateway;
         this.eventRepository = eventRepository;
         this.documentVaultService = documentVaultService;
@@ -48,15 +56,16 @@ public class PharmacyIngestionService {
     }
 
     /**
-     * Ingests a single pharmacy payment request.
+     * Ingests a single external application payment request.
+     * Works for any application: Pharmacy, Lab, Stores, HIS, etc.
      *
-     * @param request the payment request from the external pharmacy application
+     * @param request the payment request from the external application
      * @return response containing event ID, status, workflow ID, and document ID
      */
-    public PharmacyPaymentResponse ingestPaymentRequest(PharmacyPaymentRequest request) {
+    public ExternalAppPaymentResponse ingestPaymentRequest(ExternalAppPaymentRequest request) {
         String payload = serializePayload(request);
 
-        FinancialEvent event = gateway.ingest(request.tenantId(), AdapterType.PHARMACY, payload);
+        FinancialEvent event = gateway.ingest(request.tenantId(), AdapterType.EXTERNAL_APP, payload);
 
         String documentId = null;
         if (request.documentInfo() != null) {
@@ -67,28 +76,30 @@ public class PharmacyIngestionService {
     }
 
     /**
-     * Ingests multiple pharmacy payment requests in a single batch call.
+     * Ingests multiple external application payment requests in a single batch call.
+     * Requests from different source applications can be mixed in the same batch.
      *
      * @param bulkRequest bulk request containing the tenant ID and list of payment requests
      * @return aggregated response with individual results and summary counts
      */
-    public BulkPharmacyPaymentResponse ingestBulkPaymentRequests(BulkPharmacyPaymentRequest bulkRequest) {
-        List<PharmacyPaymentResponse> results = new ArrayList<>();
+    public BulkExternalAppPaymentResponse ingestBulkPaymentRequests(BulkExternalAppPaymentRequest bulkRequest) {
+        List<ExternalAppPaymentResponse> results = new ArrayList<>();
 
-        for (PharmacyPaymentRequest req : bulkRequest.requests()) {
-            // Ensure each individual request uses the bulk request's tenant ID if not set
-            PharmacyPaymentRequest enriched = enrichWithTenantId(req, bulkRequest.tenantId());
+        for (ExternalAppPaymentRequest req : bulkRequest.requests()) {
+            // Ensure each individual request uses the bulk request's tenant ID if not explicitly set
+            ExternalAppPaymentRequest enriched = enrichWithTenantId(req, bulkRequest.tenantId());
             results.add(ingestPaymentRequest(enriched));
         }
 
         int failed = (int) results.stream().filter(r -> "FAILED".equals(r.status())).count();
-        return new BulkPharmacyPaymentResponse(results, results.size(), results.size() - failed, failed);
+        return new BulkExternalAppPaymentResponse(results, results.size(), results.size() - failed, failed);
     }
 
     /**
      * Returns the current workflow status of a previously ingested payment request.
+     * Works for requests originating from any external application.
      *
-     * @param requestId the event UUID (as returned in {@link PharmacyPaymentResponse#eventId()})
+     * @param requestId the event UUID (as returned in {@link ExternalAppPaymentResponse#eventId()})
      * @return current status and workflow stage of the payment request
      */
     public PaymentStatusResponse getPaymentStatus(String requestId) {
@@ -101,6 +112,7 @@ public class PharmacyIngestionService {
 
     /**
      * Triggers OCR processing for a document stored in the vault.
+     * Applicable to invoices uploaded by any external application.
      *
      * @param documentId the vault document ID
      * @return OCR processing result with extracted data
@@ -119,16 +131,17 @@ public class PharmacyIngestionService {
 
     // --- Private helpers ---
 
-    private String serializePayload(PharmacyPaymentRequest request) {
+    private String serializePayload(ExternalAppPaymentRequest request) {
         try {
             return objectMapper.writeValueAsString(request);
         } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Failed to serialize pharmacy payment request: " + e.getMessage());
+            throw new IllegalArgumentException(
+                    "Failed to serialize external app payment request: " + e.getMessage());
         }
     }
 
-    private String storeInvoiceDocument(PharmacyPaymentRequest request) {
-        PharmacyPaymentRequest.DocumentInfo docInfo = request.documentInfo();
+    private String storeInvoiceDocument(ExternalAppPaymentRequest request) {
+        ExternalAppPaymentRequest.DocumentInfo docInfo = request.documentInfo();
         if (docInfo == null || docInfo.fileName() == null || docInfo.checksum() == null) {
             return null;
         }
@@ -152,11 +165,11 @@ public class PharmacyIngestionService {
         return doc.getId() != null ? doc.getId().toString() : null;
     }
 
-    private PharmacyPaymentRequest enrichWithTenantId(PharmacyPaymentRequest req, String tenantId) {
+    private ExternalAppPaymentRequest enrichWithTenantId(ExternalAppPaymentRequest req, String tenantId) {
         if (req.tenantId() != null && !req.tenantId().isBlank()) {
             return req;
         }
-        return new PharmacyPaymentRequest(
+        return new ExternalAppPaymentRequest(
                 tenantId,
                 req.applicationName(),
                 req.paymentData(),
@@ -165,13 +178,15 @@ public class PharmacyIngestionService {
         );
     }
 
-    private PharmacyPaymentResponse buildPaymentResponse(FinancialEvent event, String documentId) {
+    private ExternalAppPaymentResponse buildPaymentResponse(FinancialEvent event, String documentId) {
         String eventId = event.getEventUuid().toString();
         String status = event.getStatus().name();
         String message = event.getErrorMessage() != null
                 ? event.getErrorMessage()
                 : "Payment request received successfully";
-        return new PharmacyPaymentResponse(eventId, status, message, eventId, documentId);
+        // workflowId reuses eventId at ingestion time; it is updated by the approval
+        // workflow engine once the event progresses through maker-checker stages.
+        return new ExternalAppPaymentResponse(eventId, status, message, eventId, documentId);
     }
 
     private UUID parseEventUuid(String requestId) {
