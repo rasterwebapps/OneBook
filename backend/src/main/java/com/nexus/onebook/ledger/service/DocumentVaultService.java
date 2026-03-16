@@ -84,6 +84,24 @@ public class DocumentVaultService {
     }
 
     /**
+     * Stores document metadata in the vault and preserves the original MinIO path
+     * in the document's metadata JSON field for audit trail purposes.
+     *
+     * @param request      the document upload request
+     * @param originalPath the original MinIO path (e.g. /minio-bucket/pharmacy/invoices/...)
+     * @return the persisted VaultDocument with originalPath recorded in metadata
+     */
+    @Transactional
+    public VaultDocument storeDocumentWithOriginalPath(DocumentUploadRequest request, String originalPath) {
+        VaultDocument document = storeDocument(request);
+        if (originalPath != null && !originalPath.isBlank()) {
+            document.setMetadata("{\"originalPath\":\"" + originalPath.replace("\"", "\\\"") + "\"}");
+            documentRepository.save(document);
+        }
+        return document;
+    }
+
+    /**
      * Verifies the checksum of a document to ensure integrity.
      */
     public boolean verifyChecksum(String content, String expectedChecksum) {

@@ -12,6 +12,7 @@ import com.nexus.onebook.ledger.ingestion.model.AdapterType;
 import com.nexus.onebook.ledger.ingestion.model.CardTransaction;
 import com.nexus.onebook.ledger.ingestion.model.FinancialEvent;
 import com.nexus.onebook.ledger.ingestion.model.VendorInvoice;
+import com.nexus.onebook.ledger.ingestion.pharmacy.PharmacyIngestionService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,8 @@ import java.util.List;
 /**
  * REST controller for the Universal Ingestion Layer.
  * Provides endpoints for financial event ingestion, OCR invoice processing,
- * 3-way matching, corporate card sync, and connector event handling.
+ * 3-way matching, corporate card sync, connector event handling,
+ * and pharmacy/external application payment request ingestion.
  */
 @RestController
 @RequestMapping("/api/ingestion")
@@ -35,6 +37,7 @@ public class IngestionController {
     private final CorporateCardService corporateCardService;
     private final HrmPayrollConnector hrmPayrollConnector;
     private final InventoryEventListener inventoryEventListener;
+    private final PharmacyIngestionService pharmacyIngestionService;
 
     public IngestionController(FinancialEventGateway gateway,
                                AdapterRegistry adapterRegistry,
@@ -42,7 +45,8 @@ public class IngestionController {
                                ThreeWayMatchingService matchingService,
                                CorporateCardService corporateCardService,
                                HrmPayrollConnector hrmPayrollConnector,
-                               InventoryEventListener inventoryEventListener) {
+                               InventoryEventListener inventoryEventListener,
+                               PharmacyIngestionService pharmacyIngestionService) {
         this.gateway = gateway;
         this.adapterRegistry = adapterRegistry;
         this.ocrInvoiceService = ocrInvoiceService;
@@ -50,6 +54,7 @@ public class IngestionController {
         this.corporateCardService = corporateCardService;
         this.hrmPayrollConnector = hrmPayrollConnector;
         this.inventoryEventListener = inventoryEventListener;
+        this.pharmacyIngestionService = pharmacyIngestionService;
     }
 
     // --- Financial Event Gateway ---
@@ -134,4 +139,35 @@ public class IngestionController {
                 .body(new FinancialEventResponse(event.getEventUuid(), event.getStatus(),
                         "Inventory event processed"));
     }
+
+    // --- Pharmacy / External Application Payment Request APIs ---
+
+    @PostMapping("/payment-requests")
+    public ResponseEntity<PharmacyPaymentResponse> ingestPharmacyPaymentRequest(
+            @Valid @RequestBody PharmacyPaymentRequest request) {
+        PharmacyPaymentResponse response = pharmacyIngestionService.ingestPaymentRequest(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/payment-requests/bulk")
+    public ResponseEntity<BulkPharmacyPaymentResponse> ingestBulkPharmacyPaymentRequests(
+            @Valid @RequestBody BulkPharmacyPaymentRequest request) {
+        BulkPharmacyPaymentResponse response = pharmacyIngestionService.ingestBulkPaymentRequests(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping("/payment-requests/{requestId}/status")
+    public ResponseEntity<PaymentStatusResponse> getPharmacyPaymentStatus(
+            @PathVariable String requestId) {
+        PaymentStatusResponse status = pharmacyIngestionService.getPaymentStatus(requestId);
+        return ResponseEntity.ok(status);
+    }
+
+    @PostMapping("/documents/{documentId}/ocr")
+    public ResponseEntity<OcrProcessingResponse> processDocumentOcr(
+            @PathVariable Long documentId) {
+        OcrProcessingResponse response = pharmacyIngestionService.processDocumentOcr(documentId);
+        return ResponseEntity.ok(response);
+    }
 }
+

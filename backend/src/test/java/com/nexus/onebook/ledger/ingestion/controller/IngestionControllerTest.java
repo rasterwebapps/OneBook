@@ -5,10 +5,11 @@ import com.nexus.onebook.ledger.ingestion.automation.ThreeWayMatchingService;
 import com.nexus.onebook.ledger.ingestion.connector.CorporateCardService;
 import com.nexus.onebook.ledger.ingestion.connector.HrmPayrollConnector;
 import com.nexus.onebook.ledger.ingestion.connector.InventoryEventListener;
-import com.nexus.onebook.ledger.ingestion.dto.ThreeWayMatchResult;
+import com.nexus.onebook.ledger.ingestion.dto.*;
 import com.nexus.onebook.ledger.ingestion.gateway.AdapterRegistry;
 import com.nexus.onebook.ledger.ingestion.gateway.FinancialEventGateway;
 import com.nexus.onebook.ledger.ingestion.model.*;
+import com.nexus.onebook.ledger.ingestion.pharmacy.PharmacyIngestionService;
 import com.nexus.onebook.ledger.exception.GlobalExceptionHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,9 @@ class IngestionControllerTest {
 
     @MockitoBean
     private InventoryEventListener inventoryEventListener;
+
+    @MockitoBean
+    private PharmacyIngestionService pharmacyIngestionService;
 
     @Test
     void ingestEvent_validRequest_returns201() throws Exception {
@@ -171,5 +175,120 @@ class IngestionControllerTest {
 
         mockMvc.perform(get("/api/ingestion/cards/unposted/tenant-1"))
                 .andExpect(status().isOk());
+    }
+
+    // --- Pharmacy API Tests ---
+
+    @Test
+    void ingestPharmacyPaymentRequest_validRequest_returns201() throws Exception {
+        PharmacyPaymentResponse response = new PharmacyPaymentResponse(
+                UUID.randomUUID().toString(), "RECEIVED",
+                "Payment request received successfully",
+                UUID.randomUUID().toString(), null);
+
+        when(pharmacyIngestionService.ingestPaymentRequest(any())).thenReturn(response);
+
+        mockMvc.perform(post("/api/ingestion/payment-requests")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "tenantId": "pharmacy-branch-001",
+                                    "applicationName": "PHARMACY",
+                                    "paymentData": {
+                                        "invoiceNumber": "PH-INV-2026-001",
+                                        "invoiceDate": "2026-03-16",
+                                        "payerName": "ABC Hospital Pharmacy",
+                                        "payeeType": "VENDOR",
+                                        "payeeName": "XYZ Medical Supplies",
+                                        "amounts": {
+                                            "grossAmount": 15000.00,
+                                            "payableAmount": 14250.00
+                                        },
+                                        "paymentMode": "NEFT",
+                                        "transactionType": "PURCHASE_PAYMENT"
+                                    }
+                                }
+                                """))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.status").value("RECEIVED"))
+                .andExpect(jsonPath("$.message").value("Payment request received successfully"));
+    }
+
+    @Test
+    void ingestPharmacyPaymentRequest_missingTenantId_returns400() throws Exception {
+        mockMvc.perform(post("/api/ingestion/payment-requests")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "applicationName": "PHARMACY",
+                                    "paymentData": {
+                                        "invoiceNumber": "PH-INV-001"
+                                    }
+                                }
+                                """))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void ingestBulkPharmacyPaymentRequests_validRequest_returns201() throws Exception {
+        BulkPharmacyPaymentResponse bulkResponse = new BulkPharmacyPaymentResponse(
+                List.of(
+                        new PharmacyPaymentResponse(UUID.randomUUID().toString(), "RECEIVED",
+                                "Payment request received successfully", UUID.randomUUID().toString(), null)
+                ), 1, 1, 0);
+
+        when(pharmacyIngestionService.ingestBulkPaymentRequests(any())).thenReturn(bulkResponse);
+
+        mockMvc.perform(post("/api/ingestion/payment-requests/bulk")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "tenantId": "pharmacy-branch-001",
+                                    "requests": [
+                                        {
+                                            "tenantId": "pharmacy-branch-001",
+                                            "applicationName": "PHARMACY",
+                                            "paymentData": {
+                                                "invoiceNumber": "PH-INV-001",
+                                                "amounts": { "payableAmount": 5000.00 }
+                                            }
+                                        }
+                                    ]
+                                }
+                                """))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.totalReceived").value(1))
+                .andExpect(jsonPath("$.totalSucceeded").value(1))
+                .andExpect(jsonPath("$.totalFailed").value(0));
+    }
+
+    @Test
+    void getPharmacyPaymentStatus_validRequestId_returns200() throws Exception {
+        UUID requestId = UUID.randomUUID();
+        PaymentStatusResponse statusResponse = new PaymentStatusResponse(
+                requestId.toString(), "APPROVED", "PENDING_PAYMENT", null, null, null);
+
+        when(pharmacyIngestionService.getPaymentStatus(requestId.toString())).thenReturn(statusResponse);
+
+        mockMvc.perform(get("/api/ingestion/payment-requests/{requestId}/status", requestId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.requestId").value(requestId.toString()))
+                .andExpect(jsonPath("$.status").value("APPROVED"))
+                .andExpect(jsonPath("$.workflowStage").value("PENDING_PAYMENT"));
+    }
+
+    @Test
+    void processDocumentOcr_validDocumentId_returns200() throws Exception {
+        OcrProcessingResponse ocrResponse = new OcrProcessingResponse(
+                "42", "COMPLETED",
+                "{\"fileName\":\"inv.pdf\"}",
+                "OCR processing completed for document: inv.pdf");
+
+        when(pharmacyIngestionService.processDocumentOcr(42L)).thenReturn(ocrResponse);
+
+        mockMvc.perform(post("/api/ingestion/documents/42/ocr"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.documentId").value("42"))
+                .andExpect(jsonPath("$.ocrStatus").value("COMPLETED"));
     }
 }

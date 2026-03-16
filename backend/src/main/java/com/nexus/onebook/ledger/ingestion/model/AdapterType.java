@@ -11,5 +11,6 @@ public enum AdapterType {
     REST_WEBHOOK,
     CORPORATE_CARD,
     HRM_PAYROLL,
-    INVENTORY
+    INVENTORY,
+    PHARMACY
 }
