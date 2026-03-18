@@ -118,7 +118,7 @@ public class TrialBalanceService {
         List<AccountAggregator> sorted = new ArrayList<>(aggregatorMap.values());
         sorted.sort(Comparator
                 .comparing((AccountAggregator a) -> a.account.getAccountType().name())
-                .thenComparing(a -> a.account.getAccountCode()));
+                .thenComparing((AccountAggregator a) -> a.account.getAccountCode()));
 
         for (AccountAggregator agg : sorted) {
             lines.add(new TrialBalanceLine(
