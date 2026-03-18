@@ -135,7 +135,7 @@ class LedgerControllerTest {
                 true
         );
 
-        when(trialBalanceService.generateTrialBalance("tenant-1")).thenReturn(report);
+        when(trialBalanceService.generateTrialBalance("tenant-1", null, null)).thenReturn(report);
 
         mockMvc.perform(get("/api/ledger/trial-balance")
                         .param("tenantId", "tenant-1"))

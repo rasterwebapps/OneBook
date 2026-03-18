@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,15 +46,32 @@ public class TrialBalanceService {
      */
     @Transactional(readOnly = true)
     public TrialBalanceReport generateTrialBalance(String tenantId) {
-        // Cache-aside: try Redis first
-        TrialBalanceReport cached = warmCacheService.getTrialBalance(tenantId);
-        if (cached != null) {
-            return cached;
-        }
+        return generateTrialBalance(tenantId, null, null);
+    }
 
-        TrialBalanceReport report = computeTrialBalance(tenantId);
-        warmCacheService.putTrialBalance(tenantId, report);
-        return report;
+    /**
+     * Generates a date-bounded trial balance report for a given tenant.
+     * When fromDate/toDate are provided only entries within that range are included.
+     * The no-date overload uses cache-aside; date-bounded calls bypass cache.
+     *
+     * @param tenantId the tenant identifier
+     * @param fromDate inclusive start date (optional)
+     * @param toDate   inclusive end date (optional)
+     * @return a TrialBalanceReport with per-account totals and overall balance check
+     */
+    @Transactional(readOnly = true)
+    public TrialBalanceReport generateTrialBalance(String tenantId, LocalDate fromDate, LocalDate toDate) {
+        if (fromDate == null && toDate == null) {
+            // Cache-aside: try Redis first
+            TrialBalanceReport cached = warmCacheService.getTrialBalance(tenantId);
+            if (cached != null) {
+                return cached;
+            }
+            TrialBalanceReport report = computeTrialBalance(tenantId, null, null);
+            warmCacheService.putTrialBalance(tenantId, report);
+            return report;
+        }
+        return computeTrialBalance(tenantId, fromDate, toDate);
     }
 
     /**
@@ -62,7 +81,17 @@ public class TrialBalanceService {
      */
     @Transactional(readOnly = true)
     public TrialBalanceReport computeTrialBalance(String tenantId) {
-        List<JournalEntry> postedEntries = entryRepository.findPostedEntriesByTenantId(tenantId);
+        return computeTrialBalance(tenantId, null, null);
+    }
+
+    /**
+     * Computes the trial balance from posted journal entries with optional date range.
+     * Lines are sorted by account type then account code for consistent presentation.
+     */
+    @Transactional(readOnly = true)
+    public TrialBalanceReport computeTrialBalance(String tenantId, LocalDate fromDate, LocalDate toDate) {
+        List<JournalEntry> postedEntries = entryRepository
+                .findPostedEntriesByTenantIdAndDateRange(tenantId, fromDate, toDate);
 
         // Aggregate by account
         Map<Long, AccountAggregator> aggregatorMap = new LinkedHashMap<>();
@@ -81,12 +110,17 @@ public class TrialBalanceService {
             }
         }
 
-        // Build trial balance lines
+        // Build trial balance lines sorted by account type then account code
         List<TrialBalanceLine> lines = new ArrayList<>();
         BigDecimal grandTotalDebits = BigDecimal.ZERO;
         BigDecimal grandTotalCredits = BigDecimal.ZERO;
 
-        for (AccountAggregator agg : aggregatorMap.values()) {
+        List<AccountAggregator> sorted = new ArrayList<>(aggregatorMap.values());
+        sorted.sort(Comparator
+                .comparing((AccountAggregator a) -> a.account.getAccountType().name())
+                .thenComparing((AccountAggregator a) -> a.account.getAccountCode()));
+
+        for (AccountAggregator agg : sorted) {
             lines.add(new TrialBalanceLine(
                     agg.account.getId(),
                     agg.account.getAccountCode(),

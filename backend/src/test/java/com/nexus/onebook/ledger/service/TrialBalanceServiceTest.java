@@ -13,11 +13,15 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
@@ -67,7 +71,7 @@ class TrialBalanceServiceTest {
 
     @Test
     void generateTrialBalance_noEntries_returnsEmptyBalanced() {
-        when(entryRepository.findPostedEntriesByTenantId("tenant-1"))
+        when(entryRepository.findPostedEntriesByTenantIdAndDateRange(eq("tenant-1"), isNull(), isNull()))
                 .thenReturn(Collections.emptyList());
 
         TrialBalanceReport report = trialBalanceService.generateTrialBalance("tenant-1");
@@ -84,7 +88,7 @@ class TrialBalanceServiceTest {
         JournalEntry debitEntry = createEntry(cashAccount, EntryType.DEBIT, "500.0000");
         JournalEntry creditEntry = createEntry(revenueAccount, EntryType.CREDIT, "500.0000");
 
-        when(entryRepository.findPostedEntriesByTenantId("tenant-1"))
+        when(entryRepository.findPostedEntriesByTenantIdAndDateRange(eq("tenant-1"), isNull(), isNull()))
                 .thenReturn(List.of(debitEntry, creditEntry));
 
         TrialBalanceReport report = trialBalanceService.generateTrialBalance("tenant-1");
@@ -105,7 +109,7 @@ class TrialBalanceServiceTest {
         JournalEntry entry3 = createEntry(expenseAccount, EntryType.DEBIT, "200.0000");
         JournalEntry entry4 = createEntry(cashAccount, EntryType.CREDIT, "200.0000");
 
-        when(entryRepository.findPostedEntriesByTenantId("tenant-1"))
+        when(entryRepository.findPostedEntriesByTenantIdAndDateRange(eq("tenant-1"), isNull(), isNull()))
                 .thenReturn(List.of(entry1, entry2, entry3, entry4));
 
         TrialBalanceReport report = trialBalanceService.generateTrialBalance("tenant-1");
@@ -142,7 +146,7 @@ class TrialBalanceServiceTest {
         JournalEntry debitEntry = createEntry(cashAccount, EntryType.DEBIT, "100.0000");
         JournalEntry creditEntry = createEntry(revenueAccount, EntryType.CREDIT, "100.0000");
 
-        when(entryRepository.findPostedEntriesByTenantId("tenant-1"))
+        when(entryRepository.findPostedEntriesByTenantIdAndDateRange(eq("tenant-1"), isNull(), isNull()))
                 .thenReturn(List.of(debitEntry, creditEntry));
 
         TrialBalanceReport report = trialBalanceService.generateTrialBalance("tenant-1");
@@ -152,6 +156,24 @@ class TrialBalanceServiceTest {
         assertEquals("1000", cashLine.accountCode());
         assertEquals("Cash", cashLine.accountName());
         assertEquals("ASSET", cashLine.accountType());
+    }
+
+    @Test
+    void generateTrialBalance_withDateRange_filtersEntries() {
+        JournalEntry debitEntry = createEntry(cashAccount, EntryType.DEBIT, "300.0000");
+        JournalEntry creditEntry = createEntry(revenueAccount, EntryType.CREDIT, "300.0000");
+        LocalDate from = LocalDate.of(2025, 1, 1);
+        LocalDate to = LocalDate.of(2025, 3, 31);
+
+        when(entryRepository.findPostedEntriesByTenantIdAndDateRange("tenant-1", from, to))
+                .thenReturn(List.of(debitEntry, creditEntry));
+
+        TrialBalanceReport report = trialBalanceService.generateTrialBalance("tenant-1", from, to);
+
+        assertEquals(2, report.lines().size());
+        assertTrue(report.balanced());
+        assertEquals(new BigDecimal("300.0000"), report.totalDebits());
+        assertEquals(new BigDecimal("300.0000"), report.totalCredits());
     }
 
     private JournalEntry createEntry(LedgerAccount account, EntryType type, String amount) {
