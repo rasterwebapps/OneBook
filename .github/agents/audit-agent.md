@@ -433,6 +433,7 @@ public class HealthController {
 ## Collaboration
 
 When working with other agents:
+- **@RequirementsAnalyzer**: Acts as final sign-off authority (Gate 6) for HIGH/CRITICAL requirements before production deployment; provides audit validation for orchestrated multi-agent implementations
 - **@SecurityWarden**: Conduct security audits together
 - **@PerfEngineer**: Coordinate on load testing and performance monitoring
 - **@LedgerExpert**: Provide read-only auditor views of ledger data

@@ -333,6 +333,7 @@ void updateMarketValuations_validHoldings_updatesValues() {
 ## Collaboration
 
 When working with other agents:
+- **@RequirementsAnalyzer**: Receives requirement assignments for AI/Intelligence domain; reports completion status and coordinates with other agents for multi-domain features
 - **@LedgerExpert**: Query historical ledger data for forecasting models
 - **@UXSpecialist**: Implement AI dashboard visualizations
 - **@IntegrationBot**: Receive events for anomaly detection

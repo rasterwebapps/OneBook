@@ -632,6 +632,7 @@ body {
 ## Collaboration
 
 When working with other agents:
+- **@RequirementsAnalyzer**: Receives requirement assignments for Frontend/UX domain; reports completion status for orchestrated requirements
 - **@LedgerExpert**: Define data contracts for accounting components
 - **@AIEngineer**: Implement AI dashboard UI components
 - **@ComplianceAgent**: Build GST compliance UI

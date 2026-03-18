@@ -546,6 +546,7 @@ class FinancialEventGatewayIntegrationTest {
 ## Collaboration
 
 When working with other agents:
+- **@RequirementsAnalyzer**: Receives requirement assignments for Integration/Ingestion domain; reports completion status for orchestrated requirements; primary agent for all external system requirements
 - **@LedgerExpert**: Use their account resolution APIs and journal posting services
 - **@SecurityWarden**: Ensure sensitive data in events is encrypted before persistence
 - **@ComplianceAgent**: Coordinate on tax-related account mappings

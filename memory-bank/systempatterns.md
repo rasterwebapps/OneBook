@@ -111,12 +111,39 @@ After a milestone completes, summarize final state and clear subagent history.
 
 ---
 
+## Requirement Lifecycle Management
+
+### @RequirementsAnalyzer Orchestration Protocol
+All new requirements MUST go through the @RequirementsAnalyzer classification process:
+
+1. **Intake**: Assign REQ-ID, normalize raw requirement
+2. **Classification**: Match against Domain Classification Matrix → determine primary domain, secondary domains, and complexity level
+3. **Assignment**: Assign Primary Agent + Collaborating Agents; choose orchestration pattern (Sequential/Parallel/Iterative)
+4. **Execution**: Agents implement their phases; @RequirementsAnalyzer validates quality gates
+5. **Validation**: Gate 4 (Testing) and Gate 5 (Documentation) must complete before Gate 6 (Deployment)
+6. **Closure**: Requirement archived in memory bank
+
+### Complexity-Based Testing Requirements
+- **LOW**: Unit tests only, agent self-approval
+- **MEDIUM**: Unit + Integration tests, lead agent + @RequirementsAnalyzer approval
+- **HIGH**: Full test suite + UAT, multi-agent approval + human review
+- **CRITICAL**: Full suite + security audit + performance testing, full agent consensus + mandatory human approval
+
+### Quality Gates (6-Gate Model)
+Gate 1: Classification Approved → Gate 2: Implementation Ready → Gate 3: Implementation Complete → Gate 4: Testing Complete → Gate 5: Documentation Complete → Gate 6: Deployment Approved
+
+**Why:** Prevents scope creep, ensures consistent quality, maintains test counts (405+ backend, 105+ frontend), and provides audit trail for all changes.
+
+---
+
 ## Agent Ownership Rules
 
 When adding new code, update the corresponding agent file in `.github/agents/`:
 
 | Component | Owner |
 |-----------|-------|
+| Requirement lifecycle orchestration | @RequirementsAnalyzer |
+| Requirement templates (.github/templates/) | @RequirementsAnalyzer |
 | Core accounting service (Journal, Ledger, etc.) | @LedgerExpert |
 | Financial reports (P&L, Balance Sheet, Cash Flow) | @LedgerExpert |
 | Fixed Asset Register | @LedgerExpert |

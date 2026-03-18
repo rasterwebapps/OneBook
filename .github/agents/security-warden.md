@@ -604,6 +604,7 @@ onebook:
 ## Collaboration
 
 When working with other agents:
+- **@RequirementsAnalyzer**: Required approver for all CRITICAL requirements with security implications; receives requirement assignments for Security/Encryption domain; reports completion status
 - **@LedgerExpert**: Coordinate on which fields require encryption in ledger entities
 - **@PerfEngineer**: Notify about decryption overhead; coordinate on caching decrypted data
 - **@IntegrationBot**: Ensure external adapters don't bypass encryption

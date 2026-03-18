@@ -26,6 +26,7 @@ Each agent instruction file provides:
 
 | Agent | File | Domain | Milestones |
 |-------|------|--------|-----------|
+| 🎯 @RequirementsAnalyzer | `requirements-analyzer.md` | Requirement Orchestration | All (Master Coordinator) |
 | 🏗️ @Architect | `architect.md` | Foundation & Infrastructure | M1, M9 |
 | 📒 @LedgerExpert | `ledger-expert.md` | Accounting Engine | M2, M7, M10 |
 | 🔐 @SecurityWarden | `security-warden.md` | Zero-Knowledge Security | M3, M10 |
@@ -37,6 +38,22 @@ Each agent instruction file provides:
 | 🛡️ @AuditAgent | `audit-agent.md` | Auditor Portal & Production | M10 |
 | 📝 @DocAgent | `doc-agent.md` | Documentation Management | M9, Cross-cutting |
 
+## Master Coordinator: @RequirementsAnalyzer
+
+**@RequirementsAnalyzer** is the entry point for all new requirements. It receives, classifies, and orchestrates every requirement through the full A-Z lifecycle — from raw business request to production deployment.
+
+**How it works with other agents:**
+1. @RequirementsAnalyzer **classifies** each requirement using the Domain Classification Matrix
+2. It **assigns** a Primary Agent and Collaborating Agents based on the classification
+3. It **orchestrates** the implementation phases (sequential, parallel, or iterative)
+4. It **validates** quality gates before advancing to the next phase
+5. It **coordinates** @AuditAgent sign-off before production for HIGH/CRITICAL requirements
+6. It **closes** the requirement after acceptance criteria are validated
+
+For any new requirement, start by creating a requirement document using `.github/templates/requirement-analysis-template.md`.
+
+---
+
 ## Usage
 
 When working on the OneBook codebase:
@@ -45,7 +62,8 @@ When working on the OneBook codebase:
 3. Review the relevant agent instruction file
 4. Follow the patterns, conventions, and standards defined
 5. If working across multiple domains, consult the Sub-Agent Interaction Matrix in `sub-agents.md`
-6. **Update memory bank** at end of session — keep context alive for next session
+6. **For new requirements** — use @RequirementsAnalyzer to classify and orchestrate
+7. **Update memory bank** at end of session — keep context alive for next session
 
 ## Updates
 
