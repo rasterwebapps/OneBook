@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, computed, effect } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, computed, effect, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
@@ -14,7 +14,18 @@ import { ReportsService } from '../../services/reports.service';
     <div class="reports-shell">
       <div class="reports-header">
         <h1>{{ reportLabel() }}</h1>
-        <button class="btn btn-secondary" (click)="reload()">🔄 Refresh</button>
+        <div class="header-actions">
+          @if (reportType() === 'trial-balance') {
+            <div class="date-filter">
+              <label>From: <input type="date" [value]="fromDate()" (change)="onFromDate($event)" class="date-input"></label>
+              <label>To: <input type="date" [value]="toDate()" (change)="onToDate($event)" class="date-input"></label>
+              <button class="btn btn-primary" (click)="applyDateFilter()">Apply</button>
+              <button class="btn btn-link" (click)="clearDateFilter()">Clear</button>
+              <button class="btn btn-export" (click)="svc.exportTrialBalance()" title="Export as JSON">⬇ Export</button>
+            </div>
+          }
+          <button class="btn btn-secondary" (click)="reload()">🔄 Refresh</button>
+        </div>
       </div>
 
       @if (svc.loading()) {
@@ -22,31 +33,43 @@ import { ReportsService } from '../../services/reports.service';
       }
 
       <!-- ═══ TRIAL BALANCE ═══ -->
-      @if (reportType() === 'trial-balance' && svc.trialBalance(); as tb) {
-        <table class="report-table">
-          <thead>
-            <tr><th>Account Code</th><th>Account Name</th><th>Type</th><th class="num">Debit (₹)</th><th class="num">Credit (₹)</th></tr>
-          </thead>
-          <tbody>
-            @for (line of tb.lines; track line.accountId) {
-              <tr>
-                <td>{{ line.accountCode }}</td>
-                <td>{{ line.accountName }}</td>
-                <td>{{ line.accountType }}</td>
-                <td class="num">{{ line.totalDebits | number:'1.2-2' }}</td>
-                <td class="num">{{ line.totalCredits | number:'1.2-2' }}</td>
-              </tr>
-            }
-          </tbody>
-          <tfoot>
-            <tr class="total-row">
-              <td colspan="3">Total</td>
-              <td class="num">{{ tb.totalDebits | number:'1.2-2' }}</td>
-              <td class="num">{{ tb.totalCredits | number:'1.2-2' }}</td>
-            </tr>
-            <tr><td colspan="5" class="balance-status">{{ tb.balanced ? '✅ Balanced' : '⚠️ Unbalanced' }}</td></tr>
-          </tfoot>
-        </table>
+      @if (reportType() === 'trial-balance') {
+        @if (svc.trialBalance(); as tb) {
+          @if (tb.lines.length === 0) {
+            <div class="empty-state">
+              <p>No posted transactions found for the selected period.</p>
+            </div>
+          } @else {
+            <table class="report-table">
+              <thead>
+                <tr><th>Account Code</th><th>Account Name</th><th>Type</th><th class="num">Debit (₹)</th><th class="num">Credit (₹)</th></tr>
+              </thead>
+              <tbody>
+                @for (line of tb.lines; track line.accountId) {
+                  <tr>
+                    <td>{{ line.accountCode }}</td>
+                    <td>{{ line.accountName }}</td>
+                    <td>{{ line.accountType }}</td>
+                    <td class="num">{{ line.totalDebits | number:'1.2-2' }}</td>
+                    <td class="num">{{ line.totalCredits | number:'1.2-2' }}</td>
+                  </tr>
+                }
+              </tbody>
+              <tfoot>
+                <tr class="total-row">
+                  <td colspan="3">Total</td>
+                  <td class="num">{{ tb.totalDebits | number:'1.2-2' }}</td>
+                  <td class="num">{{ tb.totalCredits | number:'1.2-2' }}</td>
+                </tr>
+                <tr><td colspan="5" class="balance-status">{{ tb.balanced ? '✅ Balanced' : '⚠️ Unbalanced' }}</td></tr>
+              </tfoot>
+            </table>
+          }
+        } @else if (!svc.loading()) {
+          <div class="empty-state">
+            <p>No trial balance data available. Post some transactions to view the report.</p>
+          </div>
+        }
       }
 
       <!-- ═══ PROFIT & LOSS ═══ -->
@@ -204,10 +227,20 @@ import { ReportsService } from '../../services/reports.service';
   `,
   styles: [`
     .reports-shell { padding: 16px; }
-    .reports-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .reports-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
     .reports-header h1 { margin: 0; font-size: 1.5rem; }
-    .btn { padding: 6px 14px; border-radius: 4px; cursor: pointer; border: 1px solid #ccc; background: #fff; }
+    .header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .date-filter { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .date-filter label { font-size: 0.85rem; display: flex; align-items: center; gap: 4px; }
+    .date-input { padding: 4px 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.85rem; }
+    .btn { padding: 6px 14px; border-radius: 4px; cursor: pointer; border: 1px solid #ccc; background: #fff; font-size: 0.85rem; }
     .btn-secondary:hover { background: #f0f0f0; }
+    .btn-primary { background: #26a69a; color: #fff; border-color: #26a69a; }
+    .btn-primary:hover { background: #1e8e83; }
+    .btn-export { background: #fff3e0; color: #e65100; border-color: #ffcc80; }
+    .btn-export:hover { background: #ffe0b2; }
+    .btn-link { background: transparent; border-color: transparent; color: #26a69a; padding: 6px 8px; }
+    .btn-link:hover { text-decoration: underline; }
     .loading { padding: 24px; text-align: center; color: #888; }
     .empty-state { padding: 48px; text-align: center; color: #999; }
     .report-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
@@ -229,6 +262,9 @@ export class ReportsComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly params = toSignal(this.route.paramMap.pipe(map(p => p.get('type') ?? 'unknown')));
   readonly reportType = computed(() => this.params() ?? 'unknown');
+
+  readonly fromDate = signal('');
+  readonly toDate = signal('');
 
   readonly reportLabel = computed(() => {
     const labels: Record<string, string> = {
@@ -252,9 +288,27 @@ export class ReportsComponent {
     this.loadReport(this.reportType());
   }
 
+  onFromDate(event: Event): void {
+    this.fromDate.set((event.target as HTMLInputElement).value);
+  }
+
+  onToDate(event: Event): void {
+    this.toDate.set((event.target as HTMLInputElement).value);
+  }
+
+  applyDateFilter(): void {
+    this.svc.loadTrialBalance(this.fromDate() || undefined, this.toDate() || undefined);
+  }
+
+  clearDateFilter(): void {
+    this.fromDate.set('');
+    this.toDate.set('');
+    this.svc.loadTrialBalance();
+  }
+
   private loadReport(type: string): void {
     switch (type) {
-      case 'trial-balance': this.svc.loadTrialBalance(); break;
+      case 'trial-balance': this.svc.loadTrialBalance(this.fromDate() || undefined, this.toDate() || undefined); break;
       case 'profit-loss': this.svc.loadProfitAndLoss(); break;
       case 'balance-sheet': this.svc.loadBalanceSheet(); break;
       case 'cash-flow': this.svc.loadCashFlow(); break;

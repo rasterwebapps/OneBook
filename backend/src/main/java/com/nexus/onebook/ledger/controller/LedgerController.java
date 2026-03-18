@@ -8,10 +8,12 @@ import com.nexus.onebook.ledger.repository.CostCenterRepository;
 import com.nexus.onebook.ledger.service.LedgerAccountService;
 import com.nexus.onebook.ledger.service.TrialBalanceService;
 import jakarta.validation.Valid;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -50,8 +52,11 @@ public class LedgerController {
     }
 
     @GetMapping("/trial-balance")
-    public ResponseEntity<TrialBalanceReport> getTrialBalance(@RequestParam String tenantId) {
-        return ResponseEntity.ok(trialBalanceService.generateTrialBalance(tenantId));
+    public ResponseEntity<TrialBalanceReport> getTrialBalance(
+            @RequestParam String tenantId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
+        return ResponseEntity.ok(trialBalanceService.generateTrialBalance(tenantId, fromDate, toDate));
     }
 
     @GetMapping("/cost-centers")

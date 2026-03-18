@@ -77,15 +77,21 @@ export class ReportsService {
   readonly daybook = signal<DaybookEntry[]>([]);
   readonly loading = signal(false);
 
-  loadTrialBalance(): void {
+  loadTrialBalance(fromDate?: string, toDate?: string): void {
     this.loading.set(true);
-    this.http.get<TrialBalanceReport>('/api/ledger/trial-balance', {
-      params: { tenantId: TENANT_ID },
-    }).pipe(
+    const params: Record<string, string> = { tenantId: TENANT_ID };
+    if (fromDate) params['fromDate'] = fromDate;
+    if (toDate) params['toDate'] = toDate;
+    this.http.get<TrialBalanceReport>('/api/reports/trial-balance', { params }).pipe(
       tap(r => this.trialBalance.set(r)),
       tap(() => this.loading.set(false)),
       catchError(() => { this.loading.set(false); return of(null); }),
     ).subscribe();
+  }
+
+  exportTrialBalance(): void {
+    const url = `/api/export/trial-balance?tenantId=${TENANT_ID}`;
+    window.open(url, '_blank');
   }
 
   loadProfitAndLoss(): void {
