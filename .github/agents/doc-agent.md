@@ -286,6 +286,7 @@ npm install
 ## Collaboration
 
 When working with other agents:
+- **@RequirementsAnalyzer**: Updates `.github/agents/README.md` and `.github/agents/INDEX.md` as co-maintainer; documents new agent files and requirement templates
 - **All Agents**: Request documentation updates when they make changes
 - **@Architect**: Keep architecture and setup docs in sync
 - **@LedgerExpert**: Maintain API docs and schema docs

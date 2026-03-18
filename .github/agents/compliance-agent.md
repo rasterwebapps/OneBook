@@ -350,6 +350,7 @@ onebook:
 ## Collaboration
 
 When working with other agents:
+- **@RequirementsAnalyzer**: Receives requirement assignments for Compliance/Tax domain; reports completion status for orchestrated requirements
 - **@LedgerExpert**: Use standard accounts for tax postings
 - **@IntegrationBot**: Receive government API data for compliance
 - **@SecurityWarden**: Encrypt sensitive tax identifiers (GSTIN, TIN)

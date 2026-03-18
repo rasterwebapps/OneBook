@@ -193,6 +193,7 @@ cd frontend && npx ng test --watch=false --browsers=ChromeHeadless
 ## Collaboration
 
 When working with other agents:
+- **@RequirementsAnalyzer**: Receives requirement assignments for Infrastructure/Foundation domain; reports completion status for orchestrated requirements
 - **@LedgerExpert**: Ensure Spring Boot config supports their JPA requirements
 - **@SecurityWarden**: Validate security configuration (encryption keys, RLS setup)
 - **@PerfEngineer**: Coordinate on Redis configuration and Virtual Threads

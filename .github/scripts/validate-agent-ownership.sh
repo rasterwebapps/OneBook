@@ -136,6 +136,34 @@ for file in V*.sql; do
 done
 
 echo ""
+echo "🎯 Checking RequirementsAnalyzer & Orchestration..."
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+# Check that the @RequirementsAnalyzer agent file exists
+if [ ! -f "$AGENTS_DIR/requirements-analyzer.md" ]; then
+    echo -e "${RED}✗${NC} Missing: @RequirementsAnalyzer agent file - .github/agents/requirements-analyzer.md"
+    EXIT_CODE=1
+else
+    echo -e "${GREEN}✓${NC} @RequirementsAnalyzer agent file exists"
+fi
+
+# Check that the requirement analysis template exists
+if [ ! -f "$REPO_ROOT/.github/templates/requirement-analysis-template.md" ]; then
+    echo -e "${RED}✗${NC} Missing: Requirement template - .github/templates/requirement-analysis-template.md"
+    EXIT_CODE=1
+else
+    echo -e "${GREEN}✓${NC} Requirement analysis template exists"
+fi
+
+# Check that requirements-analyzer.md references the domain classification matrix (orchestration responsibilities)
+if ! grep -q "Domain Classification Matrix" "$AGENTS_DIR/requirements-analyzer.md" 2>/dev/null; then
+    echo -e "${RED}✗${NC} Missing: Domain Classification Matrix in requirements-analyzer.md"
+    EXIT_CODE=1
+else
+    echo -e "${GREEN}✓${NC} Orchestration responsibilities documented (Domain Classification Matrix present)"
+fi
+
+echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 if [ $EXIT_CODE -eq 0 ]; then
     echo -e "${GREEN}✓${NC} All modules, services, and controllers are documented in agent files"

@@ -4,6 +4,34 @@ This index provides quick access to design requirements, patterns, and conventio
 
 ---
 
+## Requirement Orchestration
+
+**Owner:** @RequirementsAnalyzer (`requirements-analyzer.md`)
+
+- Domain Classification Matrix (10 domains mapped to primary agents)
+- Complexity Assessment Framework (LOW / MEDIUM / HIGH / CRITICAL)
+- Orchestration workflow patterns (Sequential, Parallel, Iterative)
+- Quality gate checkpoints (6 gates from classification through deployment)
+- Agent communication protocols (assignment, completion, escalation)
+- Requirement lifecycle tracking (INTAKE → CLOSED)
+
+**Critical Rules:**
+- ALWAYS classify a requirement before assigning agents
+- ALWAYS define measurable acceptance criteria before implementation begins
+- ALWAYS include @DocAgent for every HIGH/CRITICAL requirement
+- ALWAYS include @AuditAgent for final sign-off on HIGH/CRITICAL requirements
+- NEVER skip quality gates to meet speed targets
+- NEVER approve CRITICAL requirements without mandatory human review
+- NEVER allow implementation before Gate 1 (Classification Approved) is complete
+
+**Templates:** `.github/templates/requirement-analysis-template.md`
+
+**References:**
+- [`requirements-analyzer.md`](requirements-analyzer.md)
+- [`.github/templates/requirement-analysis-template.md`](../../.github/templates/requirement-analysis-template.md)
+
+---
+
 ## Architecture & Infrastructure
 
 **Owner:** @Architect (`architect.md`)
@@ -327,6 +355,11 @@ This index provides quick access to design requirements, patterns, and conventio
 
 ## Quick Reference by Task Type
 
+### Analyzing a New Requirement
+1. **Agent**: @RequirementsAnalyzer
+2. **Steps**: Receive → Classify (domain + complexity) → Assign agents → Define phases → Track progress
+3. **Template**: `.github/templates/requirement-analysis-template.md`
+
 ### Adding a New REST Endpoint
 1. **Agent**: @LedgerExpert or @IntegrationBot
 2. **Steps**: DTO → Service → Controller → Tests → API docs
@@ -446,6 +479,7 @@ Quick reference for which agents work together on common tasks:
 
 | Task | Primary Agent | Collaborating Agents |
 |------|--------------|---------------------|
+| **New Requirement Analysis** | @RequirementsAnalyzer | All relevant domain agents |
 | New Journal Entry Flow | @LedgerExpert | @SecurityWarden, @PerfEngineer, @UXSpecialist |
 | New Industry Adapter | @IntegrationBot | @LedgerExpert, @ComplianceAgent |
 | Add Encrypted Field | @SecurityWarden | @LedgerExpert, @PerfEngineer |
@@ -457,6 +491,7 @@ Quick reference for which agents work together on common tasks:
 | Performance Issue | @PerfEngineer | @SecurityWarden, @LedgerExpert |
 | Compliance Update | @ComplianceAgent | @LedgerExpert, @IntegrationBot |
 | Production Incident | @AuditAgent | @PerfEngineer, @SecurityWarden |
+| **Multi-domain Feature** | @RequirementsAnalyzer | Assigned per classification |
 
 **Detailed matrix:** See `sub-agents.md` → Sub-Agent Interaction Matrix
 
@@ -464,6 +499,7 @@ Quick reference for which agents work together on common tasks:
 
 ## Quick Navigation
 
+- **New requirement?** → Read [`requirements-analyzer.md`](requirements-analyzer.md)
 - **Foundation work?** → Read [`architect.md`](architect.md)
 - **Accounting logic?** → Read [`ledger-expert.md`](ledger-expert.md)
 - **Security/encryption?** → Read [`security-warden.md`](security-warden.md)
@@ -490,5 +526,5 @@ See **[MAINTENANCE.md](MAINTENANCE.md)** for detailed guidance, ownership rules,
 
 ---
 
-**Last Updated:** 2026-03-13  
+**Last Updated:** 2026-03-18  
 **Maintained By:** @DocAgent

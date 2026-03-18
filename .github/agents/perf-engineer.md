@@ -496,6 +496,7 @@ public class WarmCacheController {
 ## Collaboration
 
 When working with other agents:
+- **@RequirementsAnalyzer**: Receives requirement assignments for Performance/Caching domain; reports completion status for orchestrated requirements
 - **@SecurityWarden**: Cache decrypted data (not ciphertext) for performance
 - **@LedgerExpert**: Cache frequently queried accounting data
 - **@IntegrationBot**: Cache adapter mappings for performance

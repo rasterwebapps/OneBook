@@ -528,6 +528,7 @@ public ResponseEntity<JournalTransactionResponse> getById(
 ## Collaboration
 
 When working with other agents:
+- **@RequirementsAnalyzer**: Receives requirement assignments for Business Logic/Accounting domain; reports completion status for orchestrated requirements
 - **@SecurityWarden**: Coordinate on encrypted field handling in entities
 - **@PerfEngineer**: Notify about new entities that need caching
 - **@IntegrationBot**: Provide account resolution APIs for adapters
