@@ -111,6 +111,7 @@ class LedgerIntegrationTest {
         ));
         assertNotNull(tx1.getId());
         assertNotNull(tx1.getTransactionUuid());
+        assertTrue(tx1.isPosted(), "Transaction should be auto-posted on save");
 
         // Post transaction 2: Rent payment (Debit Expense, Credit Cash)
         JournalTransaction tx2 = journalService.createTransaction(new JournalTransactionRequest(
@@ -126,12 +127,7 @@ class LedgerIntegrationTest {
                 )
         ));
         assertNotNull(tx2.getId());
-
-        // Mark transactions as posted for trial balance
-        tx1.setPosted(true);
-        transactionRepository.save(tx1);
-        tx2.setPosted(true);
-        transactionRepository.save(tx2);
+        assertTrue(tx2.isPosted(), "Transaction should be auto-posted on save");
 
         // Verify trial balance
         TrialBalanceReport report = trialBalanceService.generateTrialBalance(TENANT);

@@ -75,12 +75,13 @@ public class JournalService {
     }
 
     /**
-     * Creates and persists a balanced journal transaction.
+     * Creates, validates, and immediately posts a balanced journal transaction
+     * (Tally/Nexus behavior: Save = Validate + Post).
      * The transaction description is encrypted (AES-256-GCM) and a blind
      * index (HMAC-SHA256) is generated for searchability.
      *
      * @param request the transaction request containing all debit/credit entries
-     * @return the persisted JournalTransaction
+     * @return the persisted JournalTransaction with {@code posted = true}
      * @throws UnbalancedTransactionException if debits and credits do not balance
      * @throws IllegalArgumentException       if entries are missing or invalid
      */
@@ -128,6 +129,10 @@ public class JournalService {
 
             transaction.addEntry(entry);
         }
+
+        // AUTO-POST: Save = Validate + Post (Tally/Nexus behavior).
+        // Validation has already passed above, so mark as posted immediately.
+        transaction.setPosted(true);
 
         JournalTransaction saved = transactionRepository.save(transaction);
 
