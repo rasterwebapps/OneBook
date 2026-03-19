@@ -105,8 +105,6 @@ A one-stop solution for any industry (Healthcare, Auto, Retail, Manufacturing, P
 #### REQ-011: Payment Register
 **Priority:** HIGH | **Owner:** @LedgerExpert | **Milestone:** M11 | **Status:** IN_PROGRESS
 
-Unified view of outstanding AP items grouped by vendor sorted by due date, enabling accountants to identify which payments are due and plan cash disbursements.
-
 **File:** [`REQ-011-payment-register.md`](../requirements/active/REQ-011-payment-register.md)
 
 ---
@@ -114,16 +112,12 @@ Unified view of outstanding AP items grouped by vendor sorted by due date, enabl
 #### REQ-012: Payment Batch Processing
 **Priority:** HIGH | **Owner:** @LedgerExpert | **Milestone:** M11 | **Status:** IN_PROGRESS
 
-Select AP items, calculate net payable (netting purchases against returns and credit notes), create batches with approval workflow, and post journal entries on approval.
-
 **File:** [`REQ-012-payment-batch-processing.md`](../requirements/active/REQ-012-payment-batch-processing.md)
 
 ---
 
 #### REQ-013: Payment File Generation
 **Priority:** HIGH | **Owner:** @LedgerExpert | **Milestone:** M11 | **Status:** IN_PROGRESS
-
-Generate CSV payment instruction files from approved batches for direct upload to bank portals for NEFT/RTGS bulk payment processing.
 
 **File:** [`REQ-013-payment-generation.md`](../requirements/active/REQ-013-payment-generation.md)
 

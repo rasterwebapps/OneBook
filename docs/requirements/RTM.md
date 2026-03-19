@@ -20,9 +20,9 @@
 | [REQ-008](active/REQ-008-tds-tcs-compliance.md) | TDS/TCS Compliance | BR-008 | FR-011, FR-012 | TR-005 | TdsTcsService.java<br>TdsTcsController.java<br>ComplianceService.java<br>V7__reporting_compliance_far.sql | — | US-008 | ✅ COMPLETED |
 | [REQ-009](active/REQ-009-bank-reconciliation.md) | Bank Reconciliation | BR-009 | FR-013 | TR-005 | BankReconciliationService.java<br>ReconciliationController.java<br>BankFeedTransactionRepository.java<br>V7__reporting_compliance_far.sql | — | US-009 | ✅ COMPLETED |
 | [REQ-010](active/REQ-010-maker-checker-workflow.md) | Maker-Checker-Approver Workflow | BR-010 | FR-014 | TR-007 | AuditorPortalService.java<br>AuditorPortalController.java<br>AuditWorkflowRepository.java<br>V9__hardening_audit_production.sql | — | US-010, US-019 | ✅ COMPLETED |
-| [REQ-011](active/REQ-011-payment-register.md) | Payment Register | BR-011 | FR-015 | TR-008 | PaymentRegisterEntry.java<br>PaymentRegisterService.java<br>PaymentRegisterController.java<br>V11__payment_processing.sql | — | US-021 | 🔄 IN_PROGRESS |
-| [REQ-012](active/REQ-012-payment-batch-processing.md) | Payment Batch Processing | BR-012 | FR-016 | TR-008 | PaymentBatch.java<br>PaymentBatchItem.java<br>PaymentBatchService.java<br>PaymentBatchController.java | — | US-022, US-023 | 🔄 IN_PROGRESS |
-| [REQ-013](active/REQ-013-payment-generation.md) | Payment File Generation | BR-013 | FR-017 | TR-008 | PaymentFileGeneratorService.java | — | US-024 | 🔄 IN_PROGRESS |
+| [REQ-011](active/REQ-011-payment-register.md) | Payment Register | BR-011 | FR-015 | TR-008 | PaymentRegisterEntry.java<br>PaymentRegisterStatus.java<br>PaymentRegisterRepository.java<br>V11__payment_processing.sql | — | US-021 | 🔄 IN_PROGRESS |
+| [REQ-012](active/REQ-012-payment-batch-processing.md) | Payment Batch Processing | BR-012 | FR-016 | TR-008 | PaymentBatch.java<br>PaymentBatchItem.java<br>PaymentBatchStatus.java<br>V11__payment_processing.sql | — | US-022, US-023 | 🔄 IN_PROGRESS |
+| [REQ-013](active/REQ-013-payment-generation.md) | Payment File Generation | BR-013 | FR-017 | TR-008 | PaymentFileGeneratorService.java<br>V11__payment_processing.sql | — | US-024 | 🔄 IN_PROGRESS |
 
 ---
 
@@ -230,8 +230,8 @@
 |----------|-------|-----------|----------|
 | Requirements | 13 | 10 | 77% |
 | Requirements with Tests | 13 | 0 | 0% |
-| Requirements with Code | 13 | 10 | 77% |
-| Requirements with DB Migration | 13 | 10 | 77% |
+| Requirements with Code | 13 | 13 | 100% |
+| Requirements with DB Migration | 13 | 12 | 92% |
 
 ---
 

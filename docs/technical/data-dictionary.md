@@ -7,7 +7,7 @@
 
 ---
 
-## Discovered Tables (18)
+## Discovered Tables (21)
 
 - [`tenant_config`](#tenant-config)
 - [`ledger_accounts`](#ledger-accounts)
@@ -27,6 +27,9 @@
 - [`reconciliation_sessions`](#reconciliation-sessions)
 - [`audit_workflows`](#audit-workflows)
 - [`audit_workflow_events`](#audit-workflow-events)
+- [`payment_register`](#payment-register)
+- [`payment_batches`](#payment-batches)
+- [`payment_batch_items`](#payment-batch-items)
 
 ---
 
@@ -879,6 +882,177 @@ CREATE TABLE audit_workflow_events (
     comment TEXT,
     created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
+```
+
+---
+
+## `payment_register`
+
+**Source:** REQ-011 — Payment Register | **Milestone:** M11
+
+| Column | Type | Nullable | Default | Encrypted |
+|--------|------|----------|---------|----------|
+| `id` | BIGSERIAL | Yes | — | No |
+| `tenant_id` | UUID | No | — | No |
+| `vendor_account_id` | BIGINT | No | — | No |
+| `invoice_number` | VARCHAR(100) | No | — | No |
+| `invoice_date` | DATE | No | — | No |
+| `due_date` | DATE | No | — | No |
+| `transaction_type` | VARCHAR(30) | No | — | No |
+| `currency` | VARCHAR(10) | No | 'INR' | No |
+| `status` | VARCHAR(40) | No | 'AVAILABLE_FOR_PROCESSING' | No |
+| `source_transaction_id` | BIGINT | Yes | — | No |
+| `created_at` | TIMESTAMP | No | NOW() | No |
+| `updated_at` | TIMESTAMP | No | NOW() | No |
+
+**SQL Definition:**
+```sql
+-- V11__payment_processing.sql
+CREATE TABLE payment_register (
+    id              BIGSERIAL PRIMARY KEY,
+    tenant_id       UUID          NOT NULL,
+    vendor_account_id BIGINT      NOT NULL,
+    invoice_number  VARCHAR(100)  NOT NULL,
+    invoice_date    DATE          NOT NULL,
+    due_date        DATE          NOT NULL,
+    transaction_type VARCHAR(30)  NOT NULL,  -- PURCHASE, PURCHASE_RETURN, CREDIT_NOTE
+    amount          NUMERIC(19,4) NOT NULL,
+    currency        VARCHAR(10)   NOT NULL DEFAULT 'INR',
+    status          VARCHAR(40)   NOT NULL DEFAULT 'AVAILABLE_FOR_PROCESSING',
+    source_transaction_id BIGINT,
+    created_at      TIMESTAMP     NOT NULL DEFAULT NOW(),
+    updated_at      TIMESTAMP     NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE payment_register ENABLE ROW LEVEL SECURITY;
+CREATE POLICY payment_register_tenant_isolation ON payment_register
+    USING (tenant_id = current_tenant_id());
+```
+
+---
+
+## `payment_batches`
+
+**Source:** REQ-012 — Payment Batch Processing | **Milestone:** M11
+
+| Column | Type | Nullable | Default | Encrypted |
+|--------|------|----------|---------|----------|
+| `id` | BIGSERIAL | Yes | — | No |
+| `tenant_id` | UUID | No | — | No |
+| `batch_number` | VARCHAR(20) | No | — | No |
+| `vendor_account_id` | BIGINT | No | — | No |
+| `bank_account_id` | BIGINT | No | — | No |
+| `status` | VARCHAR(30) | No | 'PENDING_APPROVAL' | No |
+| `net_payable` | NUMERIC(19,4) | No | — | No |
+| `currency` | VARCHAR(10) | No | 'INR' | No |
+| `notes` | TEXT | Yes | — | No |
+| `created_by` | VARCHAR(255) | No | — | No |
+| `approved_by` | VARCHAR(255) | Yes | — | No |
+| `rejection_reason` | TEXT | Yes | — | No |
+| `created_at` | TIMESTAMP | No | NOW() | No |
+| `updated_at` | TIMESTAMP | No | NOW() | No |
+
+**SQL Definition:**
+```sql
+-- V11__payment_processing.sql
+CREATE TABLE payment_batches (
+    id              BIGSERIAL PRIMARY KEY,
+    tenant_id       UUID          NOT NULL,
+    batch_number    VARCHAR(20)   NOT NULL,
+    vendor_account_id BIGINT      NOT NULL,
+    bank_account_id BIGINT        NOT NULL,
+    status          VARCHAR(30)   NOT NULL DEFAULT 'PENDING_APPROVAL',
+    net_payable     NUMERIC(19,4) NOT NULL,
+    currency        VARCHAR(10)   NOT NULL DEFAULT 'INR',
+    notes           TEXT,
+    created_by      VARCHAR(255)  NOT NULL,
+    approved_by     VARCHAR(255),
+    rejection_reason TEXT,
+    created_at      TIMESTAMP     NOT NULL DEFAULT NOW(),
+    updated_at      TIMESTAMP     NOT NULL DEFAULT NOW(),
+    CONSTRAINT uq_payment_batches_tenant_number UNIQUE (tenant_id, batch_number)
+);
+
+CREATE TABLE payment_batch_items (
+    id                       BIGSERIAL PRIMARY KEY,
+    tenant_id                UUID          NOT NULL,
+    batch_id                 BIGINT        NOT NULL REFERENCES payment_batches(id),
+    payment_register_entry_id BIGINT       NOT NULL REFERENCES payment_register(id),
+    transaction_type         VARCHAR(30)   NOT NULL,
+    amount                   NUMERIC(19,4) NOT NULL,
+    created_at               TIMESTAMP     NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE payment_batches ENABLE ROW LEVEL SECURITY;
+CREATE POLICY payment_batches_tenant_isolation ON payment_batches
+    USING (tenant_id = current_tenant_id());
+
+ALTER TABLE payment_batch_items ENABLE ROW LEVEL SECURITY;
+CREATE POLICY payment_batch_items_tenant_isolation ON payment_batch_items
+    USING (tenant_id = current_tenant_id());
+```
+
+---
+
+## `payment_batch_items`
+
+**Source:** REQ-012 — Payment Batch Processing | **Milestone:** M11
+
+| Column | Type | Nullable | Default | Encrypted |
+|--------|------|----------|---------|----------|
+| `id` | BIGSERIAL | Yes | — | No |
+| `tenant_id` | UUID | No | — | No |
+| `batch_number` | VARCHAR(20) | No | — | No |
+| `vendor_account_id` | BIGINT | No | — | No |
+| `bank_account_id` | BIGINT | No | — | No |
+| `status` | VARCHAR(30) | No | 'PENDING_APPROVAL' | No |
+| `net_payable` | NUMERIC(19,4) | No | — | No |
+| `currency` | VARCHAR(10) | No | 'INR' | No |
+| `notes` | TEXT | Yes | — | No |
+| `created_by` | VARCHAR(255) | No | — | No |
+| `approved_by` | VARCHAR(255) | Yes | — | No |
+| `rejection_reason` | TEXT | Yes | — | No |
+| `created_at` | TIMESTAMP | No | NOW() | No |
+| `updated_at` | TIMESTAMP | No | NOW() | No |
+
+**SQL Definition:**
+```sql
+-- V11__payment_processing.sql
+CREATE TABLE payment_batches (
+    id              BIGSERIAL PRIMARY KEY,
+    tenant_id       UUID          NOT NULL,
+    batch_number    VARCHAR(20)   NOT NULL,
+    vendor_account_id BIGINT      NOT NULL,
+    bank_account_id BIGINT        NOT NULL,
+    status          VARCHAR(30)   NOT NULL DEFAULT 'PENDING_APPROVAL',
+    net_payable     NUMERIC(19,4) NOT NULL,
+    currency        VARCHAR(10)   NOT NULL DEFAULT 'INR',
+    notes           TEXT,
+    created_by      VARCHAR(255)  NOT NULL,
+    approved_by     VARCHAR(255),
+    rejection_reason TEXT,
+    created_at      TIMESTAMP     NOT NULL DEFAULT NOW(),
+    updated_at      TIMESTAMP     NOT NULL DEFAULT NOW(),
+    CONSTRAINT uq_payment_batches_tenant_number UNIQUE (tenant_id, batch_number)
+);
+
+CREATE TABLE payment_batch_items (
+    id                       BIGSERIAL PRIMARY KEY,
+    tenant_id                UUID          NOT NULL,
+    batch_id                 BIGINT        NOT NULL REFERENCES payment_batches(id),
+    payment_register_entry_id BIGINT       NOT NULL REFERENCES payment_register(id),
+    transaction_type         VARCHAR(30)   NOT NULL,
+    amount                   NUMERIC(19,4) NOT NULL,
+    created_at               TIMESTAMP     NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE payment_batches ENABLE ROW LEVEL SECURITY;
+CREATE POLICY payment_batches_tenant_isolation ON payment_batches
+    USING (tenant_id = current_tenant_id());
+
+ALTER TABLE payment_batch_items ENABLE ROW LEVEL SECURITY;
+CREATE POLICY payment_batch_items_tenant_isolation ON payment_batch_items
+    USING (tenant_id = current_tenant_id());
 ```
 
 ---

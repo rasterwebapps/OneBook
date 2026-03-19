@@ -166,15 +166,7 @@
 
 ### Technical Specification
 
-### TR-008: Payment Processing Pipeline
-
-Payment register, batch processing, and file generation form a three-stage pipeline backed by two new tables (`payment_register`, `payment_batches`, `payment_batch_items`) with full RLS tenant isolation.
-
-### 3.1 Implementation Files
-
-- `PaymentRegisterEntry.java`, `PaymentRegisterStatus.java` — Register entity and status enum
-- `PaymentRegisterRepository.java`, `PaymentRegisterService.java`, `PaymentRegisterController.java` — Register layer
-- `V11__payment_processing.sql` — Schema migration
+### 3.1 Data Model
 
 **Full Requirement:** [REQ-011-payment-register.md](../requirements/active/REQ-011-payment-register.md)
 
@@ -186,12 +178,7 @@ Payment register, batch processing, and file generation form a three-stage pipel
 
 ### Technical Specification
 
-### 3.1 Implementation Files
-
-- `PaymentBatch.java`, `PaymentBatchItem.java`, `PaymentBatchStatus.java` — Batch entities and enum
-- `PaymentBatchRepository.java`, `PaymentBatchItemRepository.java` — Batch repositories
-- `CreateBatchRequest.java`, `PaymentBatchResponse.java`, `BatchApprovalRequest.java` — DTOs
-- `PaymentBatchService.java`, `PaymentBatchController.java` — Service and REST layer
+### 3.1 Data Model
 
 **Full Requirement:** [REQ-012-payment-batch-processing.md](../requirements/active/REQ-012-payment-batch-processing.md)
 
@@ -204,8 +191,6 @@ Payment register, batch processing, and file generation form a three-stage pipel
 ### Technical Specification
 
 ### 3.1 Implementation Files
-
-- `PaymentFileGeneratorService.java` — CSV generation, status transitions for batch and register entries
 
 **Full Requirement:** [REQ-013-payment-generation.md](../requirements/active/REQ-013-payment-generation.md)
 
@@ -225,9 +210,9 @@ Payment register, batch processing, and file generation form a three-stage pipel
 | REQ-008 | — |
 | REQ-009 | — |
 | REQ-010 | — |
-| REQ-011 | PaymentRegisterEntry.java, PaymentRegisterRepository.java, PaymentRegisterService.java, PaymentRegisterController.java, V11__payment_processing.sql |
-| REQ-012 | PaymentBatch.java, PaymentBatchItem.java, PaymentBatchService.java, PaymentBatchController.java |
-| REQ-013 | PaymentFileGeneratorService.java |
+| REQ-011 | — |
+| REQ-012 | — |
+| REQ-013 | — |
 
 ---
 
