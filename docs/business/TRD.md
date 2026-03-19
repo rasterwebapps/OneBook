@@ -18,6 +18,9 @@
 8. [REQ-008: TDS/TCS Compliance](#req-008)
 9. [REQ-009: Bank Reconciliation](#req-009)
 10. [REQ-010: Maker-Checker-Approver Workflow](#req-010)
+11. [REQ-011: Payment Register](#req-011)
+12. [REQ-012: Payment Batch Processing](#req-012)
+13. [REQ-013: Payment File Generation](#req-013)
 
 ---
 
@@ -157,6 +160,42 @@
 
 ---
 
+## REQ-011: Payment Register
+
+**Priority:** HIGH | **Owner:** @LedgerExpert | **Milestone:** M11 | **Linked TRD:** TR-008
+
+### Technical Specification
+
+### 3.1 Data Model
+
+**Full Requirement:** [REQ-011-payment-register.md](../requirements/active/REQ-011-payment-register.md)
+
+---
+
+## REQ-012: Payment Batch Processing
+
+**Priority:** HIGH | **Owner:** @LedgerExpert | **Milestone:** M11 | **Linked TRD:** TR-008
+
+### Technical Specification
+
+### 3.1 Data Model
+
+**Full Requirement:** [REQ-012-payment-batch-processing.md](../requirements/active/REQ-012-payment-batch-processing.md)
+
+---
+
+## REQ-013: Payment File Generation
+
+**Priority:** HIGH | **Owner:** @LedgerExpert | **Milestone:** M11 | **Linked TRD:** TR-008
+
+### Technical Specification
+
+### 3.1 Implementation Files
+
+**Full Requirement:** [REQ-013-payment-generation.md](../requirements/active/REQ-013-payment-generation.md)
+
+---
+
 ## Implementation Files Summary
 
 | Req ID | Key Implementation Files |
@@ -171,6 +210,9 @@
 | REQ-008 | — |
 | REQ-009 | — |
 | REQ-010 | — |
+| REQ-011 | — |
+| REQ-012 | — |
+| REQ-013 | — |
 
 ---
 

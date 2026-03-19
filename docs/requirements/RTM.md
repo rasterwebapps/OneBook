@@ -20,6 +20,9 @@
 | [REQ-008](active/REQ-008-tds-tcs-compliance.md) | TDS/TCS Compliance | BR-008 | FR-011, FR-012 | TR-005 | TdsTcsService.java<br>TdsTcsController.java<br>ComplianceService.java<br>V7__reporting_compliance_far.sql | — | US-008 | ✅ COMPLETED |
 | [REQ-009](active/REQ-009-bank-reconciliation.md) | Bank Reconciliation | BR-009 | FR-013 | TR-005 | BankReconciliationService.java<br>ReconciliationController.java<br>BankFeedTransactionRepository.java<br>V7__reporting_compliance_far.sql | — | US-009 | ✅ COMPLETED |
 | [REQ-010](active/REQ-010-maker-checker-workflow.md) | Maker-Checker-Approver Workflow | BR-010 | FR-014 | TR-007 | AuditorPortalService.java<br>AuditorPortalController.java<br>AuditWorkflowRepository.java<br>V9__hardening_audit_production.sql | — | US-010, US-019 | ✅ COMPLETED |
+| [REQ-011](active/REQ-011-payment-register.md) | Payment Register | BR-011 | FR-015 | TR-008 | PaymentRegisterEntry.java<br>PaymentRegisterStatus.java<br>PaymentRegisterRepository.java<br>V11__payment_processing.sql | — | US-021 | 🔄 IN_PROGRESS |
+| [REQ-012](active/REQ-012-payment-batch-processing.md) | Payment Batch Processing | BR-012 | FR-016 | TR-008 | PaymentBatch.java<br>PaymentBatchItem.java<br>PaymentBatchStatus.java<br>V11__payment_processing.sql | — | US-022, US-023 | 🔄 IN_PROGRESS |
+| [REQ-013](active/REQ-013-payment-generation.md) | Payment File Generation | BR-013 | FR-017 | TR-008 | PaymentFileGeneratorService.java<br>V11__payment_processing.sql | — | US-024 | 🔄 IN_PROGRESS |
 
 ---
 
@@ -174,16 +177,61 @@
 | Migrations | V9__hardening_audit_production.sql |
 | User Stories | US-010, US-019 |
 
+### REQ-011: Payment Register
+
+| Artifact | Details |
+|---------|--------|
+| Status | 🔄 IN_PROGRESS |
+| Priority | HIGH |
+| Owner | @LedgerExpert |
+| Milestone | M11 |
+| BRD | BR-011 |
+| FRD | FR-015 |
+| TRD | TR-008 |
+| Java Files | PaymentRegisterEntry.java, PaymentRegisterStatus.java, PaymentRegisterRepository.java, PaymentRegisterService.java, PaymentRegisterController.java |
+| Migrations | V11__payment_processing.sql |
+| User Stories | US-021 |
+
+### REQ-012: Payment Batch Processing
+
+| Artifact | Details |
+|---------|--------|
+| Status | 🔄 IN_PROGRESS |
+| Priority | HIGH |
+| Owner | @LedgerExpert |
+| Milestone | M11 |
+| BRD | BR-012 |
+| FRD | FR-016 |
+| TRD | TR-008 |
+| Java Files | PaymentBatch.java, PaymentBatchItem.java, PaymentBatchStatus.java, PaymentBatchRepository.java, PaymentBatchItemRepository.java, CreateBatchRequest.java, PaymentBatchResponse.java, BatchApprovalRequest.java, PaymentBatchService.java, PaymentBatchController.java |
+| Migrations | V11__payment_processing.sql |
+| User Stories | US-022, US-023 |
+
+### REQ-013: Payment File Generation
+
+| Artifact | Details |
+|---------|--------|
+| Status | 🔄 IN_PROGRESS |
+| Priority | HIGH |
+| Owner | @LedgerExpert |
+| Milestone | M11 |
+| BRD | BR-013 |
+| FRD | FR-017 |
+| TRD | TR-008 |
+| Java Files | PaymentFileGeneratorService.java |
+| Migrations | V11__payment_processing.sql |
+| User Stories | US-024 |
+
 ---
 
 ## Coverage Summary
 
 | Category | Total | Completed | Coverage |
 |----------|-------|-----------|----------|
-| Requirements | 10 | 10 | 100% |
-| Requirements with Tests | 10 | 0 | 0% |
-| Requirements with Code | 10 | 10 | 100% |
-| Requirements with DB Migration | 10 | 9 | 90% |
+| Requirements | 13 | 10 | 77% |
+| Requirements with Tests | 13 | 0 | 0% |
+| Requirements with Code | 13 | 13 | 100% |
+| Requirements with DB Migration | 13 | 12 | 92% |
 
 ---
 
