@@ -1,0 +1,21 @@
+{
+  "name": "onebook-doc-automation",
+  "version": "1.0.0",
+  "description": "OneBook documentation automation scripts",
+  "scripts": {
+    "generate-brd": "node generate-brd.js",
+    "generate-frd": "node generate-frd.js",
+    "generate-trd": "node generate-trd.js",
+    "generate-rtm": "node generate-rtm.js",
+    "update-index": "node update-requirements-index.js",
+    "validate": "node validate-requirements.js",
+    "generate-data-dict": "node generate-data-dictionary.js",
+    "generate-all": "npm run generate-brd && npm run generate-frd && npm run generate-trd && npm run generate-rtm && npm run update-index && npm run validate"
+  },
+  "dependencies": {
+    "glob": "^10.3.10"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
