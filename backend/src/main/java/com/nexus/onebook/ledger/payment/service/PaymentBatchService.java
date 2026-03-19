@@ -149,6 +149,7 @@ public class PaymentBatchService {
         batch.setApprovedAt(Instant.now());
 
         if (batch.getBankAccountId() != null && batch.getVendorAccountId() != null) {
+            // Double-entry: Dr Vendor AP (reduces liability owed to vendor) / Cr Bank (reduces cash balance)
             List<JournalEntryRequest> journalEntries = List.of(
                 new JournalEntryRequest(batch.getVendorAccountId(), "DEBIT", batch.getNetPayable(),
                     "Payment batch " + batch.getBatchNumber(), null),

@@ -80,7 +80,7 @@ class PaymentBatchControllerTest {
 
         mockMvc.perform(post("/api/payment-batches/1/approve")
                 .param("tenantId", "tenant-1")
-                .param("approvedBy", "approver1")
+                .param("actorId", "approver1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
             .andExpect(status().isOk())
@@ -97,7 +97,7 @@ class PaymentBatchControllerTest {
 
         mockMvc.perform(post("/api/payment-batches/1/approve")
                 .param("tenantId", "tenant-1")
-                .param("rejectedBy", "approver1")
+                .param("actorId", "approver1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
             .andExpect(status().isOk())

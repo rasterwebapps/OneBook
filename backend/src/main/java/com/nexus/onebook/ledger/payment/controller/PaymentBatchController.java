@@ -53,16 +53,13 @@ public class PaymentBatchController {
     public ResponseEntity<PaymentBatchResponse> approveBatch(
             @PathVariable Long batchId,
             @RequestParam String tenantId,
-            @RequestParam(required = false) String approvedBy,
-            @RequestParam(required = false) String rejectedBy,
+            @RequestParam String actorId,
             @Valid @RequestBody BatchApprovalRequest request) {
         PaymentBatchResponse response;
         if ("APPROVE".equalsIgnoreCase(request.action())) {
-            String approver = approvedBy != null ? approvedBy : "unknown";
-            response = batchService.approveBatch(tenantId, batchId, approver);
+            response = batchService.approveBatch(tenantId, batchId, actorId);
         } else if ("REJECT".equalsIgnoreCase(request.action())) {
-            String rejecter = rejectedBy != null ? rejectedBy : "unknown";
-            response = batchService.rejectBatch(tenantId, batchId, rejecter, request.rejectionReason());
+            response = batchService.rejectBatch(tenantId, batchId, actorId, request.rejectionReason());
         } else {
             throw new IllegalArgumentException("Invalid action: " + request.action());
         }
