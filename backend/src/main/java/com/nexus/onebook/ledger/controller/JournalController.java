@@ -53,6 +53,12 @@ public class JournalController {
         return ResponseEntity.ok(updated);
     }
 
+    @PostMapping("/transactions/{uuid}/post")
+    public ResponseEntity<JournalTransaction> postTransaction(@PathVariable UUID uuid) {
+        JournalTransaction posted = journalService.postTransaction(uuid);
+        return ResponseEntity.ok(posted);
+    }
+
     @DeleteMapping("/transactions/{uuid}")
     public ResponseEntity<Void> deleteTransaction(@PathVariable UUID uuid) {
         journalService.deleteTransaction(uuid);

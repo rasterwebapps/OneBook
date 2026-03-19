@@ -1,6 +1,6 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap, map, catchError, of } from 'rxjs';
+import { Observable, tap, map, catchError, of, throwError } from 'rxjs';
 import {
   LedgerAccount,
   JournalTransactionRequest,
@@ -172,6 +172,26 @@ export class VoucherService {
     this.vouchers.update(list => list.filter(v => v.uuid !== uuid));
     return this.http.delete<void>(`/api/journal/transactions/${uuid}`).pipe(
       catchError(() => of(undefined)),
+    );
+  }
+
+  /* ── Post a transaction (marks as posted) ── */
+  postTransaction(transactionUuid: string): Observable<void> {
+    const voucher = this.vouchers().find(v => v.uuid === transactionUuid);
+    if (!voucher) {
+      return throwError(() => new Error('Voucher not found'));
+    }
+
+    return this.http.post<void>(
+      `/api/journal/transactions/${transactionUuid}/post`,
+      null,
+      { params: { tenantId: TENANT_ID } }
+    ).pipe(
+      tap(() => {
+        this.vouchers.update(list =>
+          list.map(v => v.uuid === transactionUuid ? { ...v, posted: true } : v)
+        );
+      }),
     );
   }
 

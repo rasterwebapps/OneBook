@@ -165,6 +165,19 @@ export class VoucherEntryComponent implements OnInit, OnDestroy {
     if (this.selectedUuid() === uuid) this.selectedUuid.set('');
   }
 
+  postVoucher(uuid: string): void {
+    this.svc.postTransaction(uuid).subscribe({
+      next: () => {
+        this.svc.loadVouchers(this.voucherCategory());
+      },
+      error: (err) => {
+        console.error('Failed to post transaction:', err);
+        const detail = err?.error?.message || err?.message || 'Please ensure it is balanced.';
+        alert(`Failed to post transaction. ${detail}`);
+      },
+    });
+  }
+
   save(): void {
     const err = this.validate();
     if (err) { this.formError.set(err); return; }

@@ -187,6 +187,57 @@ public class JournalService {
     }
 
     /**
+     * Posts a journal transaction by UUID, marking it as posted.
+     * The transaction must be balanced (debits == credits).
+     * This operation is idempotent — posting an already-posted transaction returns it unchanged.
+     *
+     * @param uuid the unique identifier of the transaction to post
+     * @return the updated JournalTransaction with posted=true
+     * @throws IllegalArgumentException       if the transaction is not found
+     * @throws UnbalancedTransactionException if the transaction entries do not balance
+     */
+    @Transactional
+    public JournalTransaction postTransaction(UUID uuid) {
+        JournalTransaction existing = transactionRepository.findByTransactionUuid(uuid)
+                .orElseThrow(() -> new IllegalArgumentException("Transaction not found: " + uuid));
+
+        if (existing.isPosted()) {
+            return existing;
+        }
+
+        List<JournalEntry> entries = existing.getEntries();
+        if (entries == null || entries.size() < 2) {
+            throw new UnbalancedTransactionException(
+                    "A transaction requires at least two entries (one debit and one credit)");
+        }
+
+        BigDecimal totalDebits = BigDecimal.ZERO;
+        BigDecimal totalCredits = BigDecimal.ZERO;
+        for (JournalEntry entry : entries) {
+            if (entry.getEntryType() == EntryType.DEBIT) {
+                totalDebits = totalDebits.add(entry.getAmount());
+            } else {
+                totalCredits = totalCredits.add(entry.getAmount());
+            }
+        }
+
+        if (totalDebits.compareTo(totalCredits) != 0) {
+            throw new UnbalancedTransactionException(
+                    String.format("Transaction is unbalanced: total debits=%s, total credits=%s",
+                            totalDebits.toPlainString(), totalCredits.toPlainString()));
+        }
+
+        existing.setPosted(true);
+        JournalTransaction saved = transactionRepository.save(existing);
+
+        auditLogService.logInsert(existing.getTenantId(), "journal_transactions", saved.getId(),
+                "{\"action\":\"POST\",\"transactionUuid\":\"" + uuid + "\"}");
+        warmCacheService.evictTrialBalance(existing.getTenantId());
+
+        return saved;
+    }
+
+    /**
      * Deletes a journal transaction by UUID.
      */
     @Transactional
