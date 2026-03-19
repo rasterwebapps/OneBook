@@ -15,6 +15,12 @@ You are responsible for the core accounting engine — the double-entry ledger s
   - `LedgerAccount`, `JournalEntry`, `JournalLine`, `JournalTransaction`
   - `VoucherType`, `CostCenter`, `LedgerGroup`, `Branch`, `Enterprise`
   - `FixedAsset`, `DepreciationSchedule`
+- `backend/src/main/java/com/nexus/onebook/ledger/payment/` - Payment processing pipeline
+  - `model/`: `PaymentRegisterEntry`, `PaymentBatch`, `PaymentBatchItem`, `PaymentRegisterStatus`, `PaymentBatchStatus`
+  - `repository/`: `PaymentRegisterRepository`, `PaymentBatchRepository`, `PaymentBatchItemRepository`
+  - `dto/`: `PaymentRegisterEntryResponse`, `VendorGroupResponse`, `CreateBatchRequest`, `BatchApprovalRequest`, `PaymentBatchResponse`
+  - `service/`: `PaymentRegisterService`, `PaymentBatchService`, `PaymentFileGeneratorService`
+  - `controller/`: `PaymentRegisterController`, `PaymentBatchController`
 - `backend/src/main/java/com/nexus/onebook/ledger/repository/` - All JPA repositories
 - `backend/src/main/java/com/nexus/onebook/ledger/service/` - Core business services
   - `JournalService`, `LedgerAccountService`, `TrialBalanceService`
@@ -43,10 +49,14 @@ You are responsible for the core accounting engine — the double-entry ledger s
 - `backend/src/main/resources/db/migration/V4__seed_data.sql`
 - `backend/src/main/resources/db/migration/V7__reporting_compliance_far.sql`
 - `backend/src/main/resources/db/migration/V10__tally_features.sql` - Extended voucher types, credit management, multi-currency, inventory/stock tables
+- `backend/src/main/resources/db/migration/V11__payment_processing.sql` - Payment register, payment batches, payment batch items tables with RLS
 
 #### Documentation
 - `docs/sql-schema.md` - Complete database schema documentation
 - `docs/api-documentation.md` - REST API reference
+- `docs/requirements/active/REQ-011-payment-register.md` - Payment Register requirement
+- `docs/requirements/active/REQ-012-payment-batch-processing.md` - Payment Batch Processing requirement
+- `docs/requirements/active/REQ-013-payment-generation.md` - Payment File Generation requirement
 
 #### Frontend (Data Contracts)
 - `frontend/src/app/accounting/` - Ledger and voucher components
@@ -79,6 +89,15 @@ You are responsible for the core accounting engine — the double-entry ledger s
 - P&L: Income - Expenses = Net Profit/Loss
 - Balance Sheet: Assets = Liabilities + Equity
 - Cash Flow: Operating + Investing + Financing = Net Cash Movement
+
+### Payment Processing Pipeline
+The payment pipeline is a three-stage pre-ledger workflow for Accounts Payable:
+
+1. **Payment Register** (REQ-011): PURCHASE, PURCHASE_RETURN, and CREDIT_NOTE transactions auto-create register entries with status `AVAILABLE_FOR_PROCESSING`. Accountants view entries grouped by vendor sorted by due date.
+2. **Batch Processing** (REQ-012): Accountants select one or more register entries for a single vendor and create a payment batch. Net payable = Σ(PURCHASE) − Σ(PURCHASE_RETURN) − Σ(CREDIT_NOTE). Batches follow `PENDING_APPROVAL → APPROVED / REJECTED` workflow. On approval, a PAYMENT journal entry is posted (Dr Accounts Payable, Cr Bank Account). On rejection, entries return to `AVAILABLE_FOR_PROCESSING`.
+3. **File Generation** (REQ-013): Finance Manager generates a CSV payment instruction file from an `APPROVED` batch. The file contains vendor bank details and amounts for direct upload to the bank portal (NEFT/RTGS). Batch and entries move to `PAYMENT_GENERATED` status.
+
+Status flow: `AVAILABLE_FOR_PROCESSING → IN_BATCH → APPROVED → PAYMENT_GENERATED → PAID`
 
 ### Fixed Asset Register
 - Track asset lifecycle: Acquisition → Depreciation → Impairment → Disposal
