@@ -15,6 +15,12 @@ You are responsible for the core accounting engine — the double-entry ledger s
   - `LedgerAccount`, `JournalEntry`, `JournalLine`, `JournalTransaction`
   - `VoucherType`, `CostCenter`, `LedgerGroup`, `Branch`, `Enterprise`
   - `FixedAsset`, `DepreciationSchedule`
+- `backend/src/main/java/com/nexus/onebook/ledger/payment/` - Payment processing pipeline
+  - `model/`: `PaymentRegisterEntry`, `PaymentBatch`, `PaymentBatchItem`, `PaymentRegisterStatus`, `PaymentBatchStatus`
+  - `repository/`: `PaymentRegisterRepository`, `PaymentBatchRepository`, `PaymentBatchItemRepository`
+  - `dto/`: `PaymentRegisterEntryResponse`, `VendorGroupResponse`, `CreateBatchRequest`, `BatchApprovalRequest`, `PaymentBatchResponse`
+  - `service/`: `PaymentRegisterService`, `PaymentBatchService`, `PaymentFileGeneratorService`
+  - `controller/`: `PaymentRegisterController`, `PaymentBatchController`
 - `backend/src/main/java/com/nexus/onebook/ledger/repository/` - All JPA repositories
 - `backend/src/main/java/com/nexus/onebook/ledger/service/` - Core business services
   - `JournalService`, `LedgerAccountService`, `TrialBalanceService`
@@ -43,6 +49,7 @@ You are responsible for the core accounting engine — the double-entry ledger s
 - `backend/src/main/resources/db/migration/V4__seed_data.sql`
 - `backend/src/main/resources/db/migration/V7__reporting_compliance_far.sql`
 - `backend/src/main/resources/db/migration/V10__tally_features.sql` - Extended voucher types, credit management, multi-currency, inventory/stock tables
+- `backend/src/main/resources/db/migration/V11__payment_processing.sql` - Payment register, payment batches, payment batch items tables with RLS
 
 #### Documentation
 - `docs/sql-schema.md` - Complete database schema documentation
