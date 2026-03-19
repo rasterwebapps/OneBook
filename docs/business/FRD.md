@@ -18,6 +18,9 @@
 8. [REQ-008: TDS/TCS Compliance](#req-008-tds-tcs-compliance)
 9. [REQ-009: Bank Reconciliation](#req-009-bank-reconciliation)
 10. [REQ-010: Maker-Checker-Approver Workflow](#req-010-maker-checker-approver-workflow)
+11. [REQ-011: Payment Register](#req-011-payment-register)
+12. [REQ-012: Payment Batch Processing](#req-012-payment-batch-processing)
+13. [REQ-013: Payment File Generation](#req-013-payment-file-generation)
 
 ---
 
@@ -141,6 +144,42 @@
 
 ---
 
+## REQ-011: Payment Register {#req-011-payment-register}
+
+**Priority:** HIGH | **Owner:** @LedgerExpert | **Milestone:** M11 | **Status:** IN_PROGRESS
+
+### Functional Specification
+
+*See [REQ-011-payment-register.md](../requirements/active/REQ-011-payment-register.md) for full specification.*
+
+**Full Requirement:** [REQ-011-payment-register.md](../requirements/active/REQ-011-payment-register.md)
+
+---
+
+## REQ-012: Payment Batch Processing {#req-012-payment-batch-processing}
+
+**Priority:** HIGH | **Owner:** @LedgerExpert | **Milestone:** M11 | **Status:** IN_PROGRESS
+
+### Functional Specification
+
+*See [REQ-012-payment-batch-processing.md](../requirements/active/REQ-012-payment-batch-processing.md) for full specification.*
+
+**Full Requirement:** [REQ-012-payment-batch-processing.md](../requirements/active/REQ-012-payment-batch-processing.md)
+
+---
+
+## REQ-013: Payment File Generation {#req-013-payment-file-generation}
+
+**Priority:** HIGH | **Owner:** @LedgerExpert | **Milestone:** M11 | **Status:** IN_PROGRESS
+
+### Functional Specification
+
+*See [REQ-013-payment-generation.md](../requirements/active/REQ-013-payment-generation.md) for full specification.*
+
+**Full Requirement:** [REQ-013-payment-generation.md](../requirements/active/REQ-013-payment-generation.md)
+
+---
+
 ## Implementation Status Summary
 
 | Req ID | Title | Priority | Milestone | Status |
@@ -155,6 +194,9 @@
 | [REQ-008](../requirements/active/REQ-008-tds-tcs-compliance.md) | TDS/TCS Compliance | HIGH | M7 | COMPLETED |
 | [REQ-009](../requirements/active/REQ-009-bank-reconciliation.md) | Bank Reconciliation | HIGH | M7 | COMPLETED |
 | [REQ-010](../requirements/active/REQ-010-maker-checker-workflow.md) | Maker-Checker-Approver Workflow | HIGH | M10 | COMPLETED |
+| [REQ-011](../requirements/active/REQ-011-payment-register.md) | Payment Register | HIGH | M11 | IN_PROGRESS |
+| [REQ-012](../requirements/active/REQ-012-payment-batch-processing.md) | Payment Batch Processing | HIGH | M11 | IN_PROGRESS |
+| [REQ-013](../requirements/active/REQ-013-payment-generation.md) | Payment File Generation | HIGH | M11 | IN_PROGRESS |
 
 ---
 

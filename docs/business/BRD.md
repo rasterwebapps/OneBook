@@ -102,12 +102,40 @@ A one-stop solution for any industry (Healthcare, Auto, Retail, Manufacturing, P
 
 ---
 
+#### REQ-011: Payment Register
+**Priority:** HIGH | **Owner:** @LedgerExpert | **Milestone:** M11 | **Status:** IN_PROGRESS
+
+Unified view of outstanding AP items grouped by vendor sorted by due date, enabling accountants to identify which payments are due and plan cash disbursements.
+
+**File:** [`REQ-011-payment-register.md`](../requirements/active/REQ-011-payment-register.md)
+
+---
+
+#### REQ-012: Payment Batch Processing
+**Priority:** HIGH | **Owner:** @LedgerExpert | **Milestone:** M11 | **Status:** IN_PROGRESS
+
+Select AP items, calculate net payable (netting purchases against returns and credit notes), create batches with approval workflow, and post journal entries on approval.
+
+**File:** [`REQ-012-payment-batch-processing.md`](../requirements/active/REQ-012-payment-batch-processing.md)
+
+---
+
+#### REQ-013: Payment File Generation
+**Priority:** HIGH | **Owner:** @LedgerExpert | **Milestone:** M11 | **Status:** IN_PROGRESS
+
+Generate CSV payment instruction files from approved batches for direct upload to bank portals for NEFT/RTGS bulk payment processing.
+
+**File:** [`REQ-013-payment-generation.md`](../requirements/active/REQ-013-payment-generation.md)
+
+---
+
 ## 3. Status Summary
 
 | Status | Count |
 |--------|-------|
 | COMPLETED | 10 |
-| **Total** | **10** |
+| IN_PROGRESS | 3 |
+| **Total** | **13** |
 
 ---
 
@@ -125,6 +153,9 @@ A one-stop solution for any industry (Healthcare, Auto, Retail, Manufacturing, P
 | [REQ-008](../requirements/active/REQ-008-tds-tcs-compliance.md) | TDS/TCS Compliance | COMPLETED | HIGH | @ComplianceAgent | M7 |
 | [REQ-009](../requirements/active/REQ-009-bank-reconciliation.md) | Bank Reconciliation | COMPLETED | HIGH | @LedgerExpert | M7 |
 | [REQ-010](../requirements/active/REQ-010-maker-checker-workflow.md) | Maker-Checker-Approver Workflow | COMPLETED | HIGH | @AuditAgent | M10 |
+| [REQ-011](../requirements/active/REQ-011-payment-register.md) | Payment Register | IN_PROGRESS | HIGH | @LedgerExpert | M11 |
+| [REQ-012](../requirements/active/REQ-012-payment-batch-processing.md) | Payment Batch Processing | IN_PROGRESS | HIGH | @LedgerExpert | M11 |
+| [REQ-013](../requirements/active/REQ-013-payment-generation.md) | Payment File Generation | IN_PROGRESS | HIGH | @LedgerExpert | M11 |
 
 ---
 

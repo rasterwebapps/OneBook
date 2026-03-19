@@ -679,5 +679,97 @@ Feature: Data Export
 | US-018 | Intercompany Consolidation | HIGH | M7 | ✅ Implemented |
 | US-019 | Auditor Portal Access | HIGH | M10 | ✅ Implemented |
 | US-020 | Export Financial Data | MEDIUM | M9 | ✅ Implemented |
+| US-021 | View Payment Register | HIGH | M11 | 🔄 Defined / In Progress |
+| US-022 | Create Payment Batch | HIGH | M11 | 🔄 Defined / In Progress |
+| US-023 | Approve/Reject Payment Batch | HIGH | M11 | 🔄 Defined / In Progress |
+| US-024 | Generate Payment File | HIGH | M11 | 🔄 Defined / In Progress |
 
-**Total: 20 user stories | All ✅ Implemented**
+**Total: 24 user stories | 20 ✅ Implemented | 4 🔄 Defined / In Progress**
+
+---
+
+## Payment Pipeline
+
+### US-021: View Payment Register
+**Priority:** HIGH | **Milestone:** M11 | **Owner:** @LedgerExpert
+
+> **As an** accountant,  
+> **I want** to view all outstanding payables grouped by vendor sorted by due date,  
+> **So that** I can identify which payments are due and plan disbursements accordingly.
+
+**Acceptance Criteria:**
+```gherkin
+Feature: View Payment Register
+
+  Scenario: View payment register
+    Given I am an accountant logged in
+    When I navigate to the payment register
+    Then I see all outstanding AP items grouped by vendor
+    And items within each vendor group are sorted by due date ascending
+    And each vendor group shows net outstanding amount
+```
+
+---
+
+### US-022: Create Payment Batch
+**Priority:** HIGH | **Milestone:** M11 | **Owner:** @LedgerExpert
+
+> **As an** accountant,  
+> **I want** to select payment register items for a vendor and create a payment batch with the calculated net payable amount,  
+> **So that** I can process vendor payments efficiently.
+
+**Acceptance Criteria:**
+```gherkin
+Feature: Create Payment Batch
+
+  Scenario: Create batch with mixed transaction types
+    Given vendor ABC has PURCHASE, PURCHASE_RETURN, and CREDIT_NOTE entries
+    When I select all three and create a batch
+    Then a batch is created with netPayable = PURCHASE - PURCHASE_RETURN - CREDIT_NOTE
+    And all selected entries move to IN_BATCH status
+```
+
+---
+
+### US-023: Approve/Reject Payment Batch
+**Priority:** HIGH | **Milestone:** M11 | **Owner:** @LedgerExpert
+
+> **As a** finance manager,  
+> **I want** to approve or reject payment batches,  
+> **So that** payments require independent authorization before disbursement.
+
+**Acceptance Criteria:**
+```gherkin
+Feature: Approve/Reject Payment Batch
+
+  Scenario: Approve batch
+    Given a batch in PENDING_APPROVAL
+    When I approve the batch
+    Then a PAYMENT journal entry is posted (Dr: Accounts Payable, Cr: Bank Account)
+    And entries move to APPROVED status
+
+  Scenario: Reject batch
+    Given a batch in PENDING_APPROVAL
+    When I reject the batch with a reason
+    Then entries are released back to AVAILABLE_FOR_PROCESSING
+```
+
+---
+
+### US-024: Generate Payment File
+**Priority:** HIGH | **Milestone:** M11 | **Owner:** @LedgerExpert
+
+> **As a** finance manager,  
+> **I want** to generate a CSV payment instruction file from approved batches,  
+> **So that** I can upload it to the bank portal for NEFT/RTGS processing.
+
+**Acceptance Criteria:**
+```gherkin
+Feature: Generate Payment File
+
+  Scenario: Generate payment file
+    Given an approved payment batch
+    When I click "Generate Payment File"
+    Then a CSV file is downloaded with vendor bank details and amounts
+    And the batch status moves to PAYMENT_GENERATED
+```
