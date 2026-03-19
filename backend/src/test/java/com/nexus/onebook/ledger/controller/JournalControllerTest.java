@@ -139,4 +139,41 @@ class JournalControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").exists());
     }
+
+    @Test
+    void postTransaction_unposted_returns200() throws Exception {
+        UUID uuid = UUID.randomUUID();
+        JournalTransaction transaction = new JournalTransaction(
+                "tenant-1", LocalDate.of(2026, 3, 9), "Test");
+        transaction.setTransactionUuid(uuid);
+        transaction.setPosted(true);
+
+        when(journalService.postTransaction(uuid)).thenReturn(transaction);
+
+        mockMvc.perform(post("/api/journal/transactions/{uuid}/post", uuid))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.posted").value(true));
+    }
+
+    @Test
+    void postTransaction_notFound_returns400() throws Exception {
+        UUID uuid = UUID.randomUUID();
+        when(journalService.postTransaction(uuid))
+                .thenThrow(new IllegalArgumentException("Transaction not found: " + uuid));
+
+        mockMvc.perform(post("/api/journal/transactions/{uuid}/post", uuid))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").exists());
+    }
+
+    @Test
+    void postTransaction_unbalanced_returns400() throws Exception {
+        UUID uuid = UUID.randomUUID();
+        when(journalService.postTransaction(uuid))
+                .thenThrow(new UnbalancedTransactionException("Transaction is unbalanced"));
+
+        mockMvc.perform(post("/api/journal/transactions/{uuid}/post", uuid))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Transaction is unbalanced"));
+    }
 }

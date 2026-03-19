@@ -50,6 +50,11 @@
                 <td class="col-amount nx-number">{{ v.amount | number:'1.2-2' }}</td>
                 <td class="col-narration">{{ v.narration }}</td>
                 <td class="col-actions">
+                  @if (!v.posted) {
+                    <button class="btn-icon btn-post" title="Post Transaction" (click)="postVoucher(v.uuid); $event.stopPropagation()">📌</button>
+                  } @else {
+                    <span class="badge-posted" title="Posted">✓</span>
+                  }
                   <button class="btn-icon" title="Edit" (click)="startEdit(v); $event.stopPropagation()">✏️</button>
                   <button class="btn-icon" title="Delete" (click)="deleteVoucher(v.uuid); $event.stopPropagation()">🗑️</button>
                 </td>

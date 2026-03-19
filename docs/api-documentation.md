@@ -148,17 +148,18 @@ GET /api/ledger/trial-balance?tenantId={tenantId}
 **Controller**: `JournalController`
 **Base Path**: `/api/journal`
 
-### Post Journal Entry
+### Create Journal Transaction
 
 ```http
-POST /api/journal/post?tenantId={tenantId}
+POST /api/journal/transactions
 ```
 
-Creates and posts a balanced double-entry journal transaction.
+Creates a balanced double-entry journal transaction (unposted by default).
 
 **Request Body**:
 ```json
 {
+  "tenantId": "default-tenant",
   "transactionDate": "2026-03-11",
   "description": "Office supplies purchase",
   "entries": [
@@ -168,8 +169,22 @@ Creates and posts a balanced double-entry journal transaction.
 }
 ```
 
-**Response**: `200 OK` — Posted transaction with UUID
+**Response**: `201 Created` — Created transaction with UUID and `posted: false`
 **Error**: `400 Bad Request` — Unbalanced or invalid entries
+
+### Post a Transaction
+
+```http
+POST /api/journal/transactions/{uuid}/post
+```
+
+Marks an existing transaction as posted, making it visible in the trial balance and other reports.
+The transaction must be balanced (debits == credits). This operation is idempotent.
+
+**Path Parameter**: `uuid` — the transaction UUID
+
+**Response**: `200 OK` — Updated transaction with `posted: true`
+**Error**: `400 Bad Request` — Transaction not found or unbalanced
 
 ### List Transactions
 

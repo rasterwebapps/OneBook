@@ -263,8 +263,8 @@ export class ReportsComponent {
   private readonly params = toSignal(this.route.paramMap.pipe(map(p => p.get('type') ?? 'unknown')));
   readonly reportType = computed(() => this.params() ?? 'unknown');
 
-  readonly fromDate = signal('');
-  readonly toDate = signal('');
+  readonly fromDate = signal(this.getFirstDayOfMonth());
+  readonly toDate = signal(this.getLastDayOfMonth());
 
   readonly reportLabel = computed(() => {
     const labels: Record<string, string> = {
@@ -301,9 +301,9 @@ export class ReportsComponent {
   }
 
   clearDateFilter(): void {
-    this.fromDate.set('');
-    this.toDate.set('');
-    this.svc.loadTrialBalance();
+    this.fromDate.set(this.getFirstDayOfMonth());
+    this.toDate.set(this.getLastDayOfMonth());
+    this.svc.loadTrialBalance(this.fromDate(), this.toDate());
   }
 
   private loadReport(type: string): void {
@@ -314,5 +314,20 @@ export class ReportsComponent {
       case 'cash-flow': this.svc.loadCashFlow(); break;
       case 'daybook': this.svc.loadDaybook(); break;
     }
+  }
+
+  private getFirstDayOfMonth(): string {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    return `${year}-${month}-01`;
+  }
+
+  private getLastDayOfMonth(): string {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1;
+    const lastDay = new Date(year, month, 0).getDate();
+    return `${year}-${String(month).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
   }
 }
