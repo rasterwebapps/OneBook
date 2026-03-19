@@ -21,8 +21,10 @@
 - **Services**: `PaymentRegisterService` (vendor grouping), `PaymentBatchService` (batch lifecycle + journal integration), `PaymentFileGeneratorService` (NEFT CSV)
 - **Controllers**: `GET /api/payment-register`, `POST/GET /api/payment-batches` with approve/reject/generate-file
 - **Migration**: `V11__payment_processing.sql` — 3 tables with indexes + RLS policies
-- **Tests**: 9 unit tests across 3 test classes (service + controller), all passing
+- **Tests**: 11 unit tests across 3 test classes (service + controller), all passing
 - Key pattern: `PaymentBatchItem` uses redundant `@Column batchId` (insertable=false,updatable=false) alongside `@ManyToOne batch` for Spring Data derived queries
+- Approve/reject endpoint uses unified `actorId` request param (audit trail integrity — no "unknown" fallback)
+- Approval posts double-entry journal: Dr Vendor AP (reduces liability) / Cr Bank Account (reduces cash)
 
 ### Automated Business Documentation System Created (2026-03-18)
 - **Created** `docs/business/BRD.md` — Business Requirements Document (BR-001 to BR-010)
