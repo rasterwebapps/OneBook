@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * generate-data-dictionary.js
- * Generate docs/technical/data-dictionary-generated.md from REQ-*.md files.
+ * Generate docs/technical/data-dictionary.md from REQ-*.md files.
  * Extracts data model sections (SQL schemas) and compiles them into a dictionary.
  */
 
@@ -13,7 +13,7 @@ const { glob } = require('glob');
 
 const ROOT = path.resolve(__dirname, '../..');
 const REQ_DIR = path.join(ROOT, 'docs/requirements/active');
-const OUTPUT_FILE = path.join(ROOT, 'docs/technical/data-dictionary-generated.md');
+const OUTPUT_FILE = path.join(ROOT, 'docs/technical/data-dictionary.md');
 
 /**
  * Parse metadata from a REQ file.

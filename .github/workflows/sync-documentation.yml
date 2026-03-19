@@ -116,7 +116,7 @@ jobs:
           git add docs/business/TRD.md
           git add docs/requirements/RTM.md
           git add docs/requirements/requirements-index.md
-          git add docs/technical/data-dictionary-generated.md
+          git add docs/technical/data-dictionary.md
           
           # Only commit if there are staged changes
           git diff --cached --quiet || git commit -m "docs: auto-generate documentation from requirements [skip ci]
@@ -130,7 +130,7 @@ jobs:
           - docs/business/TRD.md
           - docs/requirements/RTM.md
           - docs/requirements/requirements-index.md
-          - docs/technical/data-dictionary-generated.md
+          - docs/technical/data-dictionary.md
           
           Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
           
