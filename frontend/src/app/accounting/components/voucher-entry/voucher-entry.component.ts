@@ -201,9 +201,16 @@ export class VoucherEntryComponent implements OnInit, OnDestroy {
         this.saving.set(false);
         this.backToList();
       },
-      error: () => {
+      error: (err) => {
         this.saving.set(false);
-        this.formError.set('Failed to save. Please try again.');
+        const msg: string = err?.error?.message || err?.message || '';
+        if (msg.toLowerCase().includes('not balanced') || msg.toLowerCase().includes('unbalanced')) {
+          this.formError.set('⚠️ Debit and Credit amounts must be equal.');
+        } else if (msg.toLowerCase().includes('at least one debit') || msg.toLowerCase().includes('at least one credit')) {
+          this.formError.set('⚠️ Transaction must have both debit and credit entries.');
+        } else {
+          this.formError.set(msg || 'Failed to save. Please try again.');
+        }
       },
     });
   }

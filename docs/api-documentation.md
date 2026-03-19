@@ -154,7 +154,7 @@ GET /api/ledger/trial-balance?tenantId={tenantId}
 POST /api/journal/transactions
 ```
 
-Creates a balanced double-entry journal transaction (unposted by default).
+Creates and **immediately posts** a balanced double-entry journal transaction (Tally/Nexus behavior: Save = Validate + Post).
 
 **Request Body**:
 ```json
@@ -169,8 +169,27 @@ Creates a balanced double-entry journal transaction (unposted by default).
 }
 ```
 
-**Response**: `201 Created` — Created transaction with UUID and `posted: false`
+**Validation:**
+- `sum(debits)` must equal `sum(credits)`
+- At least one DEBIT entry required
+- At least one CREDIT entry required
+- All amounts must be greater than 0
+
+**Behavior:**
+- Transaction is validated on creation
+- If valid, transaction is **auto-posted** (`posted = true`) immediately
+- **Instantly appears** in Trial Balance — no separate "Post" operation needed
+
+**Response**: `201 Created` — Created transaction with UUID and `posted: true`
+
 **Error**: `400 Bad Request` — Unbalanced or invalid entries
+```json
+{
+  "status": 400,
+  "error": "Bad Request",
+  "message": "Transaction is unbalanced: total debits=5000.0000, total credits=3000.0000"
+}
+```
 
 ### Post a Transaction
 

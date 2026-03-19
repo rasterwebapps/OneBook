@@ -216,6 +216,29 @@ class JournalServiceTest {
     }
 
     @Test
+    void createTransaction_autoPostsOnSave() {
+        when(accountRepository.findById(1L)).thenReturn(Optional.of(debitAccount));
+        when(accountRepository.findById(2L)).thenReturn(Optional.of(creditAccount));
+        when(transactionRepository.save(any(JournalTransaction.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        JournalTransactionRequest request = new JournalTransactionRequest(
+                "tenant-1",
+                LocalDate.of(2026, 3, 9),
+                "Auto-post test",
+                null,
+                List.of(
+                        new JournalEntryRequest(1L, "DEBIT", new BigDecimal("500.0000"), "Debit", null),
+                        new JournalEntryRequest(2L, "CREDIT", new BigDecimal("500.0000"), "Credit", null)
+                )
+        );
+
+        JournalTransaction result = journalService.createTransaction(request);
+
+        assertTrue(result.isPosted(), "Transaction should be auto-posted on save (Tally behavior)");
+    }
+
+    @Test
     void createTransaction_unbalanced_doesNotPersist() {
         JournalTransactionRequest request = new JournalTransactionRequest(
                 "tenant-1",
