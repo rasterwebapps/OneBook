@@ -1,488 +1,177 @@
 # Technical Requirements Document (TRD)
 ## OneBook — Nexus Universal Accounting OS
 
-> **Auto-generated from REQ-*.md files. Version: Living Document.**  
-> Last Updated: 2026-03-18 | Owner: @Architect | Status: APPROVED
+> **Auto-generated from REQ-*.md files. Version: Living Document.**
+> Generated: 2026-03-19 by `docs/automation/generate-trd.js`
 
 ---
 
 ## Table of Contents
 
-1. [System Architecture Overview](#1-system-architecture-overview)
-2. [TR-001: Multi-Tenant RLS](#2-tr-001-multi-tenant-rls)
-3. [TR-002: Field-Level Encryption (AES-256-GCM)](#3-tr-002-field-level-encryption-aes-256-gcm)
-4. [TR-003: Cache-Aside Pattern (Redis)](#4-tr-003-cache-aside-pattern-redis)
-5. [TR-004: Virtual Threads (Project Loom)](#5-tr-004-virtual-threads-project-loom)
-6. [TR-005: Double-Entry Validation](#6-tr-005-double-entry-validation)
-7. [TR-006: Pluggable Adapter Pattern](#7-tr-006-pluggable-adapter-pattern)
-8. [TR-007: Hash-Chained Audit Trail](#8-tr-007-hash-chained-audit-trail)
-9. [TR-008: Angular Signals Architecture](#9-tr-008-angular-signals-architecture)
-10. [Performance Requirements](#10-performance-requirements)
-11. [Security Requirements](#11-security-requirements)
-12. [Deployment Architecture](#12-deployment-architecture)
+1. [REQ-001: Multi-Tenant Ledger](#req-001)
+2. [REQ-002: Zero-Knowledge Encryption](#req-002)
+3. [REQ-003: External App Ingestion](#req-003)
+4. [REQ-004: Voucher Posting](#req-004)
+5. [REQ-005: Trial Balance Reports](#req-005)
+6. [REQ-006: Cost Center & Branch Management](#req-006)
+7. [REQ-007: Fixed Asset Management](#req-007)
+8. [REQ-008: TDS/TCS Compliance](#req-008)
+9. [REQ-009: Bank Reconciliation](#req-009)
+10. [REQ-010: Maker-Checker-Approver Workflow](#req-010)
 
 ---
 
-## 1. System Architecture Overview
+## REQ-001: Multi-Tenant Ledger
 
-### Technology Stack
+**Priority:** CRITICAL | **Owner:** @LedgerExpert | **Milestone:** M1/M2 | **Linked TRD:** TR-001
 
-| Layer | Technology | Version | Purpose |
-|-------|-----------|---------|---------|
-| Backend API | Spring Boot | 3.4+ | REST API, business logic |
-| Runtime | Java (OpenJDK) | 21+ | Virtual Threads (Project Loom) |
-| Frontend SPA | Angular | 19+ | Signals-based reactive UI |
-| Database | PostgreSQL | 17+ | Primary data store with RLS |
-| Cache | Redis | 7+ | Warm cache, session data |
-| ORM | Spring Data JPA / Hibernate | 6.x | Repository pattern |
-| Migrations | Flyway | 10.x | Schema versioning (V1–V10) |
-| i18n | @jsverse/transloco | 7+ | Internationalization |
-| Build | Gradle (backend), npm/Angular CLI (frontend) | — | Build toolchain |
-| CI/CD | GitHub Actions | — | Build, test, agent ownership validation |
-| Container | Docker Compose | — | Local dev + staging |
+### Technical Specification
 
-### High-Level Architecture
+### 3.1 Architecture Decisions
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                          Angular 19+ SPA                         │
-│   Signals State │ Command Palette │ Lazy-Loaded Feature Modules  │
-└─────────────────────────┬───────────────────────────────────────┘
-                          │ HTTPS (JWT Bearer)
-┌─────────────────────────▼───────────────────────────────────────┐
-│                    Spring Boot 3.4+ API                          │
-│  Virtual Threads │ DTO-only REST │ Tenant Context Filter         │
-│  ┌─────────────┐  ┌──────────────┐  ┌───────────────────────┐   │
-│  │  Controller  │  │   Service    │  │  Security (Encrypt)   │   │
-│  │    Layer     │  │    Layer     │  │  AuditLog │ BlindIdx  │   │
-│  └──────┬──────┘  └──────┬───────┘  └───────────────────────┘   │
-│         │                │                                        │
-│  ┌──────▼──────────────▼────────────────────────────────────┐   │
-│  │              Repository Layer (Spring Data JPA)           │   │
-│  └─────────────────────────┬─────────────────────────────────┘  │
-└────────────────────────────┼────────────────────────────────────┘
-               ┌─────────────┼─────────────────┐
-               ▼             ▼                  ▼
-     ┌─────────────┐  ┌────────────┐   ┌──────────────┐
-     │ PostgreSQL  │  │  Redis 7+  │   │  External    │
-     │     17+     │  │  (Cache)   │   │  Adapters    │
-     │  RLS + JSONB│  │  30min TTL │   │ (HL7/ISO20022│
-     └─────────────┘  └────────────┘   │  DMS/Webhook)│
-                                        └──────────────┘
-```
+### Implementation Notes
+
+### 5.1 New Files Created
+
+**Full Requirement:** [REQ-001-multi-tenant-ledger.md](../requirements/active/REQ-001-multi-tenant-ledger.md)
 
 ---
 
-## 2. TR-001: Multi-Tenant RLS
+## REQ-002: Zero-Knowledge Encryption
 
-**Description:** All tenant-scoped tables enforce Row-Level Security (RLS) at the PostgreSQL layer, providing an infrastructure-level guarantee of tenant data isolation.
+**Priority:** CRITICAL | **Owner:** @SecurityWarden | **Milestone:** M3 | **Linked TRD:** TR-002, TR-007
 
-**Implementation Details:**
+### Technical Specification
 
-```sql
--- Every tenant-scoped table follows this pattern
-ALTER TABLE ledger_accounts ENABLE ROW LEVEL SECURITY;
-CREATE POLICY tenant_isolation ON ledger_accounts
-    USING (tenant_id = current_setting('app.current_tenant_id')::uuid);
-```
+### 3.1 Architecture Decisions
 
-**Application-Side Pattern:**
-```java
-// TenantContextFilter sets tenant before each request
-entityManager.createNativeQuery(
-    "SET app.current_tenant_id = :tenantId"
-).setParameter("tenantId", tenantId).executeUpdate();
-```
+### Implementation Notes
 
-**Tables with RLS:**
-- `ledger_accounts`
-- `journal_transactions`
-- `journal_entries`
-- `audit_logs`
-- `financial_events`
-- `fixed_assets`
-- `bank_feed_transactions`
-- All 40+ tenant-scoped tables in V1–V10 migrations
+### 5.1 New Files Created
 
-**Migration File:** `V1__rls_infrastructure.sql`
-
-**Guarantee:** Even a SQL injection attack cannot cross tenant boundaries because PostgreSQL enforces the policy at the storage engine level, below the application.
+**Full Requirement:** [REQ-002-zero-knowledge-encryption.md](../requirements/active/REQ-002-zero-knowledge-encryption.md)
 
 ---
 
-## 3. TR-002: Field-Level Encryption (AES-256-GCM)
+## REQ-003: External App Ingestion
 
-**Description:** Sensitive fields are encrypted at the JVM layer using AES-256-GCM before the data reaches the database. Database administrators see only ciphertext.
+**Priority:** HIGH | **Owner:** @IntegrationBot | **Milestone:** M6 | **Linked TRD:** TR-006
 
-**Wire Format:**
-```
-[version byte (1)] + [random IV (12 bytes)] + [GCM ciphertext + auth tag (16 bytes)]
-→ Base64 encoded string stored in VARCHAR/TEXT column
-```
+### Technical Specification
 
-**Encryption Flow:**
-```
-Plaintext → KeyManagementService.getCurrentKey()
-         → SecureRandom.generateIV(12 bytes)
-         → AES/GCM/NoPadding encrypt
-         → Base64(version + IV + ciphertext)
-         → Store in database
-```
+### 3.1 Architecture — Pluggable Adapter Pattern
 
-**Decryption Flow:**
-```
-Base64 string → Decode
-             → Extract version byte → resolve key
-             → Extract IV (bytes 1–12)
-             → AES/GCM/NoPadding decrypt with auth tag verification
-             → Plaintext returned
-```
+### Implementation Notes
 
-**Blind Index for Search:**
-```
-SearchTerm → HMAC-SHA256(key=blindIndexKey, data=normalize(searchTerm))
-           → Base64 → Store in separate column (e.g., party_name_idx)
-           → WHERE party_name_idx = ? (equality search only)
-```
+### 5.1 New Files Created
 
-**Key Management:**
-- Keys stored in environment variables (`ONEBOOK_ENCRYPTION_KEY`, `ONEBOOK_BLIND_INDEX_KEY`)
-- Key version byte enables key rotation without re-encryption of all data
-- Never in `application.yml` or source code
-
-**Implementation Files:**
-- `FieldEncryptionService.java` — AES-256-GCM encrypt/decrypt
-- `BlindIndexService.java` — HMAC-SHA256 blind index computation
-- `KeyManagementService.java` — Key loading, versioning, rotation
-- `EncryptedStringConverter.java` — JPA `@Convert` annotation integration
-- `V5__blind_dba_infrastructure.sql` — Blind index columns
+**Full Requirement:** [REQ-003-external-app-ingestion.md](../requirements/active/REQ-003-external-app-ingestion.md)
 
 ---
 
-## 4. TR-003: Cache-Aside Pattern (Redis)
+## REQ-004: Voucher Posting
 
-**Description:** Frequently accessed data (account balances, report results, decrypted tenant config) is cached in Redis to eliminate repeated AES-GCM decryption overhead.
+**Priority:** CRITICAL | **Owner:** @LedgerExpert | **Milestone:** M2 | **Linked TRD:** TR-005
 
-**Read Path (Cache-Aside):**
-```
-Request arrives
-  → Check Redis: GET onebook:cache:<domain>:<qualifier>:<id>
-  → Hit: Return cached value (no DB hit, no decryption)
-  → Miss: Query PostgreSQL → Decrypt → Store in Redis → Return
-```
+### Technical Specification
 
-**Write Path (Write-Through Invalidation):**
-```
-Write to PostgreSQL
-  → DEL onebook:cache:<domain>:<qualifier>:<id>
-  → Next read will repopulate cache
-```
+### 3.1 Triple-Layer Double-Entry Validation
 
-**Key Format:** `onebook:cache:<domain>:<qualifier>:<id>`
-- Example: `onebook:cache:ledger:account:550e8400-e29b-41d4-a716-446655440000`
+### Implementation Notes
 
-**TTL Strategy:**
-| Data Type | TTL |
-|-----------|-----|
-| Account balances | 30 minutes |
-| Report results | 30 minutes |
-| Tenant configuration | 120 minutes |
-| Session/volatile data | 10 minutes |
+### 5.1 New Files
 
-**Failure-Safe Behaviour:**
-```java
-try {
-    return redisTemplate.opsForValue().get(cacheKey);
-} catch (RedisException e) {
-    log.warn("Redis unavailable, falling back to DB: {}", e.getMessage());
-    return fetchFromDatabase(); // no circuit breaker — DB always available
-}
-```
-
-**Cache Constants:** `CacheConstants.java`  
-**Implementation:** `WarmCacheService.java`  
-**Warm-up Trigger:** Login event — pre-populate frequently accessed accounts
+**Full Requirement:** [REQ-004-voucher-posting.md](../requirements/active/REQ-004-voucher-posting.md)
 
 ---
 
-## 5. TR-004: Virtual Threads (Project Loom)
+## REQ-005: Trial Balance Reports
 
-**Description:** Spring Boot is configured to use Java 21 Virtual Threads for all HTTP request handling, enabling high concurrency without the overhead of platform thread pools.
+**Priority:** HIGH | **Owner:** @LedgerExpert | **Milestone:** M7 | **Linked TRD:** TR-003
 
-**Configuration:**
-```yaml
-# application.yml
-spring:
-  threads:
-    virtual:
-      enabled: true
-```
+### Technical Specification
 
-**Impact:**
-- Each HTTP request runs on a Virtual Thread (lightweight, heap-allocated)
-- Thread-per-request model without blocking platform thread pool
-- Supports 10,000+ concurrent connections on a single JVM instance
-- JDBC blocking I/O is transparently unmounted while waiting
+### 3.1 Cache-Aside Pattern for Reports
 
-**Why Virtual Threads (not WebFlux):**
-- Spring MVC with Virtual Threads provides near-reactive throughput with imperative (readable) code
-- Reactive WebFlux would require rewriting all repository and service code in reactive style
-- Decision documented in `memory-bank/systempatterns.md`
+**Full Requirement:** [REQ-005-trial-balance-reports.md](../requirements/active/REQ-005-trial-balance-reports.md)
 
 ---
 
-## 6. TR-005: Double-Entry Validation
+## REQ-006: Cost Center & Branch Management
 
-**Description:** Triple-layer validation ensures journal entries can never be posted with imbalanced debits and credits.
+**Priority:** HIGH | **Owner:** @LedgerExpert | **Milestone:** M2 | **Linked TRD:** TR-001
 
-**Layer 1 — Service Layer (Java):**
-```java
-BigDecimal totalDebits = entries.stream()
-    .filter(e -> e.getEntryType() == EntryType.DEBIT)
-    .map(JournalEntry::getAmount)
-    .reduce(BigDecimal.ZERO, BigDecimal::add);
+### Technical Specification
 
-BigDecimal totalCredits = entries.stream()
-    .filter(e -> e.getEntryType() == EntryType.CREDIT)
-    .map(JournalEntry::getAmount)
-    .reduce(BigDecimal.ZERO, BigDecimal::add);
+### 3.1 Data Model
 
-if (totalDebits.compareTo(totalCredits) != 0) {
-    throw new UnbalancedTransactionException(totalDebits, totalCredits);
-}
-```
-
-**Layer 2 — Database Trigger:**
-```sql
-CREATE OR REPLACE FUNCTION check_balanced_transaction()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF (SELECT SUM(CASE WHEN entry_type = 'DEBIT' THEN amount ELSE -amount END)
-        FROM journal_entries WHERE transaction_id = NEW.id) != 0 THEN
-        RAISE EXCEPTION 'Journal entries are not balanced';
-    END IF;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-```
-
-**Layer 3 — Exception Surfacing:**  
-`UnbalancedTransactionException` returns HTTP 422 with debit/credit totals.
-
-**Why Three Layers:** Defense-in-depth. A single layer can be bypassed by direct DB access or a service-layer bug. All three must fail simultaneously for corrupt data to enter the system.
+**Full Requirement:** [REQ-006-cost-center-management.md](../requirements/active/REQ-006-cost-center-management.md)
 
 ---
 
-## 7. TR-006: Pluggable Adapter Pattern
+## REQ-007: Fixed Asset Management
 
-**Description:** The ingestion pipeline uses the Strategy + Registry pattern to make external application adapters pluggable without modifying core code.
+**Priority:** HIGH | **Owner:** @LedgerExpert | **Milestone:** M7 | **Linked TRD:** TR-005
 
-**Interface:**
-```java
-public interface ExternalAppAdapter {
-    String getAdapterType();
-    boolean canHandle(String adapterType);
-    FinancialEvent parse(String payload);
-    List<JournalEntryRequest> map(FinancialEvent event);
-}
-```
+### Technical Specification
 
-**Registry:**
-```java
-@Component
-public class AdapterRegistry {
-    private final List<ExternalAppAdapter> adapters;
-    
-    public ExternalAppAdapter resolve(String type) {
-        return adapters.stream()
-            .filter(a -> a.canHandle(type))
-            .findFirst()
-            .orElseThrow(() -> new AdapterNotFoundException(type));
-    }
-}
-```
+### 3.1 Data Model
 
-**Pipeline Stages:**
-```
-Receive (HTTP POST) → Parse (adapter-specific) → Validate (schema check)
-→ Map (to JournalEntryRequest) → Post (JournalService) → Update status
-```
-
-**To Add a New Adapter:**
-1. Implement `ExternalAppAdapter` interface
-2. Annotate with `@Component`
-3. Spring DI auto-registers it in `AdapterRegistry`
-4. Zero changes to core ingestion logic
+**Full Requirement:** [REQ-007-fixed-asset-management.md](../requirements/active/REQ-007-fixed-asset-management.md)
 
 ---
 
-## 8. TR-007: Hash-Chained Audit Trail
+## REQ-008: TDS/TCS Compliance
 
-**Description:** Each audit log entry includes a cryptographic hash that chains to the previous entry, making any record modification detectable.
+**Priority:** HIGH | **Owner:** @ComplianceAgent | **Milestone:** M7 | **Linked TRD:** TR-005
 
-**Hash Computation:**
-```java
-String hash = SHA256(
-    previousHash +
-    entityType +
-    entityId +
-    action +
-    actorId +
-    timestamp.toString() +
-    payload.toJson()
-);
-```
+### Technical Specification
 
-**Chain Verification:**
-```
-For each entry in sequence:
-  computedHash = SHA256(entry[n-1].hash + entry[n].data)
-  if computedHash != entry[n].hash → TAMPER DETECTED
-```
+### 3.1 Implementation Files
 
-**Database Schema:**
-```sql
-CREATE TABLE audit_logs (
-    id UUID PRIMARY KEY,
-    tenant_id UUID NOT NULL,
-    entity_type VARCHAR(100) NOT NULL,
-    entity_id UUID NOT NULL,
-    action VARCHAR(50) NOT NULL,
-    actor_id VARCHAR(255),
-    payload JSONB,
-    previous_hash VARCHAR(64),
-    hash VARCHAR(64) NOT NULL,
-    created_at TIMESTAMP NOT NULL
-);
-```
-
-**Implementation:** `AuditLogService.java`  
-**Migration:** `V9__hardening_audit_production.sql`
+**Full Requirement:** [REQ-008-tds-tcs-compliance.md](../requirements/active/REQ-008-tds-tcs-compliance.md)
 
 ---
 
-## 9. TR-008: Angular Signals Architecture
+## REQ-009: Bank Reconciliation
 
-**Description:** The Angular 19+ frontend uses Signals for all component-local state management, replacing RxJS for simple state.
+**Priority:** HIGH | **Owner:** @LedgerExpert | **Milestone:** M7 | **Linked TRD:** TR-005
 
-**Patterns:**
-```typescript
-// Mutable state
-accountBalance = signal<BigDecimal>(0);
+### Technical Specification
 
-// Derived state (auto-recomputes when dependencies change)
-formattedBalance = computed(() => 
-  this.accountBalance().toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
-);
+### 3.1 Data Model
 
-// Effect (side-effect when signal changes)
-effect(() => {
-  this.updateTitle(this.selectedAccount().name);
-});
-```
-
-**Component Configuration:**
-- All components: `standalone: true` (no NgModules)
-- Change detection: `ChangeDetectionStrategy.OnPush` on every component
-- Lazy loading: All feature modules lazy-loaded via `app.routes.ts`
-
-**State Boundaries:**
-- Component-local state: `signal()` / `computed()`
-- Cross-component state: Angular Signals-based service with `signal()` fields
-- Async/stream operations: RxJS (HTTP calls, event streams)
+**Full Requirement:** [REQ-009-bank-reconciliation.md](../requirements/active/REQ-009-bank-reconciliation.md)
 
 ---
 
-## 10. Performance Requirements
+## REQ-010: Maker-Checker-Approver Workflow
 
-| Metric | Requirement | Measurement Method |
-|--------|-------------|-------------------|
-| API P95 response time | < 300ms | Load test (1000 concurrent users) |
-| Report generation (Trial Balance, 1M entries) | < 5 seconds | Performance test |
-| Cache hit ratio | > 80% after warm-up | Redis INFO stats |
-| Journal entry posting | < 200ms P95 | Load test |
-| Concurrent tenants (no degradation) | 100+ tenants | Chaos/load test |
-| Ingestion event processing | < 500ms per event | Performance test |
-| Frontend initial load (LCP) | < 2 seconds | Lighthouse |
-| Frontend route navigation | < 100ms | Browser performance API |
+**Priority:** HIGH | **Owner:** @AuditAgent | **Milestone:** M10 | **Linked TRD:** TR-007
+
+### Technical Specification
+
+### 3.1 Implementation Files
+
+**Full Requirement:** [REQ-010-maker-checker-workflow.md](../requirements/active/REQ-010-maker-checker-workflow.md)
 
 ---
 
-## 11. Security Requirements
+## Implementation Files Summary
 
-| Requirement | Implementation |
-|-------------|----------------|
-| All sensitive fields encrypted | AES-256-GCM via `FieldEncryptionService` |
-| No plaintext secrets in source code | Environment variables; validated in CI |
-| Tenant isolation | RLS policies on all tenant-scoped tables |
-| Tamper-evident logs | SHA-256 hash chain in `audit_logs` |
-| Search on encrypted data | HMAC-SHA256 blind indexes |
-| JWT token validation | Spring Security (every endpoint) |
-| TLS in transit | HTTPS required; HTTP redirected |
-| Key rotation support | Key version byte in ciphertext wire format |
-| SQL injection prevention | Parameterized queries; Spring Data JPA |
-| CORS policy | Configured for specific allowed origins only |
-
----
-
-## 12. Deployment Architecture
-
-### Docker Compose (Local / Staging)
-```yaml
-services:
-  postgres:
-    image: postgres:17
-    environment:
-      POSTGRES_DB: onebook
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-    
-  redis:
-    image: redis:7-alpine
-    
-  backend:
-    build: ./backend
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/onebook
-      SPRING_REDIS_HOST: redis
-      ONEBOOK_ENCRYPTION_KEY: ${ONEBOOK_ENCRYPTION_KEY}
-      ONEBOOK_BLIND_INDEX_KEY: ${ONEBOOK_BLIND_INDEX_KEY}
-    depends_on: [postgres, redis]
-    
-  frontend:
-    build: ./frontend
-    ports: ["80:80"]
-    depends_on: [backend]
-```
-
-### Production Topology (Recommended)
-```
-Load Balancer (HTTPS termination)
-  ├── Backend Instance 1 (Virtual Threads, 4 vCPU, 8GB RAM)
-  ├── Backend Instance 2 (Virtual Threads, 4 vCPU, 8GB RAM)
-  └── Backend Instance N (scale horizontally)
-
-PostgreSQL 17+ (Primary-Replica)
-  ├── Primary (writes)
-  └── Read Replica (reports/analytics)
-
-Redis 7+ Cluster
-  ├── Primary
-  └── Replica (failover)
-
-CDN → Angular SPA (static assets)
-```
-
-### CI/CD Pipeline
-```yaml
-# .github/workflows/ci.yml
-1. Backend: ./gradlew build test  (Java 21, Gradle)
-2. Frontend: npm ci && npx ng build && npx ng test
-3. Agent Ownership: .github/scripts/validate-agent-ownership.sh
-4. Docker build (main branch only)
-5. Deploy to staging (main branch only)
-```
+| Req ID | Key Implementation Files |
+|--------|-------------------------|
+| REQ-001 | — |
+| REQ-002 | — |
+| REQ-003 | — |
+| REQ-004 | — |
+| REQ-005 | — |
+| REQ-006 | — |
+| REQ-007 | — |
+| REQ-008 | — |
+| REQ-009 | — |
+| REQ-010 | — |
 
 ---
 
-*This document is auto-generated from REQ-*.md files by `docs/automation/generate-trd.js`. Do not edit manually.*
+*Auto-generated by `docs/automation/generate-trd.js` on 2026-03-19. Do not edit manually.*
