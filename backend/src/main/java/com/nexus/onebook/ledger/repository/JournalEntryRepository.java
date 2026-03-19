@@ -51,8 +51,8 @@ public interface JournalEntryRepository extends JpaRepository<JournalEntry, Long
      */
     @Query("SELECT e FROM JournalEntry e JOIN FETCH e.account " +
            "WHERE e.tenantId = :tenantId AND e.transaction.posted = true " +
-           "AND (:fromDate IS NULL OR e.transaction.transactionDate >= :fromDate) " +
-           "AND (:toDate IS NULL OR e.transaction.transactionDate <= :toDate)")
+           "AND (CAST(:fromDate AS date) IS NULL OR e.transaction.transactionDate >= :fromDate) " +
+           "AND (CAST(:toDate AS date) IS NULL OR e.transaction.transactionDate <= :toDate)")
     List<JournalEntry> findPostedEntriesByTenantIdAndDateRange(
             @Param("tenantId") String tenantId,
             @Param("fromDate") LocalDate fromDate,
