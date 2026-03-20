@@ -2,8 +2,8 @@ package com.nexus.onebook.ledger.ingestion.connector;
 
 import com.nexus.onebook.ledger.ingestion.gateway.FinancialEventGateway;
 import com.nexus.onebook.ledger.ingestion.model.AdapterType;
-import com.nexus.onebook.ledger.ingestion.model.EventStatus;
-import com.nexus.onebook.ledger.ingestion.model.FinancialEvent;
+import com.nexus.onebook.ledger.payment.model.PaymentRegisterStatus;
+import com.nexus.onebook.ledger.payment.model.PaymentRegisterEntry;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,14 +26,14 @@ class InventoryEventListenerTest {
     @Test
     void processInventoryEvent_delegatesToGateway() {
         String payload = "{\"eventType\":\"STOCK_IN\",\"amount\":2500,\"date\":\"2026-03-10\"}";
-        FinancialEvent expected = new FinancialEvent("tenant-1", AdapterType.REST_WEBHOOK, "STOCK_IN");
-        expected.setStatus(EventStatus.POSTED);
+        PaymentRegisterEntry expected = new PaymentRegisterEntry("tenant-1", AdapterType.REST_WEBHOOK, "STOCK_IN");
+        expected.setStatus(PaymentRegisterStatus.POSTED);
 
         when(gateway.ingest("tenant-1", AdapterType.REST_WEBHOOK, payload)).thenReturn(expected);
 
-        FinancialEvent result = listener.processInventoryEvent("tenant-1", payload);
+        PaymentRegisterEntry result = listener.processInventoryEvent("tenant-1", payload);
 
-        assertEquals(EventStatus.POSTED, result.getStatus());
+        assertEquals(PaymentRegisterStatus.POSTED, result.getStatus());
         verify(gateway).ingest("tenant-1", AdapterType.REST_WEBHOOK, payload);
     }
 }

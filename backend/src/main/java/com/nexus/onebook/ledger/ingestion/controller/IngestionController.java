@@ -11,7 +11,7 @@ import com.nexus.onebook.ledger.ingestion.gateway.AdapterRegistry;
 import com.nexus.onebook.ledger.ingestion.gateway.FinancialEventGateway;
 import com.nexus.onebook.ledger.ingestion.model.AdapterType;
 import com.nexus.onebook.ledger.ingestion.model.CardTransaction;
-import com.nexus.onebook.ledger.ingestion.model.FinancialEvent;
+import com.nexus.onebook.ledger.payment.model.PaymentRegisterEntry;
 import com.nexus.onebook.ledger.ingestion.model.VendorInvoice;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -63,7 +63,7 @@ public class IngestionController {
     public ResponseEntity<FinancialEventResponse> ingestEvent(
             @Valid @RequestBody FinancialEventRequest request) {
         AdapterType type = AdapterType.valueOf(request.adapterType());
-        FinancialEvent event = gateway.ingest(request.tenantId(), type, request.payload());
+        PaymentRegisterEntry event = gateway.ingest(request.tenantId(), type, request.payload());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new FinancialEventResponse(event.getEventUuid(), event.getStatus(),
                         event.getErrorMessage() != null ? event.getErrorMessage() : "Event processed"));
@@ -73,7 +73,7 @@ public class IngestionController {
     public ResponseEntity<FinancialEventResponse> validateEvent(
             @Valid @RequestBody FinancialEventRequest request) {
         AdapterType type = AdapterType.valueOf(request.adapterType());
-        FinancialEvent event = gateway.ingestValidateOnly(request.tenantId(), type, request.payload());
+        PaymentRegisterEntry event = gateway.ingestValidateOnly(request.tenantId(), type, request.payload());
         return ResponseEntity.ok(
                 new FinancialEventResponse(event.getEventUuid(), event.getStatus(), "Validation passed"));
     }
@@ -121,7 +121,7 @@ public class IngestionController {
     @PostMapping("/payroll")
     public ResponseEntity<FinancialEventResponse> processPayrollEvent(
             @Valid @RequestBody FinancialEventRequest request) {
-        FinancialEvent event = hrmPayrollConnector.processPayrollEvent(
+        PaymentRegisterEntry event = hrmPayrollConnector.processPayrollEvent(
                 request.tenantId(), request.payload());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new FinancialEventResponse(event.getEventUuid(), event.getStatus(),
@@ -133,7 +133,7 @@ public class IngestionController {
     @PostMapping("/inventory")
     public ResponseEntity<FinancialEventResponse> processInventoryEvent(
             @Valid @RequestBody FinancialEventRequest request) {
-        FinancialEvent event = inventoryEventListener.processInventoryEvent(
+        PaymentRegisterEntry event = inventoryEventListener.processInventoryEvent(
                 request.tenantId(), request.payload());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new FinancialEventResponse(event.getEventUuid(), event.getStatus(),

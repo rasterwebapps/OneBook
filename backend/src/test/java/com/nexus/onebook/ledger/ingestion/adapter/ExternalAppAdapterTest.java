@@ -2,7 +2,7 @@ package com.nexus.onebook.ledger.ingestion.adapter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nexus.onebook.ledger.ingestion.model.AdapterType;
-import com.nexus.onebook.ledger.ingestion.model.FinancialEvent;
+import com.nexus.onebook.ledger.payment.model.PaymentRegisterEntry;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Tests for {@link ExternalAppAdapter} — the common adapter for Pharmacy, Lab, Stores, HIS, etc.
  * Verifies that any external application using the ExternalAppPaymentRequest JSON format
- * is correctly parsed into a normalised FinancialEvent regardless of applicationName.
+ * is correctly parsed into a normalised PaymentRegisterEntry regardless of applicationName.
  */
 class ExternalAppAdapterTest {
 
@@ -108,7 +108,7 @@ class ExternalAppAdapterTest {
 
     @Test
     void parse_pharmacyPayload_returnsNormalisedEvent() {
-        FinancialEvent event = adapter.parse("pharmacy-branch-001", PHARMACY_PAYLOAD);
+        PaymentRegisterEntry event = adapter.parse("pharmacy-branch-001", PHARMACY_PAYLOAD);
 
         assertEquals("pharmacy-branch-001", event.getTenantId());
         assertEquals(AdapterType.EXTERNAL_APP, event.getAdapterType());
@@ -123,7 +123,7 @@ class ExternalAppAdapterTest {
 
     @Test
     void parse_pharmacyPayload_industryTagsContainApplicationName() {
-        FinancialEvent event = adapter.parse("pharmacy-branch-001", PHARMACY_PAYLOAD);
+        PaymentRegisterEntry event = adapter.parse("pharmacy-branch-001", PHARMACY_PAYLOAD);
 
         String tags = event.getIndustryTags();
         assertNotNull(tags);
@@ -136,7 +136,7 @@ class ExternalAppAdapterTest {
 
     @Test
     void parse_labPayload_applicationNameIsLab() {
-        FinancialEvent event = adapter.parse("lab-branch-001", LAB_PAYLOAD);
+        PaymentRegisterEntry event = adapter.parse("lab-branch-001", LAB_PAYLOAD);
 
         assertEquals("PURCHASE_PAYMENT", event.getEventType());
         assertEquals(0, new BigDecimal("8500.00").compareTo(event.getAmount()));
@@ -147,7 +147,7 @@ class ExternalAppAdapterTest {
 
     @Test
     void parse_storePayload_applicationNameIsStore() {
-        FinancialEvent event = adapter.parse("store-branch-001", STORE_PAYLOAD);
+        PaymentRegisterEntry event = adapter.parse("store-branch-001", STORE_PAYLOAD);
 
         assertEquals(0, new BigDecimal("3200.00").compareTo(event.getAmount()));
         assertTrue(event.getIndustryTags().contains("STORE"),
@@ -156,7 +156,7 @@ class ExternalAppAdapterTest {
 
     @Test
     void parse_invoiceDateAsDateTime_parsesDatePart() {
-        FinancialEvent event = adapter.parse("t1", PAYLOAD_WITH_DATETIME);
+        PaymentRegisterEntry event = adapter.parse("t1", PAYLOAD_WITH_DATETIME);
 
         assertEquals(LocalDate.of(2026, 3, 16), event.getEventDate());
         assertTrue(event.getIndustryTags().contains("HIS"),
@@ -176,7 +176,7 @@ class ExternalAppAdapterTest {
                 }
                 """;
 
-        FinancialEvent event = adapter.parse("t1", payload);
+        PaymentRegisterEntry event = adapter.parse("t1", payload);
         assertEquals(0, BigDecimal.ZERO.compareTo(event.getAmount()));
     }
 
@@ -192,13 +192,13 @@ class ExternalAppAdapterTest {
                 }
                 """;
 
-        FinancialEvent event = adapter.parse("t1", payload);
+        PaymentRegisterEntry event = adapter.parse("t1", payload);
         assertEquals("PURCHASE_PAYMENT", event.getEventType());
     }
 
     @Test
     void parse_rawPayloadIsPreserved() {
-        FinancialEvent event = adapter.parse("pharmacy-branch-001", PHARMACY_PAYLOAD);
+        PaymentRegisterEntry event = adapter.parse("pharmacy-branch-001", PHARMACY_PAYLOAD);
 
         assertNotNull(event.getRawPayload());
         assertTrue(event.getRawPayload().contains("PH-INV-2026-001"));
@@ -216,7 +216,7 @@ class ExternalAppAdapterTest {
                 }
                 """;
 
-        FinancialEvent event = adapter.parse("t1", payload);
+        PaymentRegisterEntry event = adapter.parse("t1", payload);
         assertEquals(0, new BigDecimal("9999.00").compareTo(event.getAmount()));
     }
 
@@ -262,7 +262,7 @@ class ExternalAppAdapterTest {
                 }
                 """;
 
-        FinancialEvent event = adapter.parse("t1", payload);
+        PaymentRegisterEntry event = adapter.parse("t1", payload);
         assertTrue(event.getIndustryTags().contains("/minio-bucket/pharmacy/invoices/2026/inv.pdf"));
     }
 
@@ -278,7 +278,7 @@ class ExternalAppAdapterTest {
                 }
                 """;
 
-        FinancialEvent event = adapter.parse("t1", payload);
+        PaymentRegisterEntry event = adapter.parse("t1", payload);
         assertTrue(event.getDescription().contains("LAB"),
                 "Description should reference the application name when payee name is absent");
     }

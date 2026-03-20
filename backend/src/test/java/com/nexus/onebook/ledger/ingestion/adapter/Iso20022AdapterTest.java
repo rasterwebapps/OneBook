@@ -1,7 +1,7 @@
 package com.nexus.onebook.ledger.ingestion.adapter;
 
 import com.nexus.onebook.ledger.ingestion.model.AdapterType;
-import com.nexus.onebook.ledger.ingestion.model.FinancialEvent;
+import com.nexus.onebook.ledger.payment.model.PaymentRegisterEntry;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -38,7 +38,7 @@ class Iso20022AdapterTest {
 
     @Test
     void parse_validPayload_returnsEvent() {
-        FinancialEvent event = adapter.parse("tenant-1", VALID_PAYLOAD);
+        PaymentRegisterEntry event = adapter.parse("tenant-1", VALID_PAYLOAD);
 
         assertEquals("tenant-1", event.getTenantId());
         assertEquals(AdapterType.ISO_20022, event.getAdapterType());

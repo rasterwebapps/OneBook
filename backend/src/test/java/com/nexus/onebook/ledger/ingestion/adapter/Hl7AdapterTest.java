@@ -1,7 +1,7 @@
 package com.nexus.onebook.ledger.ingestion.adapter;
 
 import com.nexus.onebook.ledger.ingestion.model.AdapterType;
-import com.nexus.onebook.ledger.ingestion.model.FinancialEvent;
+import com.nexus.onebook.ledger.payment.model.PaymentRegisterEntry;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -22,7 +22,7 @@ class Hl7AdapterTest {
     void parse_validPayload_returnsEvent() {
         String payload = "DFT|CHARGE|P-12345|1500.0000|USD|2026-03-10|Lab Test Fee|4100|2100";
 
-        FinancialEvent event = adapter.parse("tenant-1", payload);
+        PaymentRegisterEntry event = adapter.parse("tenant-1", payload);
 
         assertEquals("tenant-1", event.getTenantId());
         assertEquals(AdapterType.HL7, event.getAdapterType());

@@ -2,7 +2,7 @@ package com.nexus.onebook.ledger.ingestion.adapter;
 
 import com.nexus.onebook.ledger.ingestion.gateway.FinancialEventAdapter;
 import com.nexus.onebook.ledger.ingestion.model.AdapterType;
-import com.nexus.onebook.ledger.ingestion.model.FinancialEvent;
+import com.nexus.onebook.ledger.payment.model.PaymentRegisterEntry;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -35,7 +35,7 @@ public class Iso20022Adapter implements FinancialEventAdapter {
     }
 
     @Override
-    public FinancialEvent parse(String tenantId, String rawPayload) {
+    public PaymentRegisterEntry parse(String tenantId, String rawPayload) {
         if (rawPayload == null || rawPayload.isBlank()) {
             throw new IllegalArgumentException("ISO 20022 payload must not be empty");
         }
@@ -50,7 +50,7 @@ public class Iso20022Adapter implements FinancialEventAdapter {
         String debtorAcct = extractOptional(DEBTOR_ACCT, rawPayload, "");
         String creditorAcct = extractOptional(CREDITOR_ACCT, rawPayload, "");
 
-        FinancialEvent event = new FinancialEvent(tenantId, AdapterType.ISO_20022, "PAYMENT");
+        PaymentRegisterEntry event = new PaymentRegisterEntry(tenantId, AdapterType.ISO_20022, "PAYMENT");
         event.setDescription("Payment from " + debtor + " to " + creditor);
         event.setAmount(new BigDecimal(amountStr));
         event.setCurrency(currency);

@@ -2,7 +2,7 @@ package com.nexus.onebook.ledger.ingestion.adapter;
 
 import com.nexus.onebook.ledger.ingestion.gateway.FinancialEventAdapter;
 import com.nexus.onebook.ledger.ingestion.model.AdapterType;
-import com.nexus.onebook.ledger.ingestion.model.FinancialEvent;
+import com.nexus.onebook.ledger.payment.model.PaymentRegisterEntry;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -28,7 +28,7 @@ public class DmsAdapter implements FinancialEventAdapter {
     }
 
     @Override
-    public FinancialEvent parse(String tenantId, String rawPayload) {
+    public PaymentRegisterEntry parse(String tenantId, String rawPayload) {
         if (rawPayload == null || rawPayload.isBlank()) {
             throw new IllegalArgumentException("DMS payload must not be empty");
         }
@@ -43,7 +43,7 @@ public class DmsAdapter implements FinancialEventAdapter {
             throw new IllegalArgumentException("DMS adapter only supports DMS-prefixed messages");
         }
 
-        FinancialEvent event = new FinancialEvent(tenantId, AdapterType.DMS, segments[1]);
+        PaymentRegisterEntry event = new PaymentRegisterEntry(tenantId, AdapterType.DMS, segments[1]);
         event.setDescription(segments[6]);
         event.setAmount(new BigDecimal(segments[3]));
         event.setCurrency(segments[4]);

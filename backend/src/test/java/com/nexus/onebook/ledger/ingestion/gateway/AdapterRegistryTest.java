@@ -1,6 +1,7 @@
 package com.nexus.onebook.ledger.ingestion.gateway;
 
 import com.nexus.onebook.ledger.ingestion.model.AdapterType;
+import com.nexus.onebook.ledger.payment.model.PaymentRegisterEntry;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -16,8 +17,7 @@ class AdapterRegistryTest {
             public AdapterType getAdapterType() { return AdapterType.HL7; }
 
             @Override
-            public com.nexus.onebook.ledger.ingestion.model.FinancialEvent parse(
-                    String tenantId, String rawPayload) {
+            public PaymentRegisterEntry parse(String tenantId, String rawPayload) {
                 return null;
             }
         };
@@ -42,8 +42,7 @@ class AdapterRegistryTest {
             public AdapterType getAdapterType() { return AdapterType.HL7; }
 
             @Override
-            public com.nexus.onebook.ledger.ingestion.model.FinancialEvent parse(
-                    String tenantId, String rawPayload) {
+            public PaymentRegisterEntry parse(String tenantId, String rawPayload) {
                 return null;
             }
         };
@@ -53,8 +52,7 @@ class AdapterRegistryTest {
             public AdapterType getAdapterType() { return AdapterType.DMS; }
 
             @Override
-            public com.nexus.onebook.ledger.ingestion.model.FinancialEvent parse(
-                    String tenantId, String rawPayload) {
+            public PaymentRegisterEntry parse(String tenantId, String rawPayload) {
                 return null;
             }
         };

@@ -3,9 +3,9 @@ package com.nexus.onebook.ledger.ingestion.gateway;
 import com.nexus.onebook.ledger.dto.JournalTransactionRequest;
 import com.nexus.onebook.ledger.ingestion.mapper.UniversalMapper;
 import com.nexus.onebook.ledger.ingestion.model.AdapterType;
-import com.nexus.onebook.ledger.ingestion.model.EventStatus;
-import com.nexus.onebook.ledger.ingestion.model.FinancialEvent;
-import com.nexus.onebook.ledger.ingestion.repository.FinancialEventRepository;
+import com.nexus.onebook.ledger.payment.model.PaymentRegisterStatus;
+import com.nexus.onebook.ledger.payment.model.PaymentRegisterEntry;
+import com.nexus.onebook.ledger.payment.repository.PaymentRegisterRepository;
 import com.nexus.onebook.ledger.model.JournalTransaction;
 import com.nexus.onebook.ledger.service.JournalService;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +30,7 @@ class FinancialEventGatewayTest {
     private AdapterRegistry adapterRegistry;
 
     @Mock
-    private FinancialEventRepository eventRepository;
+    private PaymentRegisterRepository registerRepository;
 
     @Mock
     private UniversalMapper universalMapper;
@@ -41,12 +41,12 @@ class FinancialEventGatewayTest {
     @InjectMocks
     private FinancialEventGateway gateway;
 
-    private FinancialEvent validEvent;
+    private PaymentRegisterEntry validEvent;
     private JournalTransaction postedTransaction;
 
     @BeforeEach
     void setUp() {
-        validEvent = new FinancialEvent("tenant-1", AdapterType.HL7, "CHARGE");
+        validEvent = new PaymentRegisterEntry("tenant-1", AdapterType.HL7, "CHARGE");
         validEvent.setAmount(new BigDecimal("1500.00"));
         validEvent.setCurrency("USD");
         validEvent.setEventDate(LocalDate.of(2026, 3, 10));
@@ -62,14 +62,14 @@ class FinancialEventGatewayTest {
         FinancialEventAdapter mockAdapter = mock(FinancialEventAdapter.class);
         when(adapterRegistry.getAdapter(AdapterType.HL7)).thenReturn(mockAdapter);
         when(mockAdapter.parse("tenant-1", "payload")).thenReturn(validEvent);
-        when(eventRepository.save(any(FinancialEvent.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(registerRepository.save(any(PaymentRegisterEntry.class))).thenAnswer(inv -> inv.getArgument(0));
         when(universalMapper.mapToJournalRequest(any())).thenReturn(
                 mock(JournalTransactionRequest.class));
         when(journalService.createTransaction(any())).thenReturn(postedTransaction);
 
-        FinancialEvent result = gateway.ingest("tenant-1", AdapterType.HL7, "payload");
+        PaymentRegisterEntry result = gateway.ingest("tenant-1", AdapterType.HL7, "payload");
 
-        assertEquals(EventStatus.POSTED, result.getStatus());
+        assertEquals(PaymentRegisterStatus.POSTED, result.getStatus());
         verify(journalService).createTransaction(any());
     }
 
@@ -79,11 +79,11 @@ class FinancialEventGatewayTest {
         when(adapterRegistry.getAdapter(AdapterType.HL7)).thenReturn(mockAdapter);
         when(mockAdapter.parse(anyString(), anyString())).thenThrow(
                 new IllegalArgumentException("Bad payload"));
-        when(eventRepository.save(any(FinancialEvent.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(registerRepository.save(any(PaymentRegisterEntry.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        FinancialEvent result = gateway.ingest("tenant-1", AdapterType.HL7, "bad");
+        PaymentRegisterEntry result = gateway.ingest("tenant-1", AdapterType.HL7, "bad");
 
-        assertEquals(EventStatus.FAILED, result.getStatus());
+        assertEquals(PaymentRegisterStatus.FAILED, result.getStatus());
         assertTrue(result.getErrorMessage().contains("Bad payload"));
         verify(journalService, never()).createTransaction(any());
     }
@@ -93,13 +93,13 @@ class FinancialEventGatewayTest {
         FinancialEventAdapter mockAdapter = mock(FinancialEventAdapter.class);
         when(adapterRegistry.getAdapter(AdapterType.HL7)).thenReturn(mockAdapter);
         when(mockAdapter.parse("tenant-1", "payload")).thenReturn(validEvent);
-        when(eventRepository.save(any(FinancialEvent.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(registerRepository.save(any(PaymentRegisterEntry.class))).thenAnswer(inv -> inv.getArgument(0));
         when(universalMapper.mapToJournalRequest(any())).thenThrow(
                 new IllegalArgumentException("Account not found"));
 
-        FinancialEvent result = gateway.ingest("tenant-1", AdapterType.HL7, "payload");
+        PaymentRegisterEntry result = gateway.ingest("tenant-1", AdapterType.HL7, "payload");
 
-        assertEquals(EventStatus.FAILED, result.getStatus());
+        assertEquals(PaymentRegisterStatus.FAILED, result.getStatus());
         assertTrue(result.getErrorMessage().contains("Account not found"));
     }
 
@@ -108,11 +108,28 @@ class FinancialEventGatewayTest {
         FinancialEventAdapter mockAdapter = mock(FinancialEventAdapter.class);
         when(adapterRegistry.getAdapter(AdapterType.DMS)).thenReturn(mockAdapter);
         when(mockAdapter.parse("tenant-1", "payload")).thenReturn(validEvent);
-        when(eventRepository.save(any(FinancialEvent.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(registerRepository.save(any(PaymentRegisterEntry.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        FinancialEvent result = gateway.ingestValidateOnly("tenant-1", AdapterType.DMS, "payload");
+        PaymentRegisterEntry result = gateway.ingestValidateOnly("tenant-1", AdapterType.DMS, "payload");
 
-        assertEquals(EventStatus.VALIDATED, result.getStatus());
+        assertEquals(PaymentRegisterStatus.VALIDATED, result.getStatus());
         verify(journalService, never()).createTransaction(any());
+    }
+
+    @Test
+    void ingest_externalApp_skipsJournalPosting() {
+        PaymentRegisterEntry externalAppEvent = new PaymentRegisterEntry("tenant-1", AdapterType.EXTERNAL_APP, "PURCHASE_PAYMENT");
+        externalAppEvent.setAmount(new BigDecimal("14250.00"));
+
+        FinancialEventAdapter mockAdapter = mock(FinancialEventAdapter.class);
+        when(adapterRegistry.getAdapter(AdapterType.EXTERNAL_APP)).thenReturn(mockAdapter);
+        when(mockAdapter.parse("tenant-1", "payload")).thenReturn(externalAppEvent);
+        when(registerRepository.save(any(PaymentRegisterEntry.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        PaymentRegisterEntry result = gateway.ingest("tenant-1", AdapterType.EXTERNAL_APP, "payload");
+
+        assertEquals(PaymentRegisterStatus.VALIDATED, result.getStatus());
+        verify(journalService, never()).createTransaction(any());
+        verify(universalMapper, never()).mapToJournalRequest(any());
     }
 }

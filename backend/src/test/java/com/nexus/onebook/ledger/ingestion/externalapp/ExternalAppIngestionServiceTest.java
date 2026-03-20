@@ -5,9 +5,9 @@ import com.nexus.onebook.ledger.dto.DocumentUploadRequest;
 import com.nexus.onebook.ledger.ingestion.dto.*;
 import com.nexus.onebook.ledger.ingestion.gateway.FinancialEventGateway;
 import com.nexus.onebook.ledger.ingestion.model.AdapterType;
-import com.nexus.onebook.ledger.ingestion.model.EventStatus;
-import com.nexus.onebook.ledger.ingestion.model.FinancialEvent;
-import com.nexus.onebook.ledger.ingestion.repository.FinancialEventRepository;
+import com.nexus.onebook.ledger.payment.model.PaymentRegisterStatus;
+import com.nexus.onebook.ledger.payment.model.PaymentRegisterEntry;
+import com.nexus.onebook.ledger.payment.repository.PaymentRegisterRepository;
 import com.nexus.onebook.ledger.model.VaultDocument;
 import com.nexus.onebook.ledger.service.DocumentVaultService;
 import org.junit.jupiter.api.Test;
@@ -32,11 +32,12 @@ class ExternalAppIngestionServiceTest {
     @Mock
     private FinancialEventGateway gateway;
 
-    @Mock
-    private FinancialEventRepository eventRepository;
 
     @Mock
     private DocumentVaultService documentVaultService;
+
+    @Mock
+    private PaymentRegisterRepository paymentRegisterRepository;
 
     @Spy
     private ObjectMapper objectMapper;
@@ -64,8 +65,10 @@ class ExternalAppIngestionServiceTest {
         return new ExternalAppPaymentRequest("branch-001", applicationName, paymentData, null, metadata);
     }
 
-    private static FinancialEvent buildEvent(EventStatus status) {
-        FinancialEvent event = new FinancialEvent("branch-001", AdapterType.EXTERNAL_APP, "PURCHASE_PAYMENT");
+    private static PaymentRegisterEntry buildEvent(PaymentRegisterStatus status) {
+        PaymentRegisterEntry event = new PaymentRegisterEntry("branch-001", AdapterType.EXTERNAL_APP, "PURCHASE_PAYMENT");
+        event.setId(1L);
+        event.setEventUuid(UUID.randomUUID());
         event.setStatus(status);
         return event;
     }
@@ -73,47 +76,81 @@ class ExternalAppIngestionServiceTest {
     // --- Single ingestion ---
 
     @Test
-    void ingestPaymentRequest_pharmacy_returnsReceived() {
+    void ingestPaymentRequest_pharmacy_returnsAvailableForProcessing() {
         when(gateway.ingest(eq("branch-001"), eq(AdapterType.EXTERNAL_APP), anyString()))
-                .thenReturn(buildEvent(EventStatus.RECEIVED));
+                .thenReturn(buildEvent(PaymentRegisterStatus.VALIDATED));
 
         ExternalAppPaymentResponse response = service.ingestPaymentRequest(buildRequest("PHARMACY"));
 
         assertNotNull(response);
-        assertEquals("RECEIVED", response.status());
+        assertEquals("AVAILABLE_FOR_PROCESSING", response.status());
         assertEquals("Payment request received successfully", response.message());
         assertNull(response.documentId());
     }
 
     @Test
-    void ingestPaymentRequest_lab_returnsReceived() {
+    void ingestPaymentRequest_lab_returnsAvailableForProcessing() {
         when(gateway.ingest(eq("branch-001"), eq(AdapterType.EXTERNAL_APP), anyString()))
-                .thenReturn(buildEvent(EventStatus.RECEIVED));
+                .thenReturn(buildEvent(PaymentRegisterStatus.VALIDATED));
 
         ExternalAppPaymentResponse response = service.ingestPaymentRequest(buildRequest("LAB"));
 
         assertNotNull(response);
-        assertEquals("RECEIVED", response.status());
+        assertEquals("AVAILABLE_FOR_PROCESSING", response.status());
     }
 
     @Test
-    void ingestPaymentRequest_store_returnsReceived() {
+    void ingestPaymentRequest_store_returnsAvailableForProcessing() {
         when(gateway.ingest(anyString(), any(), anyString()))
-                .thenReturn(buildEvent(EventStatus.RECEIVED));
+                .thenReturn(buildEvent(PaymentRegisterStatus.VALIDATED));
 
         ExternalAppPaymentResponse response = service.ingestPaymentRequest(buildRequest("STORE"));
 
-        assertEquals("RECEIVED", response.status());
+        assertEquals("AVAILABLE_FOR_PROCESSING", response.status());
     }
 
     @Test
-    void ingestPaymentRequest_his_returnsReceived() {
+    void ingestPaymentRequest_his_returnsAvailableForProcessing() {
         when(gateway.ingest(anyString(), any(), anyString()))
-                .thenReturn(buildEvent(EventStatus.RECEIVED));
+                .thenReturn(buildEvent(PaymentRegisterStatus.VALIDATED));
 
         ExternalAppPaymentResponse response = service.ingestPaymentRequest(buildRequest("HIS"));
 
-        assertEquals("RECEIVED", response.status());
+        assertEquals("AVAILABLE_FOR_PROCESSING", response.status());
+    }
+
+    @Test
+    void ingestPaymentRequest_enrichesAndSavesEntry() {
+        PaymentRegisterEntry entry = buildEvent(PaymentRegisterStatus.VALIDATED);
+        when(gateway.ingest(eq("branch-001"), eq(AdapterType.EXTERNAL_APP), anyString()))
+                .thenReturn(entry);
+
+        service.ingestPaymentRequest(buildRequest("PHARMACY"));
+
+        // Verify the entry was enriched with payment details and saved
+        verify(paymentRegisterRepository).save(argThat((PaymentRegisterEntry e) ->
+                "PHARMACY".equals(e.getSourceType())
+                && "PURCHASE_PAYMENT".equals(e.getTransactionType())
+                && "XYZ Supplies".equals(e.getVendorName())
+                && new BigDecimal("14250.00").compareTo(e.getAmount()) == 0
+                && "NEFT".equals(e.getPaymentMode())
+                && "1234567890".equals(e.getBankAccountNumber())
+                && "SBIN0001234".equals(e.getBankIfscCode())
+                && PaymentRegisterStatus.AVAILABLE_FOR_PROCESSING == e.getStatus()
+        ));
+    }
+
+    @Test
+    void ingestPaymentRequest_failedEvent_doesNotCreateRegisterEntry() {
+        PaymentRegisterEntry failedEvent = buildEvent(PaymentRegisterStatus.FAILED);
+        failedEvent.setErrorMessage("Parse error");
+
+        when(gateway.ingest(anyString(), any(), anyString()))
+                .thenReturn(failedEvent);
+
+        service.ingestPaymentRequest(buildRequest("PHARMACY"));
+
+        verify(paymentRegisterRepository, never()).save(any());
     }
 
     @Test
@@ -126,7 +163,7 @@ class ExternalAppIngestionServiceTest {
                 docInfo, buildRequest("PHARMACY").metadata());
 
         when(gateway.ingest(anyString(), any(), anyString()))
-                .thenReturn(buildEvent(EventStatus.RECEIVED));
+                .thenReturn(buildEvent(PaymentRegisterStatus.VALIDATED));
 
         VaultDocument doc = new VaultDocument("branch-001", "inv.pdf", "application/pdf",
                 2048576L, "vault/branch-001/uuid/inv.pdf", "abc123checksum");
@@ -146,7 +183,7 @@ class ExternalAppIngestionServiceTest {
     @Test
     void ingestBulkPaymentRequests_mixedSources_allSucceed() {
         when(gateway.ingest(anyString(), any(), anyString()))
-                .thenReturn(buildEvent(EventStatus.RECEIVED));
+                .thenReturn(buildEvent(PaymentRegisterStatus.VALIDATED));
 
         List<ExternalAppPaymentRequest> requests = List.of(
                 buildRequest("PHARMACY"),
@@ -164,11 +201,11 @@ class ExternalAppIngestionServiceTest {
 
     @Test
     void ingestBulkPaymentRequests_oneFailedEvent_countedAsFailed() {
-        FinancialEvent failedEvent = buildEvent(EventStatus.FAILED);
+        PaymentRegisterEntry failedEvent = buildEvent(PaymentRegisterStatus.FAILED);
         failedEvent.setErrorMessage("Parse error");
 
         when(gateway.ingest(anyString(), any(), anyString()))
-                .thenReturn(buildEvent(EventStatus.RECEIVED))
+                .thenReturn(buildEvent(PaymentRegisterStatus.VALIDATED))
                 .thenReturn(failedEvent);
 
         List<ExternalAppPaymentRequest> requests = List.of(buildRequest("PHARMACY"), buildRequest("LAB"));
@@ -186,8 +223,8 @@ class ExternalAppIngestionServiceTest {
     @Test
     void getPaymentStatus_receivedEvent_returnsPendingWorkflowStage() {
         UUID eventUuid = UUID.randomUUID();
-        FinancialEvent event = buildEvent(EventStatus.RECEIVED);
-        when(eventRepository.findByEventUuid(eventUuid)).thenReturn(Optional.of(event));
+        PaymentRegisterEntry event = buildEvent(PaymentRegisterStatus.RECEIVED);
+        when(paymentRegisterRepository.findByEventUuid(eventUuid)).thenReturn(Optional.of(event));
 
         PaymentStatusResponse status = service.getPaymentStatus(eventUuid.toString());
 
@@ -196,22 +233,22 @@ class ExternalAppIngestionServiceTest {
     }
 
     @Test
-    void getPaymentStatus_mappedEvent_returnsPendingWorkflowStage() {
+    void getPaymentStatus_validatedEvent_returnsPendingWorkflowStage() {
         UUID eventUuid = UUID.randomUUID();
-        FinancialEvent event = buildEvent(EventStatus.MAPPED);
-        when(eventRepository.findByEventUuid(eventUuid)).thenReturn(Optional.of(event));
+        PaymentRegisterEntry event = buildEvent(PaymentRegisterStatus.VALIDATED);
+        when(paymentRegisterRepository.findByEventUuid(eventUuid)).thenReturn(Optional.of(event));
 
         PaymentStatusResponse status = service.getPaymentStatus(eventUuid.toString());
 
-        assertEquals("PROCESSED", status.status());
+        assertEquals("VALIDATED", status.status());
         assertEquals("PENDING", status.workflowStage());
     }
 
     @Test
     void getPaymentStatus_postedEvent_returnsPendingPaymentWorkflowStage() {
         UUID eventUuid = UUID.randomUUID();
-        FinancialEvent event = buildEvent(EventStatus.POSTED);
-        when(eventRepository.findByEventUuid(eventUuid)).thenReturn(Optional.of(event));
+        PaymentRegisterEntry event = buildEvent(PaymentRegisterStatus.POSTED);
+        when(paymentRegisterRepository.findByEventUuid(eventUuid)).thenReturn(Optional.of(event));
 
         PaymentStatusResponse status = service.getPaymentStatus(eventUuid.toString());
 
@@ -222,8 +259,8 @@ class ExternalAppIngestionServiceTest {
     @Test
     void getPaymentStatus_failedEvent_returnsRejectedWorkflowStage() {
         UUID eventUuid = UUID.randomUUID();
-        FinancialEvent event = buildEvent(EventStatus.FAILED);
-        when(eventRepository.findByEventUuid(eventUuid)).thenReturn(Optional.of(event));
+        PaymentRegisterEntry event = buildEvent(PaymentRegisterStatus.FAILED);
+        when(paymentRegisterRepository.findByEventUuid(eventUuid)).thenReturn(Optional.of(event));
 
         PaymentStatusResponse status = service.getPaymentStatus(eventUuid.toString());
 
@@ -234,8 +271,8 @@ class ExternalAppIngestionServiceTest {
     @Test
     void getPaymentStatus_rejectedEvent_returnsRejectedWorkflowStage() {
         UUID eventUuid = UUID.randomUUID();
-        FinancialEvent event = buildEvent(EventStatus.REJECTED);
-        when(eventRepository.findByEventUuid(eventUuid)).thenReturn(Optional.of(event));
+        PaymentRegisterEntry event = buildEvent(PaymentRegisterStatus.REJECTED);
+        when(paymentRegisterRepository.findByEventUuid(eventUuid)).thenReturn(Optional.of(event));
 
         PaymentStatusResponse status = service.getPaymentStatus(eventUuid.toString());
 
@@ -246,7 +283,7 @@ class ExternalAppIngestionServiceTest {
     @Test
     void getPaymentStatus_notFound_throws() {
         UUID eventUuid = UUID.randomUUID();
-        when(eventRepository.findByEventUuid(eventUuid)).thenReturn(Optional.empty());
+        when(paymentRegisterRepository.findByEventUuid(eventUuid)).thenReturn(Optional.empty());
 
         assertThrows(IllegalArgumentException.class,
                 () -> service.getPaymentStatus(eventUuid.toString()));

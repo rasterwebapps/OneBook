@@ -1,6 +1,6 @@
 package com.nexus.onebook.ledger.ingestion.dto;
 
-import com.nexus.onebook.ledger.ingestion.model.EventStatus;
+import com.nexus.onebook.ledger.payment.model.PaymentRegisterStatus;
 import java.util.UUID;
 
 /**
@@ -8,6 +8,6 @@ import java.util.UUID;
  */
 public record FinancialEventResponse(
         UUID eventUuid,
-        EventStatus status,
+        PaymentRegisterStatus status,
         String message
 ) {}

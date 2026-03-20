@@ -3,6 +3,9 @@ package com.nexus.onebook.ledger.payment.service;
 import com.nexus.onebook.ledger.cache.WarmCacheService;
 import com.nexus.onebook.ledger.dto.JournalEntryRequest;
 import com.nexus.onebook.ledger.dto.JournalTransactionRequest;
+
+
+
 import com.nexus.onebook.ledger.payment.dto.BatchApprovalRequest;
 import com.nexus.onebook.ledger.payment.dto.CreateBatchRequest;
 import com.nexus.onebook.ledger.payment.dto.PaymentBatchResponse;
@@ -176,9 +179,10 @@ public class PaymentBatchService {
 
         List<PaymentRegisterEntry> entries = registerRepository.findByIdInAndTenantId(registerEntryIds, tenantId);
         for (PaymentRegisterEntry entry : entries) {
-            entry.setStatus(PaymentRegisterStatus.APPROVED);
+            entry.setStatus(PaymentRegisterStatus.POSTED);
         }
         registerRepository.saveAll(entries);
+
 
         PaymentBatch savedBatch = batchRepository.save(batch);
 
