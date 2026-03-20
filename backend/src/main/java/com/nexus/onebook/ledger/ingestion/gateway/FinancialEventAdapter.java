@@ -1,12 +1,12 @@
 package com.nexus.onebook.ledger.ingestion.gateway;
 
 import com.nexus.onebook.ledger.ingestion.model.AdapterType;
-import com.nexus.onebook.ledger.ingestion.model.FinancialEvent;
+import com.nexus.onebook.ledger.payment.model.PaymentRegisterEntry;
 
 /**
  * Pluggable adapter interface for the Financial Event Gateway.
  * Each adapter parses raw payloads from a specific industry protocol
- * and produces normalised {@link FinancialEvent} objects.
+ * and produces normalised {@link PaymentRegisterEntry} objects.
  */
 public interface FinancialEventAdapter {
 
@@ -16,12 +16,12 @@ public interface FinancialEventAdapter {
     AdapterType getAdapterType();
 
     /**
-     * Parses a raw payload string into a normalised FinancialEvent.
+     * Parses a raw payload string into a normalised PaymentRegisterEntry.
      *
      * @param tenantId   the tenant context
      * @param rawPayload the raw message from the external system
-     * @return a normalised FinancialEvent ready for mapping
+     * @return a normalised PaymentRegisterEntry ready for mapping
      * @throws IllegalArgumentException if the payload cannot be parsed
      */
-    FinancialEvent parse(String tenantId, String rawPayload);
+    PaymentRegisterEntry parse(String tenantId, String rawPayload);
 }

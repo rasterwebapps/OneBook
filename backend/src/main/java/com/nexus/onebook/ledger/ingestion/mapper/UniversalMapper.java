@@ -2,7 +2,7 @@ package com.nexus.onebook.ledger.ingestion.mapper;
 
 import com.nexus.onebook.ledger.dto.JournalEntryRequest;
 import com.nexus.onebook.ledger.dto.JournalTransactionRequest;
-import com.nexus.onebook.ledger.ingestion.model.FinancialEvent;
+import com.nexus.onebook.ledger.payment.model.PaymentRegisterEntry;
 import com.nexus.onebook.ledger.model.LedgerAccount;
 import com.nexus.onebook.ledger.repository.LedgerAccountRepository;
 import org.springframework.stereotype.Service;
@@ -33,7 +33,7 @@ public class UniversalMapper {
      * @return a JournalTransactionRequest ready for the double-entry engine
      * @throws IllegalArgumentException if required fields are missing or accounts cannot be resolved
      */
-    public JournalTransactionRequest mapToJournalRequest(FinancialEvent event) {
+    public JournalTransactionRequest mapToJournalRequest(PaymentRegisterEntry event) {
         if (event.getAmount() == null) {
             throw new IllegalArgumentException("Financial event amount is required for mapping");
         }
@@ -83,7 +83,7 @@ public class UniversalMapper {
                                 + ", accountCode=" + accountCode));
     }
 
-    private String buildDescription(FinancialEvent event) {
+    private String buildDescription(PaymentRegisterEntry event) {
         String desc = event.getDescription();
         if (desc != null && !desc.isBlank()) {
             return desc;

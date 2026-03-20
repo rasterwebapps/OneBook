@@ -2,7 +2,7 @@ package com.nexus.onebook.ledger.ingestion.adapter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nexus.onebook.ledger.ingestion.model.AdapterType;
-import com.nexus.onebook.ledger.ingestion.model.FinancialEvent;
+import com.nexus.onebook.ledger.payment.model.PaymentRegisterEntry;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -35,7 +35,7 @@ class WebhookAdapterTest {
 
     @Test
     void parse_validPayload_returnsEvent() {
-        FinancialEvent event = adapter.parse("tenant-1", VALID_PAYLOAD);
+        PaymentRegisterEntry event = adapter.parse("tenant-1", VALID_PAYLOAD);
 
         assertEquals("tenant-1", event.getTenantId());
         assertEquals(AdapterType.REST_WEBHOOK, event.getAdapterType());
@@ -79,7 +79,7 @@ class WebhookAdapterTest {
                 }
                 """;
 
-        FinancialEvent event = adapter.parse("tenant-1", payload);
+        PaymentRegisterEntry event = adapter.parse("tenant-1", payload);
 
         assertEquals("GENERIC", event.getEventType());
         assertEquals("USD", event.getCurrency());

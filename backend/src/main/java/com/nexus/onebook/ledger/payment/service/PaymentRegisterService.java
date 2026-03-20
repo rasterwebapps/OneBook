@@ -30,7 +30,8 @@ public class PaymentRegisterService {
             .findByTenantIdAndStatusOrderByDueDateAsc(tenantId, PaymentRegisterStatus.AVAILABLE_FOR_PROCESSING);
 
         Map<Long, List<PaymentRegisterEntry>> grouped = entries.stream()
-            .collect(Collectors.groupingBy(PaymentRegisterEntry::getVendorAccountId,
+            .collect(Collectors.groupingBy(
+                e -> e.getVendorAccountId() != null ? e.getVendorAccountId() : 0L,
                 LinkedHashMap::new, Collectors.toList()));
 
         return grouped.entrySet().stream()

@@ -9,7 +9,12 @@ import com.nexus.onebook.ledger.ingestion.dto.*;
 import com.nexus.onebook.ledger.ingestion.externalapp.ExternalAppIngestionService;
 import com.nexus.onebook.ledger.ingestion.gateway.AdapterRegistry;
 import com.nexus.onebook.ledger.ingestion.gateway.FinancialEventGateway;
-import com.nexus.onebook.ledger.ingestion.model.*;
+import com.nexus.onebook.ledger.ingestion.model.AdapterType;
+import com.nexus.onebook.ledger.ingestion.model.CardTransaction;
+import com.nexus.onebook.ledger.ingestion.model.MatchStatus;
+import com.nexus.onebook.ledger.ingestion.model.VendorInvoice;
+import com.nexus.onebook.ledger.payment.model.PaymentRegisterEntry;
+import com.nexus.onebook.ledger.payment.model.PaymentRegisterStatus;
 import com.nexus.onebook.ledger.exception.GlobalExceptionHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,8 +69,8 @@ class IngestionControllerTest {
 
     @Test
     void ingestEvent_validRequest_returns201() throws Exception {
-        FinancialEvent event = new FinancialEvent("tenant-1", AdapterType.HL7, "CHARGE");
-        event.setStatus(EventStatus.POSTED);
+        PaymentRegisterEntry event = new PaymentRegisterEntry("tenant-1", AdapterType.HL7, "CHARGE");
+        event.setStatus(PaymentRegisterStatus.POSTED);
 
         when(gateway.ingest(eq("tenant-1"), eq(AdapterType.HL7), any())).thenReturn(event);
 

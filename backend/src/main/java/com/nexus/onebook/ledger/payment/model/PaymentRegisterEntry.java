@@ -1,10 +1,17 @@
 package com.nexus.onebook.ledger.payment.model;
 
+import com.nexus.onebook.ledger.ingestion.model.AdapterType;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.UUID;
 
+/**
+ * Unified payment register entry that tracks a payment request from ingestion
+ * through processing, approval, and payment.
+ * Lifecycle: RECEIVED → VALIDATED → AVAILABLE_FOR_PROCESSING → IN_BATCH → APPROVED → POSTED → PAYMENT_GENERATED → PAID
+ */
 @Entity
 @Table(name = "payment_register")
 public class PaymentRegisterEntry {
@@ -15,6 +22,44 @@ public class PaymentRegisterEntry {
 
     @Column(name = "tenant_id", nullable = false)
     private String tenantId;
+
+    // --- Ingestion fields ---
+
+    @Column(name = "event_uuid", nullable = false, unique = true)
+    private UUID eventUuid;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "adapter_type", length = 30)
+    private AdapterType adapterType;
+
+    @Column(name = "event_type", length = 100)
+    private String eventType;
+
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "event_date")
+    private LocalDate eventDate;
+
+    @Column(name = "source_reference", length = 255)
+    private String sourceReference;
+
+    @Column(name = "debit_account_code", length = 50)
+    private String debitAccountCode;
+
+    @Column(name = "credit_account_code", length = 50)
+    private String creditAccountCode;
+
+    @Column(name = "raw_payload", columnDefinition = "text")
+    private String rawPayload;
+
+    @Column(name = "industry_tags", columnDefinition = "text")
+    private String industryTags = "{}";
+
+    @Column(name = "error_message")
+    private String errorMessage;
+
+    // --- Payment / vendor fields ---
 
     @Column(name = "vendor_account_id")
     private Long vendorAccountId;
@@ -70,8 +115,19 @@ public class PaymentRegisterEntry {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
+    public PaymentRegisterEntry() {}
+
+    /** Convenience constructor matching the old FinancialEvent signature. */
+    public PaymentRegisterEntry(String tenantId, AdapterType adapterType, String eventType) {
+        this.tenantId = tenantId;
+        this.eventUuid = UUID.randomUUID();
+        this.adapterType = adapterType;
+        this.eventType = eventType;
+    }
+
     @PrePersist
     protected void onCreate() {
+        if (eventUuid == null) { eventUuid = UUID.randomUUID(); }
         createdAt = updatedAt = Instant.now();
     }
 
@@ -80,11 +136,46 @@ public class PaymentRegisterEntry {
         updatedAt = Instant.now();
     }
 
+    // --- Getters and Setters ---
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
     public String getTenantId() { return tenantId; }
     public void setTenantId(String tenantId) { this.tenantId = tenantId; }
+
+    public UUID getEventUuid() { return eventUuid; }
+    public void setEventUuid(UUID eventUuid) { this.eventUuid = eventUuid; }
+
+    public AdapterType getAdapterType() { return adapterType; }
+    public void setAdapterType(AdapterType adapterType) { this.adapterType = adapterType; }
+
+    public String getEventType() { return eventType; }
+    public void setEventType(String eventType) { this.eventType = eventType; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
+    public LocalDate getEventDate() { return eventDate; }
+    public void setEventDate(LocalDate eventDate) { this.eventDate = eventDate; }
+
+    public String getSourceReference() { return sourceReference; }
+    public void setSourceReference(String sourceReference) { this.sourceReference = sourceReference; }
+
+    public String getDebitAccountCode() { return debitAccountCode; }
+    public void setDebitAccountCode(String debitAccountCode) { this.debitAccountCode = debitAccountCode; }
+
+    public String getCreditAccountCode() { return creditAccountCode; }
+    public void setCreditAccountCode(String creditAccountCode) { this.creditAccountCode = creditAccountCode; }
+
+    public String getRawPayload() { return rawPayload; }
+    public void setRawPayload(String rawPayload) { this.rawPayload = rawPayload; }
+
+    public String getIndustryTags() { return industryTags; }
+    public void setIndustryTags(String industryTags) { this.industryTags = industryTags; }
+
+    public String getErrorMessage() { return errorMessage; }
+    public void setErrorMessage(String errorMessage) { this.errorMessage = errorMessage; }
 
     public Long getVendorAccountId() { return vendorAccountId; }
     public void setVendorAccountId(Long vendorAccountId) { this.vendorAccountId = vendorAccountId; }

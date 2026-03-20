@@ -2,7 +2,7 @@ package com.nexus.onebook.ledger.ingestion.mapper;
 
 import com.nexus.onebook.ledger.dto.JournalTransactionRequest;
 import com.nexus.onebook.ledger.ingestion.model.AdapterType;
-import com.nexus.onebook.ledger.ingestion.model.FinancialEvent;
+import com.nexus.onebook.ledger.payment.model.PaymentRegisterEntry;
 import com.nexus.onebook.ledger.model.LedgerAccount;
 import com.nexus.onebook.ledger.repository.LedgerAccountRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,7 +49,7 @@ class UniversalMapperTest {
         when(accountRepository.findByTenantIdAndAccountCode("tenant-1", "2100"))
                 .thenReturn(Optional.of(creditAccount));
 
-        FinancialEvent event = new FinancialEvent("tenant-1", AdapterType.HL7, "CHARGE");
+        PaymentRegisterEntry event = new PaymentRegisterEntry("tenant-1", AdapterType.HL7, "CHARGE");
         event.setAmount(new BigDecimal("1500.00"));
         event.setEventDate(LocalDate.of(2026, 3, 10));
         event.setDescription("Lab Test Fee");
@@ -72,7 +72,7 @@ class UniversalMapperTest {
 
     @Test
     void mapToJournalRequest_missingAmount_throws() {
-        FinancialEvent event = new FinancialEvent("tenant-1", AdapterType.HL7, "CHARGE");
+        PaymentRegisterEntry event = new PaymentRegisterEntry("tenant-1", AdapterType.HL7, "CHARGE");
         event.setDebitAccountCode("4100");
         event.setCreditAccountCode("2100");
 
@@ -82,7 +82,7 @@ class UniversalMapperTest {
 
     @Test
     void mapToJournalRequest_missingDebitCode_throws() {
-        FinancialEvent event = new FinancialEvent("tenant-1", AdapterType.HL7, "CHARGE");
+        PaymentRegisterEntry event = new PaymentRegisterEntry("tenant-1", AdapterType.HL7, "CHARGE");
         event.setAmount(new BigDecimal("100"));
         event.setCreditAccountCode("2100");
 
@@ -95,7 +95,7 @@ class UniversalMapperTest {
         when(accountRepository.findByTenantIdAndAccountCode("tenant-1", "9999"))
                 .thenReturn(Optional.empty());
 
-        FinancialEvent event = new FinancialEvent("tenant-1", AdapterType.HL7, "CHARGE");
+        PaymentRegisterEntry event = new PaymentRegisterEntry("tenant-1", AdapterType.HL7, "CHARGE");
         event.setAmount(new BigDecimal("100"));
         event.setEventDate(LocalDate.now());
         event.setDebitAccountCode("9999");
@@ -112,7 +112,7 @@ class UniversalMapperTest {
         when(accountRepository.findByTenantIdAndAccountCode("tenant-1", "2100"))
                 .thenReturn(Optional.of(creditAccount));
 
-        FinancialEvent event = new FinancialEvent("tenant-1", AdapterType.DMS, "VEHICLE_SALE");
+        PaymentRegisterEntry event = new PaymentRegisterEntry("tenant-1", AdapterType.DMS, "VEHICLE_SALE");
         event.setAmount(new BigDecimal("35000"));
         event.setEventDate(LocalDate.now());
         event.setDebitAccountCode("4100");

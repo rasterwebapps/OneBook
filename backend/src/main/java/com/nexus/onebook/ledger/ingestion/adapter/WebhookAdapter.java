@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nexus.onebook.ledger.ingestion.gateway.FinancialEventAdapter;
 import com.nexus.onebook.ledger.ingestion.model.AdapterType;
-import com.nexus.onebook.ledger.ingestion.model.FinancialEvent;
+import com.nexus.onebook.ledger.payment.model.PaymentRegisterEntry;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -45,7 +45,7 @@ public class WebhookAdapter implements FinancialEventAdapter {
     }
 
     @Override
-    public FinancialEvent parse(String tenantId, String rawPayload) {
+    public PaymentRegisterEntry parse(String tenantId, String rawPayload) {
         if (rawPayload == null || rawPayload.isBlank()) {
             throw new IllegalArgumentException("Webhook payload must not be empty");
         }
@@ -57,7 +57,7 @@ public class WebhookAdapter implements FinancialEventAdapter {
             BigDecimal amount = new BigDecimal(requiredText(root, "amount"));
             String dateStr = requiredText(root, "date");
 
-            FinancialEvent event = new FinancialEvent(tenantId, AdapterType.REST_WEBHOOK, eventType);
+            PaymentRegisterEntry event = new PaymentRegisterEntry(tenantId, AdapterType.REST_WEBHOOK, eventType);
             event.setAmount(amount);
             event.setCurrency(optionalText(root, "currency", "USD"));
             event.setEventDate(LocalDate.parse(dateStr));

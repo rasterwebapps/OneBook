@@ -6,12 +6,16 @@ import com.nexus.onebook.ledger.dto.DocumentUploadRequest;
 import com.nexus.onebook.ledger.ingestion.dto.*;
 import com.nexus.onebook.ledger.ingestion.gateway.FinancialEventGateway;
 import com.nexus.onebook.ledger.ingestion.model.AdapterType;
-import com.nexus.onebook.ledger.ingestion.model.EventStatus;
-import com.nexus.onebook.ledger.ingestion.model.FinancialEvent;
-import com.nexus.onebook.ledger.ingestion.repository.FinancialEventRepository;
+import com.nexus.onebook.ledger.payment.model.PaymentRegisterStatus;
+import com.nexus.onebook.ledger.payment.model.PaymentRegisterEntry;
+
 import com.nexus.onebook.ledger.model.VaultDocument;
+import com.nexus.onebook.ledger.payment.model.PaymentRegisterEntry;
+import com.nexus.onebook.ledger.payment.model.PaymentRegisterStatus;
+import com.nexus.onebook.ledger.payment.repository.PaymentRegisterRepository;
 import com.nexus.onebook.ledger.service.DocumentVaultService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,17 +45,17 @@ import java.util.UUID;
 public class ExternalAppIngestionService {
 
     private final FinancialEventGateway gateway;
-    private final FinancialEventRepository eventRepository;
     private final DocumentVaultService documentVaultService;
+    private final PaymentRegisterRepository paymentRegisterRepository;
     private final ObjectMapper objectMapper;
 
     public ExternalAppIngestionService(FinancialEventGateway gateway,
-                                       FinancialEventRepository eventRepository,
                                        DocumentVaultService documentVaultService,
+                                       PaymentRegisterRepository paymentRegisterRepository,
                                        ObjectMapper objectMapper) {
         this.gateway = gateway;
-        this.eventRepository = eventRepository;
         this.documentVaultService = documentVaultService;
+        this.paymentRegisterRepository = paymentRegisterRepository;
         this.objectMapper = objectMapper;
     }
 
@@ -62,17 +66,25 @@ public class ExternalAppIngestionService {
      * @param request the payment request from the external application
      * @return response containing event ID, status, workflow ID, and document ID
      */
+    @Transactional
     public ExternalAppPaymentResponse ingestPaymentRequest(ExternalAppPaymentRequest request) {
         String payload = serializePayload(request);
 
-        FinancialEvent event = gateway.ingest(request.tenantId(), AdapterType.EXTERNAL_APP, payload);
+        PaymentRegisterEntry entry = gateway.ingest(request.tenantId(), AdapterType.EXTERNAL_APP, payload);
+
+        // Enrich with payment-specific fields and promote to AVAILABLE_FOR_PROCESSING
+        if (entry.getStatus() != PaymentRegisterStatus.FAILED) {
+            enrichWithPaymentDetails(entry, request);
+            entry.setStatus(PaymentRegisterStatus.AVAILABLE_FOR_PROCESSING);
+            paymentRegisterRepository.save(entry);
+        }
 
         String documentId = null;
         if (request.documentInfo() != null) {
             documentId = storeInvoiceDocument(request);
         }
 
-        return buildPaymentResponse(event, documentId);
+        return buildPaymentResponse(entry, documentId);
     }
 
     /**
@@ -104,7 +116,7 @@ public class ExternalAppIngestionService {
      */
     public PaymentStatusResponse getPaymentStatus(String requestId) {
         UUID eventUuid = parseEventUuid(requestId);
-        FinancialEvent event = eventRepository.findByEventUuid(eventUuid)
+        PaymentRegisterEntry event = paymentRegisterRepository.findByEventUuid(eventUuid)
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Payment request not found: " + requestId));
         return mapToStatusResponse(event);
@@ -130,6 +142,37 @@ public class ExternalAppIngestionService {
     }
 
     // --- Private helpers ---
+
+    private void enrichWithPaymentDetails(PaymentRegisterEntry entry, ExternalAppPaymentRequest request) {
+        ExternalAppPaymentRequest.PaymentData pd = request.paymentData();
+
+        entry.setSourceType(request.applicationName());
+        entry.setSourceReferenceId(entry.getEventUuid().toString());
+        entry.setVendorName(pd.payeeName());
+        entry.setTransactionType(pd.transactionType());
+        entry.setInvoiceNumber(pd.invoiceNumber());
+
+        if (pd.invoiceDate() != null) {
+            try { entry.setInvoiceDate(java.time.LocalDate.parse(pd.invoiceDate())); }
+            catch (Exception ignored) { }
+        }
+        if (pd.dueDate() != null) {
+            try { entry.setDueDate(java.time.LocalDate.parse(pd.dueDate())); }
+            catch (Exception ignored) { }
+        }
+
+        if (pd.amounts() != null && pd.amounts().payableAmount() != null) {
+            entry.setAmount(pd.amounts().payableAmount());
+        }
+
+        entry.setPaymentMode(pd.paymentMode());
+
+        if (pd.bankDetails() != null) {
+            entry.setBankAccountNumber(pd.bankDetails().accountNumber());
+            entry.setBankIfscCode(pd.bankDetails().ifscCode());
+            entry.setBankName(pd.bankDetails().bankName());
+        }
+    }
 
     private String serializePayload(ExternalAppPaymentRequest request) {
         try {
@@ -178,7 +221,7 @@ public class ExternalAppIngestionService {
         );
     }
 
-    private ExternalAppPaymentResponse buildPaymentResponse(FinancialEvent event, String documentId) {
+    private ExternalAppPaymentResponse buildPaymentResponse(PaymentRegisterEntry event, String documentId) {
         String eventId = event.getEventUuid().toString();
         String status = event.getStatus().name();
         String message = event.getErrorMessage() != null
@@ -197,10 +240,10 @@ public class ExternalAppIngestionService {
         }
     }
 
-    private PaymentStatusResponse mapToStatusResponse(FinancialEvent event) {
-        EventStatus eventStatus = event.getStatus();
-        String externalStatus = mapEventStatusToExternal(eventStatus);
-        String workflowStage = mapEventStatusToWorkflowStage(eventStatus);
+    private PaymentStatusResponse mapToStatusResponse(PaymentRegisterEntry event) {
+        PaymentRegisterStatus status = event.getStatus();
+        String externalStatus = mapStatusToExternal(status);
+        String workflowStage = mapStatusToWorkflowStage(status);
 
         return new PaymentStatusResponse(
                 event.getEventUuid().toString(),
@@ -212,21 +255,25 @@ public class ExternalAppIngestionService {
         );
     }
 
-    private String mapEventStatusToExternal(EventStatus status) {
+    private String mapStatusToExternal(PaymentRegisterStatus status) {
         return switch (status) {
             case RECEIVED -> "RECEIVED";
-            case VALIDATED -> "VALIDATED";
-            case MAPPED -> "PROCESSED";
-            case POSTED -> "APPROVED";
+            case VALIDATED, AVAILABLE_FOR_PROCESSING -> "VALIDATED";
+            case IN_BATCH -> "IN_BATCH";
+            case APPROVED, POSTED -> "APPROVED";
+            case PAYMENT_GENERATED -> "PAYMENT_GENERATED";
+            case PAID -> "PAID";
             case FAILED -> "FAILED";
             case REJECTED -> "REJECTED";
         };
     }
 
-    private String mapEventStatusToWorkflowStage(EventStatus status) {
+    private String mapStatusToWorkflowStage(PaymentRegisterStatus status) {
         return switch (status) {
-            case RECEIVED, VALIDATED, MAPPED -> "PENDING";
-            case POSTED -> "PENDING_PAYMENT";
+            case RECEIVED, VALIDATED, AVAILABLE_FOR_PROCESSING -> "PENDING";
+            case IN_BATCH -> "PENDING_APPROVAL";
+            case APPROVED, POSTED -> "PENDING_PAYMENT";
+            case PAYMENT_GENERATED, PAID -> "COMPLETED";
             case FAILED, REJECTED -> "REJECTED";
         };
     }

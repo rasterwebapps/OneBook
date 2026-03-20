@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nexus.onebook.ledger.ingestion.gateway.FinancialEventAdapter;
 import com.nexus.onebook.ledger.ingestion.model.AdapterType;
-import com.nexus.onebook.ledger.ingestion.model.FinancialEvent;
+import com.nexus.onebook.ledger.payment.model.PaymentRegisterEntry;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -66,7 +66,7 @@ public class ExternalAppAdapter implements FinancialEventAdapter {
     }
 
     @Override
-    public FinancialEvent parse(String tenantId, String rawPayload) {
+    public PaymentRegisterEntry parse(String tenantId, String rawPayload) {
         if (rawPayload == null || rawPayload.isBlank()) {
             throw new IllegalArgumentException("External app payload must not be empty");
         }
@@ -87,7 +87,7 @@ public class ExternalAppAdapter implements FinancialEventAdapter {
             BigDecimal payableAmount = extractPayableAmount(paymentData);
             LocalDate eventDate = extractEventDate(paymentData);
 
-            FinancialEvent event = new FinancialEvent(tenantId, AdapterType.EXTERNAL_APP, transactionType);
+            PaymentRegisterEntry event = new PaymentRegisterEntry(tenantId, AdapterType.EXTERNAL_APP, transactionType);
             event.setAmount(payableAmount);
             event.setCurrency(currency);
             event.setEventDate(eventDate);

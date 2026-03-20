@@ -2,7 +2,7 @@ package com.nexus.onebook.ledger.ingestion.connector;
 
 import com.nexus.onebook.ledger.ingestion.gateway.FinancialEventGateway;
 import com.nexus.onebook.ledger.ingestion.model.AdapterType;
-import com.nexus.onebook.ledger.ingestion.model.FinancialEvent;
+import com.nexus.onebook.ledger.payment.model.PaymentRegisterEntry;
 import org.springframework.stereotype.Service;
 
 /**
@@ -26,7 +26,7 @@ public class InventoryEventListener {
      * @param rawPayload the inventory event payload (JSON format expected by REST_WEBHOOK adapter)
      * @return the processed FinancialEvent
      */
-    public FinancialEvent processInventoryEvent(String tenantId, String rawPayload) {
+    public PaymentRegisterEntry processInventoryEvent(String tenantId, String rawPayload) {
         return gateway.ingest(tenantId, AdapterType.REST_WEBHOOK, rawPayload);
     }
 }
