@@ -1,0 +1,324 @@
+{
+  "id": "onebook",
+  "realm": "onebook",
+  "displayName": "OneBook",
+  "displayNameHtml": "<span style=\"font-size:28px;font-weight:700\">📒 OneBook</span>",
+  "enabled": true,
+  "sslRequired": "external",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": true,
+  "permanentLockout": false,
+  "maxFailureWaitSeconds": 900,
+  "minimumQuickLoginWaitSeconds": 60,
+  "waitIncrementSeconds": 60,
+  "quickLoginCheckMilliSeconds": 1000,
+  "maxDeltaTimeSeconds": 43200,
+  "failureFactor": 5,
+  "defaultSignatureAlgorithm": "RS256",
+  "accessTokenLifespan": 300,
+  "accessTokenLifespanForImplicitFlow": 900,
+  "ssoSessionIdleTimeout": 1800,
+  "ssoSessionMaxLifespan": 36000,
+  "offlineSessionIdleTimeout": 2592000,
+  "offlineSessionMaxLifespanEnabled": false,
+  "clientSessionIdleTimeout": 0,
+  "clientSessionMaxLifespan": 0,
+  "accessCodeLifespan": 60,
+  "accessCodeLifespanUserAction": 300,
+  "accessCodeLifespanLogin": 1800,
+  "actionTokenGeneratedByAdminLifespan": 43200,
+  "actionTokenGeneratedByUserLifespan": 300,
+  "passwordPolicy": "length(8) and digits(1) and upperCase(1) and specialChars(1)",
+  "roles": {
+    "realm": [
+      {
+        "name": "ROLE_ADMIN",
+        "description": "Full administrative access to OneBook"
+      },
+      {
+        "name": "ROLE_ACCOUNTANT",
+        "description": "Standard accounting operations"
+      },
+      {
+        "name": "ROLE_AUDITOR",
+        "description": "Read-only audit portal access"
+      },
+      {
+        "name": "ROLE_MANAGER",
+        "description": "Approval workflows and management"
+      }
+    ],
+    "client": {
+      "onebook-frontend": [
+        {
+          "name": "view-reports",
+          "description": "View financial reports"
+        },
+        {
+          "name": "post-entries",
+          "description": "Post journal entries"
+        },
+        {
+          "name": "approve-transactions",
+          "description": "Approve transactions"
+        }
+      ]
+    }
+  },
+  "groups": [
+    {
+      "name": "Accountants",
+      "realmRoles": ["ROLE_ACCOUNTANT"]
+    },
+    {
+      "name": "Administrators",
+      "realmRoles": ["ROLE_ADMIN", "ROLE_ACCOUNTANT"]
+    },
+    {
+      "name": "Auditors",
+      "realmRoles": ["ROLE_AUDITOR"]
+    },
+    {
+      "name": "Managers",
+      "realmRoles": ["ROLE_MANAGER", "ROLE_ACCOUNTANT"]
+    }
+  ],
+  "defaultDefaultClientScopes": [
+    "profile",
+    "email",
+    "roles",
+    "web-origins"
+  ],
+  "clients": [
+    {
+      "clientId": "onebook-frontend",
+      "name": "OneBook Frontend",
+      "description": "Angular SPA for OneBook accounting system",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "authorizationServicesEnabled": false,
+      "redirectUris": [
+        "http://localhost:4200/*",
+        "http://localhost:4200/silent-refresh.html"
+      ],
+      "webOrigins": [
+        "http://localhost:4200"
+      ],
+      "protocol": "openid-connect",
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:4200/*"
+      },
+      "defaultClientScopes": [
+        "profile",
+        "email",
+        "roles"
+      ],
+      "optionalClientScopes": [
+        "offline_access"
+      ]
+    },
+    {
+      "clientId": "onebook-backend",
+      "name": "OneBook Backend API",
+      "description": "Spring Boot REST API for OneBook",
+      "enabled": true,
+      "bearerOnly": true,
+      "publicClient": false,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "protocol": "openid-connect"
+    }
+  ],
+  "components": {
+    "org.keycloak.storage.UserStorageProvider": [
+      {
+        "name": "ldap-federation",
+        "providerId": "ldap",
+        "subComponents": {
+          "org.keycloak.storage.ldap.mappers.LDAPStorageMapper": [
+            {
+              "name": "username",
+              "providerId": "user-attribute-ldap-mapper",
+              "config": {
+                "ldap.attribute": ["uid"],
+                "user.model.attribute": ["username"],
+                "read.only": ["true"]
+              }
+            },
+            {
+              "name": "email",
+              "providerId": "user-attribute-ldap-mapper",
+              "config": {
+                "ldap.attribute": ["mail"],
+                "user.model.attribute": ["email"],
+                "read.only": ["true"]
+              }
+            },
+            {
+              "name": "first name",
+              "providerId": "user-attribute-ldap-mapper",
+              "config": {
+                "ldap.attribute": ["givenName"],
+                "user.model.attribute": ["firstName"],
+                "read.only": ["true"]
+              }
+            },
+            {
+              "name": "last name",
+              "providerId": "user-attribute-ldap-mapper",
+              "config": {
+                "ldap.attribute": ["sn"],
+                "user.model.attribute": ["lastName"],
+                "read.only": ["true"]
+              }
+            },
+            {
+              "name": "group-mapper",
+              "providerId": "group-ldap-mapper",
+              "config": {
+                "groups.dn": ["ou=groups,dc=onebook,dc=local"],
+                "group.name.ldap.attribute": ["cn"],
+                "group.object.classes": ["groupOfUniqueNames"],
+                "membership.ldap.attribute": ["uniqueMember"],
+                "membership.user.ldap.attribute": ["dn"],
+                "mode": ["READ_ONLY"],
+                "user.roles.retrieve.strategy": ["LOAD_GROUPS_BY_MEMBER_ATTRIBUTE"],
+                "drop.non.existing.groups.during.sync": ["false"]
+              }
+            }
+          ]
+        },
+        "config": {
+          "vendor": ["other"],
+          "connectionUrl": ["ldap://openldap:389"],
+          "bindDn": ["cn=admin,dc=onebook,dc=local"],
+          "bindCredential": ["ldap_admin_secret"],
+          "usersDn": ["ou=users,dc=onebook,dc=local"],
+          "usernameLDAPAttribute": ["uid"],
+          "rdnLDAPAttribute": ["uid"],
+          "uuidLDAPAttribute": ["entryUUID"],
+          "userObjectClasses": ["inetOrgPerson"],
+          "editMode": ["READ_ONLY"],
+          "syncRegistrations": ["false"],
+          "importEnabled": ["true"],
+          "batchSizeForSync": ["1000"],
+          "fullSyncPeriod": ["-1"],
+          "changedSyncPeriod": ["-1"],
+          "searchScope": ["1"],
+          "trustEmail": ["true"],
+          "enabled": ["true"],
+          "priority": ["0"]
+        }
+      }
+    ]
+  },
+  "users": [
+    {
+      "username": "demo-admin",
+      "email": "admin@onebook.local",
+      "firstName": "Demo",
+      "lastName": "Admin",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin123!",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["ROLE_ADMIN", "ROLE_ACCOUNTANT"],
+      "attributes": {
+        "tenant_id": ["demo-tenant-001"]
+      }
+    },
+    {
+      "username": "demo-accountant",
+      "email": "accountant@onebook.local",
+      "firstName": "Demo",
+      "lastName": "Accountant",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "account123!",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["ROLE_ACCOUNTANT"],
+      "attributes": {
+        "tenant_id": ["demo-tenant-001"]
+      }
+    }
+  ],
+  "clientScopes": [
+    {
+      "name": "roles",
+      "description": "OpenID Connect scope for roles",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "false"
+      },
+      "protocolMappers": [
+        {
+          "name": "realm roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "multivalued": "true",
+            "userinfo.token.claim": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "realm_access.roles",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "client roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-client-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "multivalued": "true",
+            "userinfo.token.claim": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "resource_access.${client_id}.roles",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "tenant_id",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "userinfo.token.claim": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "tenant_id",
+            "user.attribute": "tenant_id",
+            "jsonType.label": "String"
+          }
+        }
+      ]
+    }
+  ],
+  "loginTheme": "onebook",
+  "accountTheme": "keycloak.v2",
+  "adminTheme": "keycloak.v2",
+  "emailTheme": "keycloak"
+}

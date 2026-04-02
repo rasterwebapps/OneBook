@@ -1,0 +1,134 @@
+<!-- OneBook Start Page — 2026 SaaS Landing -->
+<div class="start-page">
+  <!-- Animated Background Gradient -->
+  <div class="bg-gradient"></div>
+  <div class="bg-grid"></div>
+  
+  <!-- Main Container: Split Screen -->
+  <div class="start-container">
+    
+    <!-- Left: Hero Section -->
+    <section class="hero-section">
+      <!-- Floating Bento Brand Card -->
+      <div class="bento-brand">
+        <div class="brand-glow"></div>
+        <div class="brand-content">
+          <div class="brand-icon">
+            <span class="icon-book">📒</span>
+            <span class="icon-ring"></span>
+          </div>
+          <h1 class="brand-title">OneBook</h1>
+          <p class="brand-tagline">Nexus Universal</p>
+        </div>
+      </div>
+      
+      <!-- Hero Text -->
+      <div class="hero-text">
+        <h2 class="hero-headline">
+          The <span class="text-gradient">Zero-Trust</span> Accounting OS
+        </h2>
+        <p class="hero-description">
+          Enterprise-grade security meets Tally-speed UX. 
+          Multi-sector ingestion. AI-powered insights. 
+          Built for the future.
+        </p>
+      </div>
+      
+      <!-- Feature Grid -->
+      <div class="feature-grid">
+        @for (feature of features; track feature.title) {
+          <div class="feature-card">
+            <span class="feature-icon">{{ feature.icon }}</span>
+            <h3 class="feature-title">{{ feature.title }}</h3>
+            <p class="feature-desc">{{ feature.description }}</p>
+          </div>
+        }
+      </div>
+    </section>
+    
+    <!-- Right: Login Section -->
+    <section class="login-section">
+      <div class="login-card">
+        <div class="login-glass"></div>
+        
+        <!-- Login Content -->
+        <div class="login-content">
+          <!-- Welcome Badge -->
+          <div class="welcome-badge">
+            <span class="badge-dot"></span>
+            <span>Secure Authentication</span>
+          </div>
+          
+          <h2 class="login-title">Welcome Back</h2>
+          <p class="login-subtitle">
+            Sign in to access your unified accounting dashboard
+          </p>
+          
+          <!-- Poster Image Placeholder -->
+          <div class="poster-area">
+            <img 
+              src="assets/images/onebook-poster.svg" 
+              alt="OneBook Dashboard Preview"
+              class="poster-image"
+              loading="lazy"
+            />
+            <div class="poster-overlay"></div>
+          </div>
+          
+          <!-- Login Button -->
+          <button 
+            class="login-btn"
+            (click)="onLogin()"
+            [disabled]="isLoading()"
+          >
+            @if (isLoading()) {
+              <span class="btn-spinner"></span>
+              <span>Redirecting...</span>
+            } @else {
+              <span class="btn-icon">🔑</span>
+              <span class="btn-text-en">Login</span>
+              <span class="btn-divider">|</span>
+              <span class="btn-text-ta">உள்நுழை</span>
+            }
+          </button>
+          
+          <!-- Security Notice -->
+          <div class="security-notice">
+            <svg class="shield-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <span>Protected by OpenID Connect & Keycloak</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Trust Indicators -->
+      <div class="trust-indicators">
+        <div class="trust-item">
+          <span class="trust-value">256-bit</span>
+          <span class="trust-label">AES-GCM Encryption</span>
+        </div>
+        <div class="trust-item">
+          <span class="trust-value">RLS</span>
+          <span class="trust-label">Row-Level Security</span>
+        </div>
+        <div class="trust-item">
+          <span class="trust-value">HMAC</span>
+          <span class="trust-label">Blind Indexes</span>
+        </div>
+      </div>
+    </section>
+    
+  </div>
+  
+  <!-- Footer -->
+  <footer class="start-footer">
+    <span class="footer-brand">OneBook © 2026</span>
+    <span class="footer-divider">·</span>
+    <a href="#" class="footer-link">Privacy</a>
+    <span class="footer-divider">·</span>
+    <a href="#" class="footer-link">Terms</a>
+    <span class="footer-divider">·</span>
+    <span class="footer-version">v1.0.0</span>
+  </footer>
+</div>
