@@ -5,7 +5,7 @@ import { authConfig } from '../auth.config';
 
 /**
  * Authentication Service for OneBook
- * 
+ *
  * Manages OIDC authentication flow with Keycloak.
  * Uses Angular Signals for reactive state management.
  */
@@ -15,35 +15,35 @@ import { authConfig } from '../auth.config';
 export class AuthService {
   private readonly oauthService = inject(OAuthService);
   private readonly router = inject(Router);
-  
+
   // Reactive authentication state using Signals
   private readonly _isAuthenticated = signal(false);
   private readonly _userProfile = signal<UserProfile | null>(null);
   private readonly _isLoading = signal(true);
   private readonly _roles = signal<string[]>([]);
-  
+
   // Public readonly signals
   readonly isAuthenticated = this._isAuthenticated.asReadonly();
   readonly userProfile = this._userProfile.asReadonly();
   readonly isLoading = this._isLoading.asReadonly();
   readonly roles = this._roles.asReadonly();
-  
+
   // Computed signals
   readonly isAdmin = computed(() => this._roles().includes('ROLE_ADMIN'));
   readonly isAccountant = computed(() => this._roles().includes('ROLE_ACCOUNTANT'));
   readonly isAuditor = computed(() => this._roles().includes('ROLE_AUDITOR'));
   readonly isManager = computed(() => this._roles().includes('ROLE_MANAGER'));
-  
+
   readonly displayName = computed(() => {
     const profile = this._userProfile();
     return profile?.name || profile?.preferred_username || 'User';
   });
-  
+
   constructor() {
     this.configureOAuth();
     this.subscribeToEvents();
   }
-  
+
   /**
    * Configure OAuth service with Keycloak settings
    */
@@ -51,7 +51,7 @@ export class AuthService {
     this.oauthService.configure(authConfig);
     this.oauthService.setupAutomaticSilentRefresh();
   }
-  
+
   /**
    * Subscribe to OAuth events for state management
    */
@@ -72,13 +72,13 @@ export class AuthService {
       }
     });
   }
-  
+
   /**
    * Initialize authentication - call on app startup
    */
   async initialize(): Promise<void> {
     this._isLoading.set(true);
-    
+
     try {
       // Load discovery document and try to login
       await this.oauthService.loadDiscoveryDocumentAndTryLogin();
@@ -90,14 +90,25 @@ export class AuthService {
       this._isLoading.set(false);
     }
   }
-  
+
   /**
    * Redirect to Keycloak login page
    */
-  login(): void {
-    this.oauthService.initCodeFlow();
+  async login(): Promise<void> {
+    try {
+      // Ensure discovery document is loaded before initiating login
+      if (!this.oauthService.discoveryDocumentLoaded) {
+        await this.oauthService.loadDiscoveryDocument();
+      }
+      this.oauthService.initCodeFlow();
+    } catch (error) {
+      console.error('Login failed:', error);
+      // Fallback: direct redirect to Keycloak
+      const authUrl = `${authConfig.issuer}/protocol/openid-connect/auth?client_id=${authConfig.clientId}&redirect_uri=${encodeURIComponent(authConfig.redirectUri || window.location.origin)}&response_type=code&scope=${encodeURIComponent(authConfig.scope || 'openid')}`
+      window.location.href = authUrl;
+    }
   }
-  
+
   /**
    * Logout and redirect to start page
    */
@@ -106,45 +117,45 @@ export class AuthService {
     this.clearAuthState();
     this.router.navigate(['/start']);
   }
-  
+
   /**
    * Get the current access token
    */
   getAccessToken(): string | null {
     return this.oauthService.getAccessToken();
   }
-  
+
   /**
    * Get the current ID token
    */
   getIdToken(): string | null {
     return this.oauthService.getIdToken();
   }
-  
+
   /**
    * Check if user has a specific role
    */
   hasRole(role: string): boolean {
     return this._roles().includes(role);
   }
-  
+
   /**
    * Check if user has any of the specified roles
    */
   hasAnyRole(roles: string[]): boolean {
     return roles.some(role => this._roles().includes(role));
   }
-  
+
   /**
    * Update authentication state from tokens
    */
   private updateAuthState(): void {
     const hasValidToken = this.oauthService.hasValidAccessToken();
     this._isAuthenticated.set(hasValidToken);
-    
+
     if (hasValidToken) {
       const claims = this.oauthService.getIdentityClaims() as TokenClaims | null;
-      
+
       if (claims) {
         this._userProfile.set({
           sub: claims.sub,
@@ -153,7 +164,7 @@ export class AuthService {
           preferred_username: claims.preferred_username,
           tenant_id: claims.tenant_id
         });
-        
+
         // Extract roles from realm_access or resource_access
         const realmRoles = claims.realm_access?.roles || [];
         const clientRoles = claims.resource_access?.['onebook-frontend']?.roles || [];
@@ -161,7 +172,7 @@ export class AuthService {
       }
     }
   }
-  
+
   /**
    * Clear authentication state on logout
    */

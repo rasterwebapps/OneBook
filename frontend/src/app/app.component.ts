@@ -5,6 +5,7 @@ import { CommandPaletteComponent } from './keyboard/components/command-palette/c
 import { KeyboardNavigationService } from './keyboard/services/keyboard-navigation.service';
 import { CommandBootstrapService } from './keyboard/services/command-bootstrap.service';
 import { LanguageSwitcherComponent } from './i18n/components/language-switcher/language-switcher.component';
+import { AuthService } from './auth/services/auth.service';
 
 interface HealthResponse {
   status: string;
@@ -38,6 +39,7 @@ export class AppComponent implements OnInit {
   private http = inject(HttpClient);
   private keyboardNav = inject(KeyboardNavigationService);
   private commandBootstrap = inject(CommandBootstrapService);
+  readonly authService = inject(AuthService);
 
   title = signal('OneBook');
   backendStatus = signal('Checking...');
@@ -49,6 +51,7 @@ export class AppComponent implements OnInit {
   tenants = signal<Tenant[]>(TENANTS);
   selectedTenant = signal<Tenant>(TENANTS[0]);
   tenantDropdownOpen = signal(false);
+  userDropdownOpen = signal(false);
 
   sectionAccounting = signal(true);
   sectionReports = signal(true);
@@ -104,5 +107,14 @@ export class AppComponent implements OnInit {
       case 'management': this.sectionManagement.update(v => !v); break;
       case 'intelligence': this.sectionIntelligence.update(v => !v); break;
     }
+  }
+
+  toggleUserDropdown(): void {
+    this.userDropdownOpen.update(v => !v);
+  }
+
+  logout(): void {
+    this.userDropdownOpen.set(false);
+    this.authService.logout();
   }
 }

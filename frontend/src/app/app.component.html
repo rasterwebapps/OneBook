@@ -1,3 +1,4 @@
+@if (authService.isAuthenticated()) {
 <div class="app-layout" [class.sidebar-collapsed]="sidebarCollapsed()">
   <!-- Top Header Bar (Limitless Full-Width White Navbar) -->
   <header class="top-header">
@@ -34,11 +35,26 @@
         <svg class="icon-svg" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
         <span class="notif-badge">2</span>
       </button>
-      <!-- User -->
-      <div class="user-info" title="Admin user">
-        <span class="user-avatar">NX</span>
-        <span class="user-name">Admin</span>
-        <svg class="icon-svg user-caret" viewBox="0 0 24 24" style="width:12px;height:12px;"><polyline points="6 9 12 15 18 9"/></svg>
+      <!-- User Menu with Dropdown -->
+      <div class="user-menu">
+        <div class="user-info" (click)="toggleUserDropdown()" title="{{ authService.displayName() }}">
+          <span class="user-avatar">{{ authService.displayName().substring(0, 2).toUpperCase() }}</span>
+          <span class="user-name">{{ authService.displayName() }}</span>
+          <svg class="icon-svg user-caret" viewBox="0 0 24 24" style="width:12px;height:12px;" [class.open]="userDropdownOpen()"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        @if (userDropdownOpen()) {
+          <div class="user-dropdown">
+            <div class="user-dropdown-header">
+              <span class="user-dropdown-name">{{ authService.displayName() }}</span>
+              <span class="user-dropdown-email">{{ authService.userProfile()?.email }}</span>
+            </div>
+            <div class="user-dropdown-divider"></div>
+            <button class="user-dropdown-item" (click)="logout()">
+              <svg class="icon-svg" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              <span>Logout</span>
+            </button>
+          </div>
+        }
       </div>
     </div>
   </header>
@@ -230,3 +246,7 @@
 
   <app-command-palette />
 </div>
+} @else {
+  <!-- Public/Unauthenticated View - Just show router outlet for login/start pages -->
+  <router-outlet />
+}

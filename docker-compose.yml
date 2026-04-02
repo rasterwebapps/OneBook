@@ -7,7 +7,7 @@ services:
       POSTGRES_USER: onebook
       POSTGRES_PASSWORD: onebook_secret
     ports:
-      - "5432:5432"
+      - "5433:5432"  # Use 5433 externally if native postgres is on 5432
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -100,8 +100,7 @@ services:
       - ./infrastructure/keycloak/themes/onebook:/opt/keycloak/themes/onebook
       - ./infrastructure/keycloak/realms:/opt/keycloak/data/import
     depends_on:
-      openldap:
-        condition: service_healthy
+      - openldap
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8180/health/ready || exit 1"]
       interval: 30s

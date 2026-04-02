@@ -32,7 +32,7 @@
   "accessCodeLifespanLogin": 1800,
   "actionTokenGeneratedByAdminLifespan": 43200,
   "actionTokenGeneratedByUserLifespan": 300,
-  "passwordPolicy": "length(8) and digits(1) and upperCase(1) and specialChars(1)",
+  "passwordPolicy": "length(8)",
   "roles": {
     "realm": [
       {
@@ -88,10 +88,7 @@
     }
   ],
   "defaultDefaultClientScopes": [
-    "profile",
-    "email",
-    "roles",
-    "web-origins"
+    "roles"
   ],
   "clients": [
     {
@@ -118,8 +115,6 @@
         "post.logout.redirect.uris": "http://localhost:4200/*"
       },
       "defaultClientScopes": [
-        "profile",
-        "email",
         "roles"
       ],
       "optionalClientScopes": [

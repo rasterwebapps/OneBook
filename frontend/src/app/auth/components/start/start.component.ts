@@ -4,7 +4,7 @@ import { AuthService } from '../../services/auth.service';
 
 /**
  * StartComponent - Modern Landing Page for OneBook
- * 
+ *
  * Design: 2026 SaaS aesthetic with glassmorphism and neon emerald accents
  * Layout: Split-screen hero with floating Bento-box branding
  * Action: Login button redirects to Keycloak via OIDC
@@ -20,9 +20,9 @@ import { AuthService } from '../../services/auth.service';
 export class StartComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
-  
+
   readonly isLoading = signal(false);
-  
+
   // Feature highlights for the landing page
   readonly features = [
     {
@@ -46,19 +46,24 @@ export class StartComponent implements OnInit {
       description: 'Healthcare, Auto, Banking adapters built-in'
     }
   ];
-  
+
   ngOnInit(): void {
     // If already authenticated, redirect to dashboard
     if (this.authService.isAuthenticated()) {
       this.router.navigate(['/']);
     }
   }
-  
+
   /**
    * Initiate OIDC login flow - redirects to Keycloak
    */
-  onLogin(): void {
+  async onLogin(): Promise<void> {
     this.isLoading.set(true);
-    this.authService.login();
+    try {
+      await this.authService.login();
+    } catch (error) {
+      console.error('Login error:', error);
+      this.isLoading.set(false);
+    }
   }
 }
