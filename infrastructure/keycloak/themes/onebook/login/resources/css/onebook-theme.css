@@ -300,6 +300,7 @@ input[type="checkbox"] {
   margin-bottom: 8px;
 }
 
+/* Note: Using Unicode emoji for brand icon. For production, replace with SVG icon for better cross-browser support */
 .kc-logo-text::before {
   content: "📒 ";
 }
