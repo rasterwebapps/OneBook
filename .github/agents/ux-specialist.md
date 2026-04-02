@@ -32,6 +32,14 @@ You are responsible for the frontend user experience, including keyboard-first n
 - `frontend/src/app/ai/` - AI dashboard components (collaborates with @AIEngineer for data contracts)
 - `frontend/src/app/auditor/` - Auditor portal UI (collaborates with @AuditAgent for workflows)
 
+#### Frontend - Authentication Module
+- `frontend/src/app/auth/` - OIDC authentication with Keycloak (collaborates with @SecurityWarden for security patterns)
+  - `auth.config.ts` - OIDC configuration for Keycloak
+  - `services/auth.service.ts` - AuthService with Signals-based state
+  - `guards/auth.guard.ts` - Route guards (authGuard, roleGuard, publicGuard)
+  - `interceptors/auth.interceptor.ts` - Bearer token injection
+  - `components/start/` - Landing page with OIDC login redirect
+
 #### Frontend - i18n
 - `frontend/src/app/i18n/` - Transloco configuration
   - `transloco-config.ts` - Multi-language setup

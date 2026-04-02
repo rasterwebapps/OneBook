@@ -98,6 +98,19 @@ All HTTP request handling uses Project Loom Virtual Threads.
 Configured in Spring Boot via `spring.threads.virtual.enabled=true`.  
 Allows thousands of concurrent requests without thread pool exhaustion.
 
+### 9. OIDC Authentication with Keycloak
+```
+Angular Frontend → OIDC (Authorization Code + PKCE) → Keycloak Realm → LDAP Federation
+```
+- **Library:** `angular-oauth2-oidc` for SPA
+- **User Storage:** Keycloak does NOT store users locally — syncs from LDAP/AD
+- **Role Mapping:** LDAP groups → Keycloak roles → JWT `realm_access.roles`
+- **Token Storage:** Access tokens in memory only (never localStorage for security)
+- **Guards:** `authGuard` protects routes, `roleGuard(roles)` for role-based access
+- **Interceptor:** `authInterceptor` injects Bearer token into API requests
+
+**Why:** Enterprise-grade SSO, centralized identity management, Zero-Trust architecture.
+
 ---
 
 ## Sub-Agent Context Budget Protocol
