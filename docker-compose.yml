@@ -29,6 +29,88 @@ services:
       timeout: 5s
       retries: 5
 
+  # ─── Authentication Infrastructure ───
+
+  # OpenLDAP - User Directory (User Federation Source)
+  # Users and groups are defined here and synced to Keycloak
+  openldap:
+    image: osixia/openldap:1.5.0
+    container_name: onebook-ldap
+    environment:
+      LDAP_ORGANISATION: "OneBook"
+      LDAP_DOMAIN: "onebook.local"
+      LDAP_BASE_DN: "dc=onebook,dc=local"
+      LDAP_ADMIN_PASSWORD: "ldap_admin_secret"
+      LDAP_READONLY_USER: "true"
+      LDAP_READONLY_USER_USERNAME: "readonly"
+      LDAP_READONLY_USER_PASSWORD: "readonly_secret"
+    ports:
+      - "389:389"
+      - "636:636"
+    volumes:
+      - ldap_data:/var/lib/ldap
+      - ldap_config:/etc/ldap/slapd.d
+      - ./infrastructure/ldap/bootstrap:/container/service/slapd/assets/config/bootstrap/ldif/custom
+    healthcheck:
+      test: ["CMD", "ldapsearch", "-x", "-H", "ldap://localhost", "-b", "dc=onebook,dc=local", "-D", "cn=admin,dc=onebook,dc=local", "-w", "ldap_admin_secret"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # phpLDAPadmin - LDAP Management UI (Development Only)
+  ldapadmin:
+    image: osixia/phpldapadmin:0.9.0
+    container_name: onebook-ldapadmin
+    environment:
+      PHPLDAPADMIN_LDAP_HOSTS: openldap
+      PHPLDAPADMIN_HTTPS: "false"
+    ports:
+      - "8081:80"
+    depends_on:
+      - openldap
+
+  # Keycloak - Identity Provider (OIDC/OAuth2)
+  # Federated with OpenLDAP - does NOT store users locally
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0
+    container_name: onebook-keycloak
+    environment:
+      # Admin credentials
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin_secret
+      # Database (uses embedded H2 for development)
+      KC_DB: dev-file
+      # HTTP settings
+      KC_HTTP_ENABLED: "true"
+      KC_HTTP_PORT: "8180"
+      KC_HOSTNAME_STRICT: "false"
+      KC_HOSTNAME_STRICT_HTTPS: "false"
+      # Health endpoints
+      KC_HEALTH_ENABLED: "true"
+      KC_METRICS_ENABLED: "true"
+      # Custom theme path
+      KC_SPI_THEME_DEFAULT: "onebook"
+    command:
+      - start-dev
+      - --import-realm
+    ports:
+      - "8180:8180"
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+      - ./infrastructure/keycloak/themes/onebook:/opt/keycloak/themes/onebook
+      - ./infrastructure/keycloak/realms:/opt/keycloak/data/import
+    depends_on:
+      openldap:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8180/health/ready || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
 volumes:
   postgres_data:
   redis_data:
+  ldap_data:
+  ldap_config:
+  keycloak_data:

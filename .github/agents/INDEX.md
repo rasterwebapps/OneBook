@@ -146,6 +146,7 @@ This index provides quick access to design requirements, patterns, and conventio
 - Transloco i18n with real-time language switching
 - Nexus Universal design system (CSS custom properties)
 - `ChangeDetectionStrategy.OnPush` for performance
+- OIDC authentication via `angular-oauth2-oidc` (Keycloak)
 
 **Critical Rules:**
 - ALWAYS use Signals for component state
@@ -153,9 +154,11 @@ This index provides quick access to design requirements, patterns, and conventio
 - ALWAYS make components standalone
 - ALWAYS preserve Tally shortcut compatibility
 - ALWAYS support keyboard navigation (zero-mouse workflows)
+- ALWAYS protect routes with `authGuard` or role-based guards
 - NEVER use NgModules (use standalone components)
 - NEVER mutate signals directly (use `set()` / `update()`)
 - NEVER hardcode colors (use CSS custom properties)
+- NEVER store tokens in localStorage (memory-only for security)
 
 **Design Tokens:** `--nx-emerald`, `--nx-purple`, `--nx-amber`, `--nx-font-primary`
 

@@ -1,0 +1,89 @@
+# OneBook LDAP Bootstrap Data
+# This file creates the initial LDAP structure and demo users
+# Applied automatically when OpenLDAP container starts
+
+dn: ou=users,dc=onebook,dc=local
+objectClass: organizationalUnit
+ou: users
+description: OneBook User Directory
+
+dn: ou=groups,dc=onebook,dc=local
+objectClass: organizationalUnit
+ou: groups
+description: OneBook Groups for Role Mapping
+
+# ─── Groups (map to Keycloak Roles) ───
+
+dn: cn=accountants,ou=groups,dc=onebook,dc=local
+objectClass: groupOfUniqueNames
+cn: accountants
+description: Standard accounting operations - maps to ROLE_ACCOUNTANT
+uniqueMember: uid=ldap-accountant,ou=users,dc=onebook,dc=local
+
+dn: cn=admins,ou=groups,dc=onebook,dc=local
+objectClass: groupOfUniqueNames
+cn: admins
+description: Full administrative access - maps to ROLE_ADMIN
+uniqueMember: uid=ldap-admin,ou=users,dc=onebook,dc=local
+
+dn: cn=auditors,ou=groups,dc=onebook,dc=local
+objectClass: groupOfUniqueNames
+cn: auditors
+description: Read-only audit portal access - maps to ROLE_AUDITOR
+uniqueMember: uid=ldap-auditor,ou=users,dc=onebook,dc=local
+
+dn: cn=managers,ou=groups,dc=onebook,dc=local
+objectClass: groupOfUniqueNames
+cn: managers
+description: Approval workflows - maps to ROLE_MANAGER
+uniqueMember: uid=ldap-manager,ou=users,dc=onebook,dc=local
+
+# ─── Demo Users ───
+
+dn: uid=ldap-admin,ou=users,dc=onebook,dc=local
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+uid: ldap-admin
+cn: LDAP Admin
+sn: Admin
+givenName: LDAP
+mail: ldap-admin@onebook.local
+userPassword: LdapAdmin123!
+description: Demo admin user from LDAP federation
+
+dn: uid=ldap-accountant,ou=users,dc=onebook,dc=local
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+uid: ldap-accountant
+cn: LDAP Accountant
+sn: Accountant
+givenName: LDAP
+mail: ldap-accountant@onebook.local
+userPassword: LdapAccount123!
+description: Demo accountant user from LDAP federation
+
+dn: uid=ldap-auditor,ou=users,dc=onebook,dc=local
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+uid: ldap-auditor
+cn: LDAP Auditor
+sn: Auditor
+givenName: LDAP
+mail: ldap-auditor@onebook.local
+userPassword: LdapAudit123!
+description: Demo auditor user from LDAP federation
+
+dn: uid=ldap-manager,ou=users,dc=onebook,dc=local
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+uid: ldap-manager
+cn: LDAP Manager
+sn: Manager
+givenName: LDAP
+mail: ldap-manager@onebook.local
+userPassword: LdapManager123!
+description: Demo manager user from LDAP federation
