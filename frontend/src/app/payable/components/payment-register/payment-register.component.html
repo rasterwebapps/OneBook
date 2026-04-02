@@ -1,0 +1,354 @@
+<div class="pr-screen">
+
+  <!-- Header -->
+  <div class="pr-header">
+    <div class="pr-title">
+      <span class="pr-icon">💳</span>
+      <h2>Payment Register</h2>
+    </div>
+    <div class="pr-summary">
+      <div class="summary-item">
+        <span class="summary-label">Total Outstanding</span>
+        <span class="summary-value nx-number">₹{{ totalOutstanding() | number:'1.0-0' }}</span>
+      </div>
+      <div class="summary-item pending" [class.has-pending]="pendingBatchCount() > 0">
+        <span class="summary-label">Pending Approval</span>
+        <span class="summary-value">{{ pendingBatchCount() }} batch{{ pendingBatchCount() !== 1 ? 'es' : '' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="pr-tabs">
+    <button class="tab-btn" [class.active]="activeTab() === 'register'" (click)="setTab('register')">
+      📋 AP Register
+    </button>
+    <button class="tab-btn" [class.active]="activeTab() === 'batches'" (click)="setTab('batches')">
+      🔄 Payment Batches
+      @if (pendingBatchCount() > 0) {
+        <span class="tab-badge">{{ pendingBatchCount() }}</span>
+      }
+    </button>
+  </div>
+
+  <!-- ═══════════════════ TAB 1: AP REGISTER ═══════════════════ -->
+  @if (activeTab() === 'register') {
+
+    <!-- Search Bar -->
+    <div class="pr-toolbar">
+      <input #searchInput type="text" class="search-input" placeholder="Search vendor..."
+             [value]="searchQuery()"
+             (input)="updateSearch(searchInput.value)" />
+      <span class="toolbar-hint">Select items per vendor to create a payment batch</span>
+    </div>
+
+    <!-- Vendor Groups -->
+    <div class="pr-content">
+      @for (group of filteredVendorGroups(); track group.vendorAccountId) {
+        <div class="vendor-card" [class.expanded]="group.expanded">
+
+          <!-- Vendor Header -->
+          <div class="vendor-header" (click)="toggleVendorExpand(group.vendorAccountId)">
+            <div class="vendor-header-left">
+              <span class="expand-arrow" [class.open]="group.expanded">▶</span>
+              <span class="vendor-icon">🏢</span>
+              <div class="vendor-meta">
+                <span class="vendor-name">{{ group.vendorName }}</span>
+                <span class="vendor-id">ID: {{ group.vendorAccountId }}</span>
+              </div>
+            </div>
+            <div class="vendor-totals">
+              <div class="total-item">
+                <span class="total-label">Purchases</span>
+                <span class="total-value nx-number">₹{{ group.totalPurchases | number:'1.0-0' }}</span>
+              </div>
+              <div class="total-item returns">
+                <span class="total-label">Returns</span>
+                <span class="total-value nx-number">−₹{{ group.totalReturns | number:'1.0-0' }}</span>
+              </div>
+              <div class="total-item credits">
+                <span class="total-label">Credit Notes</span>
+                <span class="total-value nx-number">−₹{{ group.totalCreditNotes | number:'1.0-0' }}</span>
+              </div>
+              <div class="total-item net">
+                <span class="total-label">Net Outstanding</span>
+                <span class="total-value net-value nx-number">₹{{ group.netOutstanding | number:'1.0-0' }}</span>
+              </div>
+            </div>
+            <div class="vendor-actions" (click)="$event.stopPropagation()">
+              @if (hasSelectedEntries(group.vendorAccountId)) {
+                <button class="nx-btn nx-btn--emerald"
+                        (click)="openCreateBatchModal(group.vendorAccountId)">
+                  ✚ Create Batch
+                </button>
+              }
+            </div>
+          </div>
+
+          <!-- Vendor Entries Table -->
+          @if (group.expanded) {
+            <div class="vendor-entries">
+              <table class="entries-table">
+                <thead>
+                  <tr>
+                    <th class="col-check">
+                      <input type="checkbox"
+                             [checked]="allEntriesSelected(group.vendorAccountId)"
+                             (change)="toggleSelectAllForVendor(group.vendorAccountId)"
+                             title="Select all" />
+                    </th>
+                    <th>Type</th>
+                    <th>Invoice #</th>
+                    <th>Invoice Date</th>
+                    <th>Due Date</th>
+                    <th class="col-amount">Amount</th>
+                    <th>Payment Mode</th>
+                    <th>Bank</th>
+                    <th>IFSC</th>
+                    <th class="col-status">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (entry of group.entries; track entry.id) {
+                    <tr [class.selected]="entry.selected"
+                        [class.in-batch]="entry.status === 'IN_BATCH'"
+                        (click)="entry.status === 'AVAILABLE_FOR_PROCESSING' && toggleEntrySelect(group.vendorAccountId, entry.id)">
+                      <td class="col-check">
+                        <input type="checkbox"
+                               [checked]="entry.selected"
+                               [disabled]="entry.status !== 'AVAILABLE_FOR_PROCESSING'"
+                               (change)="toggleEntrySelect(group.vendorAccountId, entry.id)"
+                               (click)="$event.stopPropagation()" />
+                      </td>
+                      <td>
+                        <span class="type-badge" [style.color]="transactionTypeColor(entry.transactionType)">
+                          {{ transactionTypeLabel(entry.transactionType) }}
+                        </span>
+                      </td>
+                      <td><code class="invoice-code">{{ entry.invoiceNumber }}</code></td>
+                      <td class="col-date">{{ entry.invoiceDate }}</td>
+                      <td class="col-date">{{ entry.dueDate }}</td>
+                      <td class="col-amount nx-number">₹{{ entry.amount | number:'1.0-0' }}</td>
+                      <td>{{ entry.paymentMode }}</td>
+                      <td class="col-bank">{{ entry.bankName }}</td>
+                      <td><code class="ifsc-code">{{ entry.bankIfscCode }}</code></td>
+                      <td class="col-status">
+                        <span class="status-pill"
+                              [class.available]="entry.status === 'AVAILABLE_FOR_PROCESSING'"
+                              [class.in-batch]="entry.status === 'IN_BATCH'">
+                          {{ entry.status === 'AVAILABLE_FOR_PROCESSING' ? 'Available' : 'In Batch' }}
+                        </span>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+
+              <!-- Selected Summary Bar -->
+              @if (hasSelectedEntries(group.vendorAccountId) && activeVendorId() === group.vendorAccountId) {
+                <div class="selection-bar">
+                  <span class="selection-count">{{ selectedEntriesForVendor().length }} item(s) selected</span>
+                  <span class="selection-amount">Net Payable: <strong class="nx-number">₹{{ selectedNetPayable() | number:'1.0-0' }}</strong></span>
+                  <button class="nx-btn nx-btn--emerald"
+                          (click)="openCreateBatchModal(group.vendorAccountId)">
+                    ✚ Create Payment Batch
+                  </button>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+
+      @if (filteredVendorGroups().length === 0) {
+        <div class="empty-state">
+          <span class="empty-icon">📭</span>
+          <p>No outstanding payables found.</p>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- ═══════════════════ TAB 2: PAYMENT BATCHES ═══════════════════ -->
+  @if (activeTab() === 'batches') {
+    <div class="pr-content batches-content">
+      <table class="batches-table">
+        <thead>
+          <tr>
+            <th>Batch #</th>
+            <th>Vendor</th>
+            <th class="col-amount">Purchases</th>
+            <th class="col-amount">Returns</th>
+            <th class="col-amount">Credits</th>
+            <th class="col-amount">Net Payable</th>
+            <th>Bank Account</th>
+            <th>Mode</th>
+            <th class="col-status">Status</th>
+            <th class="col-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (batch of paymentBatches(); track batch.id) {
+            <tr>
+              <td><code class="batch-code">{{ batch.batchNumber }}</code></td>
+              <td class="vendor-cell">{{ batch.vendorName }}</td>
+              <td class="col-amount nx-number">₹{{ batch.totalPurchases | number:'1.0-0' }}</td>
+              <td class="col-amount nx-number returns-col">−₹{{ batch.totalReturns | number:'1.0-0' }}</td>
+              <td class="col-amount nx-number credits-col">−₹{{ batch.totalCreditNotes | number:'1.0-0' }}</td>
+              <td class="col-amount nx-number net-col">₹{{ batch.netPayable | number:'1.0-0' }}</td>
+              <td class="bank-cell">{{ batch.bankAccountId }}</td>
+              <td><span class="mode-badge">{{ batch.paymentMode }}</span></td>
+              <td class="col-status">
+                <span class="status-pill batch-status"
+                      [style.color]="batchStatusColor(batch.status)"
+                      [style.border-color]="batchStatusColor(batch.status)">
+                  {{ batchStatusLabel(batch.status) }}
+                </span>
+              </td>
+              <td class="col-actions">
+                <!-- Maker-Checker Payer Options -->
+                @if (batch.status === 'PENDING_APPROVAL') {
+                  <button class="nx-btn nx-btn--emerald action-btn"
+                          (click)="openApprovalModal(batch.id, 'APPROVE')"
+                          title="Approve batch for payment">
+                    ✔ Approve
+                  </button>
+                  <button class="nx-btn nx-btn--amber action-btn"
+                          (click)="openApprovalModal(batch.id, 'REJECT')"
+                          title="Reject batch">
+                    ✖ Reject
+                  </button>
+                }
+                @if (batch.status === 'APPROVED') {
+                  <button class="nx-btn nx-btn--purple action-btn"
+                          (click)="generatePaymentFile(batch.id)"
+                          title="Generate & download payment file">
+                    ⬇ Download File
+                  </button>
+                }
+                @if (batch.status === 'REJECTED') {
+                  <span class="rejection-note" title="{{ batch.rejectionReason }}">
+                    ❌ {{ batch.rejectionReason || 'Rejected' }}
+                  </span>
+                }
+                @if (batch.status === 'PAYMENT_GENERATED') {
+                  <span class="generated-note">✅ File Generated</span>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      @if (paymentBatches().length === 0) {
+        <div class="empty-state">
+          <span class="empty-icon">📭</span>
+          <p>No payment batches yet. Select AP items and create a batch from the AP Register tab.</p>
+        </div>
+      }
+    </div>
+  }
+
+</div>
+
+<!-- ═══════════════════ MODAL: Create Payment Batch (Payer Options) ═══════════════════ -->
+@if (showBatchModal()) {
+  <div class="modal-overlay" (click)="closeBatchModal()">
+    <div class="modal-box nx-glass" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>💳 Create Payment Batch</h3>
+        <button class="modal-close" (click)="closeBatchModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-summary">
+          <div class="modal-summary-row">
+            <span class="modal-label">Vendor</span>
+            <span class="modal-value">{{ getVendorName(activeVendorId()) }}</span>
+          </div>
+          <div class="modal-summary-row">
+            <span class="modal-label">Selected Items</span>
+            <span class="modal-value">{{ selectedEntriesForVendor().length }}</span>
+          </div>
+          <div class="modal-summary-row net">
+            <span class="modal-label">Net Payable</span>
+            <span class="modal-value nx-number net-payable-val">₹{{ selectedNetPayable() | number:'1.0-0' }}</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Payer Bank Account</label>
+          <select class="form-select"
+                  [value]="batchBankAccount()"
+                  (change)="updateBatchBankAccount($any($event.target).value)">
+            <option value="HDFC-CA-00112233">HDFC Bank — CA — 00112233 (Primary)</option>
+            <option value="ICICI-CA-99887766">ICICI Bank — CA — 99887766</option>
+            <option value="SBI-CA-11223344">SBI — CA — 11223344</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Payment Mode</label>
+          <div class="payment-mode-grid">
+            @for (mode of (['NEFT', 'RTGS', 'IMPS', 'Cheque', 'Cash']); track mode) {
+              <button class="mode-option"
+                      [class.selected]="batchPaymentMode() === mode"
+                      (click)="updateBatchPaymentMode($any(mode))">
+                {{ mode }}
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="nx-btn" (click)="closeBatchModal()">Cancel</button>
+        <button class="nx-btn nx-btn--emerald" (click)="createBatch()">
+          ✚ Create Batch for Approval
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ═══════════════════ MODAL: Approve / Reject Batch ═══════════════════ -->
+@if (showApprovalModal()) {
+  <div class="modal-overlay" (click)="closeApprovalModal()">
+    <div class="modal-box nx-glass" (click)="$event.stopPropagation()">
+      <div class="modal-header" [class.approve-header]="approvalAction() === 'APPROVE'" [class.reject-header]="approvalAction() === 'REJECT'">
+        <h3>{{ approvalAction() === 'APPROVE' ? '✔ Approve Batch' : '✖ Reject Batch' }}</h3>
+        <button class="modal-close" (click)="closeApprovalModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        @if (approvalAction() === 'APPROVE') {
+          <p class="confirm-text">
+            Approving this batch will post a journal entry (Dr. Vendor AP / Cr. Bank) and mark items as ready for payment.
+          </p>
+        }
+        @if (approvalAction() === 'REJECT') {
+          <div class="form-group">
+            <label class="form-label">Rejection Reason <span class="required">*</span></label>
+            <textarea class="form-textarea"
+                      placeholder="Provide reason for rejection..."
+                      [value]="rejectionReason()"
+                      (input)="updateRejectionReason($any($event.target).value)"
+                      rows="3"></textarea>
+          </div>
+        }
+      </div>
+      <div class="modal-footer">
+        <button class="nx-btn" (click)="closeApprovalModal()">Cancel</button>
+        @if (approvalAction() === 'APPROVE') {
+          <button class="nx-btn nx-btn--emerald" (click)="confirmApproval()">
+            ✔ Confirm Approval
+          </button>
+        }
+        @if (approvalAction() === 'REJECT') {
+          <button class="nx-btn nx-btn--amber"
+                  [disabled]="!rejectionReason().trim()"
+                  (click)="confirmApproval()">
+            ✖ Confirm Rejection
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+}
