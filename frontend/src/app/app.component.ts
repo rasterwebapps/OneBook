@@ -1,11 +1,12 @@
 import { Component, signal, computed, OnInit, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterOutlet, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
 import { CommandPaletteComponent } from './keyboard/components/command-palette/command-palette.component';
 import { KeyboardNavigationService } from './keyboard/services/keyboard-navigation.service';
 import { CommandBootstrapService } from './keyboard/services/command-bootstrap.service';
 import { LanguageSwitcherComponent } from './i18n/components/language-switcher/language-switcher.component';
 import { AuthService } from './auth/services/auth.service';
+import { filter } from 'rxjs/operators';
 
 interface HealthResponse {
   status: string;
@@ -23,11 +24,42 @@ interface Tenant {
   role: string;
 }
 
+interface Breadcrumb {
+  label: string;
+  url?: string;
+}
+
 const TENANTS: Tenant[] = [
   { id: 'nexus', name: 'Nexus Corp', role: 'Payer' },
   { id: 'alpha', name: 'Alpha Ventures', role: 'Payer' },
   { id: 'beta', name: 'Beta Holdings', role: 'Tenant' },
 ];
+
+// Route to breadcrumb mapping
+const ROUTE_BREADCRUMBS: Record<string, Breadcrumb[]> = {
+  '/': [{ label: 'Dashboard' }],
+  '/voucher/sales': [{ label: 'Accounting' }, { label: 'Sales Voucher' }],
+  '/voucher/purchase': [{ label: 'Accounting' }, { label: 'Purchase Voucher' }],
+  '/voucher/payment': [{ label: 'Accounting' }, { label: 'Payment Voucher' }],
+  '/voucher/receipt': [{ label: 'Accounting' }, { label: 'Receipt Voucher' }],
+  '/voucher/contra': [{ label: 'Accounting' }, { label: 'Contra Voucher' }],
+  '/voucher/journal': [{ label: 'Accounting' }, { label: 'Journal Voucher' }],
+  '/ledger': [{ label: 'Accounting' }, { label: 'Ledger' }],
+  '/receivable': [{ label: 'Accounting' }, { label: 'Receivables' }],
+  '/payable': [{ label: 'Accounting' }, { label: 'Payables' }],
+  '/reports/trial-balance': [{ label: 'Reports' }, { label: 'Trial Balance' }],
+  '/reports/profit-loss': [{ label: 'Reports' }, { label: 'Profit & Loss' }],
+  '/reports/balance-sheet': [{ label: 'Reports' }, { label: 'Balance Sheet' }],
+  '/reports/cash-flow': [{ label: 'Reports' }, { label: 'Cash Flow' }],
+  '/reports/daybook': [{ label: 'Reports' }, { label: 'Day Book' }],
+  '/inventory': [{ label: 'Management' }, { label: 'Inventory' }],
+  '/gst': [{ label: 'Management' }, { label: 'GST & Tax' }],
+  '/banking': [{ label: 'Management' }, { label: 'Banking' }],
+  '/master/create': [{ label: 'Management' }, { label: 'Masters' }],
+  '/ai': [{ label: 'Intelligence' }, { label: 'AI Insights' }],
+  '/market': [{ label: 'Intelligence' }, { label: 'Market Valuation' }],
+  '/auditor': [{ label: 'Intelligence' }, { label: 'Auditor Portal' }],
+};
 
 @Component({
   selector: 'app-root',
@@ -37,6 +69,7 @@ const TENANTS: Tenant[] = [
 })
 export class AppComponent implements OnInit {
   private http = inject(HttpClient);
+  private router = inject(Router);
   private keyboardNav = inject(KeyboardNavigationService);
   private commandBootstrap = inject(CommandBootstrapService);
   readonly authService = inject(AuthService);
@@ -47,6 +80,9 @@ export class AppComponent implements OnInit {
   postgresqlStatus = signal('Checking...');
   redisStatus = signal('Checking...');
   sidebarCollapsed = signal(false);
+
+  // Dynamic breadcrumbs
+  breadcrumbs = signal<Breadcrumb[]>([{ label: 'Dashboard' }]);
 
   tenants = signal<Tenant[]>(TENANTS);
   selectedTenant = signal<Tenant>(TENANTS[0]);
@@ -69,6 +105,16 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.commandBootstrap.bootstrap();
 
+    // Subscribe to route changes for breadcrumbs
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      this.updateBreadcrumbs(event.urlAfterRedirects || event.url);
+    });
+
+    // Set initial breadcrumbs
+    this.updateBreadcrumbs(this.router.url);
+
     this.http.get<HealthResponse>('/api/health')
       .subscribe({
         next: (res) => {
@@ -85,6 +131,15 @@ export class AppComponent implements OnInit {
           this.redisStatus.set('Offline');
         }
       });
+  }
+
+  private updateBreadcrumbs(url: string): void {
+    // Remove query params
+    const path = url.split('?')[0];
+
+    // Find matching breadcrumbs or use default
+    const crumbs = ROUTE_BREADCRUMBS[path] || [{ label: 'Dashboard' }];
+    this.breadcrumbs.set(crumbs);
   }
 
   toggleSidebar(): void {

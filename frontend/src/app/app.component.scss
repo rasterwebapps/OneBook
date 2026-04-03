@@ -94,11 +94,51 @@
   }
 }
 
-/* ─── Search — left-aligned, immediately after logo area ─── */
+/* ─── Breadcrumbs — integrated into header ─── */
+.top-header-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 16px;
+  font-size: 0.8125rem;
+
+  a {
+    color: var(--nx-text-muted);
+    text-decoration: none;
+    transition: color var(--nx-transition-fast);
+
+    &:hover {
+      color: var(--nx-emerald);
+    }
+  }
+
+  .sep {
+    color: var(--nx-text-muted);
+    opacity: 0.5;
+  }
+
+  .current {
+    color: var(--nx-text-primary);
+    font-weight: 500;
+  }
+}
+
+/* ─── Spacer pushes right actions to the end ─── */
+.top-header-spacer {
+  flex: 1;
+}
+
+/* ─── Right section with search and actions ─── */
+.top-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ─── Search — compact in header right ─── */
 .top-header-search {
   display: flex;
   align-items: center;
-  padding: 0 16px;
 }
 
 .search-box {
@@ -109,39 +149,65 @@
   border: 1px solid var(--nx-border);
   border-radius: 20px;
   padding: 0 14px;
-  height: 34px;
-  width: 300px;
-  max-width: 100%;
-  cursor: pointer;
+  height: 32px;
+  width: 200px;
   transition: all var(--nx-transition-fast);
 
-  &:hover {
-    background: var(--nx-bg-primary);
-    border-color: var(--nx-border-glow);
+  &:focus-within {
+    width: 280px;
+    border-color: var(--nx-emerald);
+    box-shadow: 0 0 0 3px rgba(38, 166, 154, 0.1);
   }
 
   .search-icon {
     width: 14px;
     height: 14px;
     color: var(--nx-text-muted);
+    flex-shrink: 0;
   }
 
-  .search-placeholder {
+  .search-input {
+    flex: 1;
+    border: none;
+    background: transparent;
     font-size: 0.8125rem;
-    color: var(--nx-text-muted);
+    color: var(--nx-text-primary);
+    outline: none;
+    width: 100%;
+
+    &::placeholder {
+      color: var(--nx-text-muted);
+    }
   }
 }
 
-/* ─── Spacer pushes right actions to the end ─── */
-.top-header-spacer {
-  flex: 1;
-}
-
-/* ─── Right action buttons ─── */
-.top-header-right {
+/* ─── Command palette hint ─── */
+.cmd-hint {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
+  background: var(--nx-bg-surface);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-sm);
+  padding: 4px 8px;
+  color: var(--nx-text-muted);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all var(--nx-transition-fast);
+
+  kbd {
+    background: var(--nx-bg-primary);
+    border: 1px solid var(--nx-border);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-family: inherit;
+    font-size: 0.7rem;
+  }
+
+  &:hover {
+    border-color: var(--nx-emerald);
+    color: var(--nx-text-primary);
+  }
 }
 
 .header-icon-btn {
@@ -610,70 +676,9 @@
   margin-left: 56px;
 }
 
-/* ─── Content Header (Limitless-style breadcrumb bar) ─── */
-.content-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 24px;
-  background: var(--nx-navbar-bg);
-  border-bottom: 1px solid var(--nx-navbar-border);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-
-  .content-header-left {
-    h1 {
-      font-size: 1.0625rem;
-      font-weight: 600;
-      margin: 0;
-      color: var(--nx-text-primary);
-    }
-
-    .breadcrumb-trail {
-      font-size: 0.75rem;
-      color: var(--nx-text-muted);
-      margin-top: 2px;
-
-      a {
-        color: var(--nx-emerald);
-        text-decoration: none;
-
-        &:hover { text-decoration: underline; }
-      }
-
-      .sep {
-        margin: 0 4px;
-        color: var(--nx-text-muted);
-      }
-    }
-  }
-}
-
-.cmd-hint {
-  background: transparent;
-  border: 1px solid var(--nx-border);
-  border-radius: var(--nx-radius-sm);
-  padding: 5px 12px;
-  font-size: 0.75rem;
-  color: var(--nx-text-secondary);
-  cursor: pointer;
-  transition: all var(--nx-transition-fast);
-  font-family: var(--nx-font-primary);
-
-  &:hover {
-    background: var(--nx-emerald-dim);
-    border-color: var(--nx-emerald);
-    color: var(--nx-emerald);
-  }
-
-  kbd {
-    margin-right: 4px;
-    font-size: 0.65rem;
-  }
-}
-
 .content-area {
   flex: 1;
-  padding: 0;
+  padding: 24px;
   background: var(--nx-bg-primary);
 }
 
@@ -694,7 +699,9 @@
     .logo-text { display: none; }
   }
 
-  .top-header-search {
+  .top-header-breadcrumbs,
+  .top-header-search,
+  .cmd-hint {
     display: none;
   }
 

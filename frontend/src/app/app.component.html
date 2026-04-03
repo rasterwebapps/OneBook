@@ -1,6 +1,6 @@
 @if (authService.isAuthenticated()) {
 <div class="app-layout" [class.sidebar-collapsed]="sidebarCollapsed()">
-  <!-- Top Header Bar (Limitless Full-Width White Navbar) -->
+  <!-- Top Header Bar (Compact with integrated breadcrumbs) -->
   <header class="top-header">
     <!-- Logo / Brand — fixed-width matching sidebar -->
     <div class="top-header-logo">
@@ -13,18 +13,37 @@
       <span class="logo-text">{{ title() }}</span>
     </div>
 
-    <!-- Search — left-aligned, next to sidebar -->
-    <div class="top-header-search">
-      <div class="search-box">
-        <svg class="icon-svg search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <span class="search-placeholder">Search…</span>
-      </div>
+    <!-- Breadcrumbs — dynamic based on route -->
+    <div class="top-header-breadcrumbs">
+      @for (crumb of breadcrumbs(); track crumb.label; let last = $last; let first = $first) {
+        @if (!first) {
+          <span class="sep">/</span>
+        }
+        @if (crumb.url && !last) {
+          <a [routerLink]="crumb.url">{{ crumb.label }}</a>
+        } @else {
+          <span [class.current]="last">{{ crumb.label }}</span>
+        }
+      }
     </div>
 
     <div class="top-header-spacer"></div>
 
-    <!-- Right action buttons -->
+    <!-- Right section: Search + Actions -->
     <div class="top-header-right">
+      <!-- Search — moved to right -->
+      <div class="top-header-search">
+        <div class="search-box">
+          <svg class="icon-svg search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="Search..." class="search-input" />
+        </div>
+      </div>
+
+      <!-- Command Palette hint -->
+      <button class="cmd-hint" title="Command Palette (Ctrl+K)">
+        <kbd>Ctrl+K</kbd>
+      </button>
+
       <app-language-switcher />
       <!-- Apps grid button -->
       <button class="header-icon-btn" title="Apps" aria-label="Apps">
@@ -226,22 +245,6 @@
 
   <!-- Main Content -->
   <main class="main-content">
-    <!-- Content Header (Limitless-style breadcrumb bar) -->
-    <div class="content-header">
-      <div class="content-header-left">
-        <h1>Home — {{ title() }}</h1>
-        <div class="breadcrumb-trail">
-          <a routerLink="/">Home</a>
-          <span class="sep">/</span>
-          <span>Dashboard</span>
-        </div>
-      </div>
-      <div class="content-header-right">
-        <button class="cmd-hint" title="Command Palette (Ctrl+K)">
-          <kbd>Ctrl+K</kbd> Command Palette
-        </button>
-      </div>
-    </div>
 
     <div class="content-area">
       <router-outlet />

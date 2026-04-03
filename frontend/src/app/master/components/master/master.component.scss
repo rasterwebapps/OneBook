@@ -129,7 +129,7 @@ $muted: #7b8794;
     &.cr { color: $danger; }
   }
   .col-status { width: 90px; font-size: 0.78rem; }
-  .col-actions { width: 80px; text-align: center; }
+  .col-actions { width: 80px; text-align: center; white-space: nowrap; }
   .col-count { text-align: center; font-weight: 600; color: $accent; }
 }
 
