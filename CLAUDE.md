@@ -40,7 +40,7 @@ memory-bank/
 | Layer | Technology |
 |-------|-----------|
 | Backend | Java 21+ / Spring Boot 3.4+ / Virtual Threads (Loom) |
-| Frontend | Angular 19+ / Signals-based state / Standalone components |
+| Frontend | Angular 21+ / Signals-based state / Standalone components |
 | Database | PostgreSQL 17+ (RLS, JSONB, Flyway migrations) |
 | Cache | Redis 7+ (Warm Cache, Cache-Aside) |
 | Security | AES-256-GCM field encryption, HMAC-SHA256 blind indexes, RLS |

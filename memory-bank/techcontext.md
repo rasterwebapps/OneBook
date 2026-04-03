@@ -14,9 +14,9 @@
 | Backend | Gradle | 8+ | Build tool |
 | Backend | PostgreSQL | 17+ | Primary database (RLS, JSONB, triggers) |
 | Backend | Redis | 7+ | Warm cache, session data |
-| Frontend | Angular | 19+ | SPA with Signals-based state |
-| Frontend | Node.js | 20+ | Build toolchain |
-| Frontend | TypeScript | Strict mode | Type safety |
+| Frontend | Angular | 21+ | SPA with Signals-based state |
+| Frontend | Node.js | 24+ | Build toolchain |
+| Frontend | TypeScript | 5.9+ | Type safety (strict mode) |
 | Frontend | @jsverse/transloco | — | i18n / L10n |
 | Security | AES-256-GCM | — | Field-level encryption |
 | Security | HMAC-SHA256 | — | Blind indexes |

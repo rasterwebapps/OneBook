@@ -25,7 +25,7 @@ This project uses a **CLAUDE.md memory bank** — a persistent AI context system
 | Layer       | Technology                        |
 |-------------|-----------------------------------|
 | Backend     | Java 21+ / Spring Boot 3.4+      |
-| Frontend    | Angular 19+ (Signals-based state) |
+| Frontend    | Angular 21+ (Signals-based state) |
 | Database    | PostgreSQL 17+ (RLS, JSONB)       |
 | Cache       | Redis 7+                          |
 
