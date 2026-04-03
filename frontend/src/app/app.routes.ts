@@ -70,6 +70,13 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
 
+  // Payment Register (AP Payables + Maker-Checker Batch Approval) - Protected
+  {
+    path: 'payable-register',
+    loadComponent: () => import('./payable/components/payment-register/payment-register.component').then(m => m.PaymentRegisterComponent),
+    canActivate: [authGuard]
+  },
+
   // Banking & Reconciliation - Protected
   { 
     path: 'banking', 
