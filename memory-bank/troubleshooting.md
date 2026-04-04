@@ -58,6 +58,14 @@
 **Files:** `.github/scripts/validate-agent-ownership.sh`  
 **Lesson:** Run the validation script after every major agent file edit to confirm no regressions
 
+### Flyway V12 Migration Number Skipped
+**When:** Post-M10 payment processing development  
+**Symptom:** V12 does not exist in `db/migration/`; numbering goes V11 → V13 → V14  
+**Root Cause:** V12 was intentionally skipped during development. V13 was authored as a follow-on to V11 (merging `financial_events` into `payment_register`), and the V12 slot was simply never used.  
+**Impact:** None — Flyway tolerates gaps in version numbers. The migration sequence V11 → V13 → V14 is valid.  
+**Action:** No fix needed. Documented here to prevent future confusion. Future migrations should continue from V15.  
+**Lesson:** If a migration number is skipped, note it in documentation to avoid confusion when auditing the migration history.
+
 ---
 
 ## Common Development Issues

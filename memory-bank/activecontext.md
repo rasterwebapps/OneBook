@@ -8,23 +8,25 @@
 ## Current Status
 
 **Date:** 2026-04-04  
-**Phase:** Voucher-Receipt-Advance Settlement System  
-**All Milestones:** ✅ Complete (M1–M10) + Post-Milestone Enhancements
+**Phase:** Requirements & Milestones Restructuring  
+**Milestones:** ✅ M1–M10 Complete | 🔄 M11 In Progress | 📝 M12 Draft
 
 ---
 
 ## Recent Changes (Latest Session)
 
-### Voucher-Receipt-Advance Settlement System (2026-04-04)
-- **Foundation Entities (9 models + 9 repos):** Department, SubDepartment, Payer, PayerBankAccount, Payee, PayeeBankAccount, Application, Advance, PaymentApprovalLimit + BankAccountType enum
-- **Voucher Enums (7):** VoucherStatus, VoucherClosureType, VoucherItemStatus, ReceiptStatus, PaymentAdviceStatus, FileStatus, TwoStepVerificationType
-- **Core Entities (9 models + 9 repos):** Voucher, VoucherItem, Receipt, PaymentAdvice, 3 settlement entities, UploadedFile, DepartmentLevelApprovalLimit
-- **DTOs (10):** Request/Response records for Voucher, VoucherItem, Receipt, PaymentAdvice, UploadedFile
-- **Services (4):** VoucherService, ReceiptService, PaymentAdviceService, UploadedFileService
-- **Controllers (4):** /api/vouchers, /api/receipts, /api/payment-advices, /api/uploaded-files
-- **Flyway V14:** 18 new tables with CHECK constraints, RLS policies, tenant isolation indexes
-- **Unit Tests:** 24 new tests (VoucherServiceTest, ReceiptServiceTest, PaymentAdviceServiceTest, UploadedFileServiceTest)
-- **Total Tests:** 489 backend tests passing
+### Requirements & Milestones Restructuring (2026-04-04)
+- **milestones.md:** Added M11 (Payment Processing Pipeline) and M12 (Employee Advances & Settlement) milestone definitions with goals, deliverables, exit criteria, and dependency chain. Updated summary timeline and specialist roles table.
+- **memory-bank/progress.md:** Updated overall status to reflect M11/M12. Added detailed M11 and M12 progress tracking sections. Updated documentation inventory to list REQ-011–014 separately. Fixed status header.
+- **memory-bank/activecontext.md:** Fixed "Current Project State" — backend tests updated from 405+ to 489, migrations updated from V1–V10 to V1–V14.
+- **memory-bank/techcontext.md:** Added `ledger/payment/` and `ledger/voucher/` packages to repo structure. Updated migration list to V1–V14 with descriptions.
+- **memory-bank/troubleshooting.md:** Documented V12 migration gap (intentionally skipped).
+- **sub-agents.md:** Expanded @LedgerExpert scope to M11/M12 with payment, voucher, and advance module ownership.
+- **Auto-generated docs regenerated:** BRD, FRD, TRD, RTM, requirements-index — all now include 14 requirements (REQ-001 through REQ-014). Validation: 14/14 files pass, 0 errors, 0 warnings.
+
+### Previous Session: Voucher-Receipt-Advance Settlement System (2026-04-04)
+- Foundation Entities, Voucher Enums, Core Entities, DTOs, Services, Controllers
+- Flyway V14 migration, 24 new unit tests, 489 backend tests passing
 
 ---
 
