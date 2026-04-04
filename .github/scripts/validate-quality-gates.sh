@@ -327,8 +327,7 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 CURRENT_I18N_VIOLATIONS=0
 while IFS= read -r template; do
     [ -z "$template" ] && continue
-    # Look for substantial hardcoded text (3+ words, starts with capital)
-    COUNT=$(grep -cP '>[A-Z][a-z]+(\s+[a-z]+){2,}<' "$template" 2>/dev/null || true)
+    # Count substantial hardcoded text (3+ words, starts with capital), excluding transloco/i18n patterns
     FILTERED=$(grep -P '>[A-Z][a-z]+(\s+[a-z]+){2,}<' "$template" 2>/dev/null | grep -cv 'transloco\|translate\|i18n\|{{' || true)
     CURRENT_I18N_VIOLATIONS=$((CURRENT_I18N_VIOLATIONS + FILTERED))
 done < <(find "$REPO_ROOT/frontend/src/app" -name "*.html" -type f 2>/dev/null)

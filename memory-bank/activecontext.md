@@ -8,25 +8,32 @@
 ## Current Status
 
 **Date:** 2026-04-04  
-**Phase:** Requirements & Milestones Restructuring  
+**Phase:** Quality Gate Automation  
 **Milestones:** ✅ M1–M10 Complete | 🔄 M11 In Progress | 📝 M12 Draft
 
 ---
 
 ## Recent Changes (Latest Session)
 
-### Requirements & Milestones Restructuring (2026-04-04)
-- **milestones.md:** Added M11 (Payment Processing Pipeline) and M12 (Employee Advances & Settlement) milestone definitions with goals, deliverables, exit criteria, and dependency chain. Updated summary timeline and specialist roles table.
-- **memory-bank/progress.md:** Updated overall status to reflect M11/M12. Added detailed M11 and M12 progress tracking sections. Updated documentation inventory to list REQ-011–014 separately. Fixed status header.
-- **memory-bank/activecontext.md:** Fixed "Current Project State" — backend tests updated from 405+ to 489, migrations updated from V1–V10 to V1–V14.
-- **memory-bank/techcontext.md:** Added `ledger/payment/` and `ledger/voucher/` packages to repo structure. Updated migration list to V1–V14 with descriptions.
-- **memory-bank/troubleshooting.md:** Documented V12 migration gap (intentionally skipped).
-- **sub-agents.md:** Expanded @LedgerExpert scope to M11/M12 with payment, voucher, and advance module ownership.
-- **Auto-generated docs regenerated:** BRD, FRD, TRD, RTM, requirements-index — all now include 14 requirements (REQ-001 through REQ-014). Validation: 14/14 files pass, 0 errors, 0 warnings.
+### Automated Quality Gate Enforcement (2026-04-04)
+- **NEW: `.github/scripts/validate-quality-gates.sh`** — 8-gate CI validation that catches ALL commonly skipped steps:
+  1. Memory bank freshness (stale test counts, missing modules, migration lists)
+  2. RLS policy coverage (regression detection against baseline)
+  3. DTO enforcement (no JPA entities in controller returns — regression detection)
+  4. Backend test coverage (every new Service must have a Test file)
+  5. Flyway migration conventions (naming, TIMESTAMPTZ)
+  6. Frontend test coverage (every new component must have a .spec.ts)
+  7. i18n enforcement (no new hardcoded strings in templates)
+  8. BigDecimal enforcement (no double/float for monetary fields)
+- **NEW: `.github/scripts/sync-memory-bank.sh`** — Auto-detects and fixes stale values in memory bank files. `--check` mode for validation, `--fix` mode for auto-correction.
+- **NEW: `.github/scripts/quality-gate-baselines.conf`** — Tracks pre-existing violation counts (125 DTO, 5 RLS, 3 missing tests, 8 missing specs, 1 i18n). Only NEW violations fail CI.
+- **CI updated:** `ci.yml` now has 5 jobs: validate-ownership, validate-quality-gates, sync-memory-bank (auto-commit on main), backend build, frontend build.
+- **Memory bank fixed:** techcontext.md test count 405→489, module count 11→15, added auth/master/payable/reports modules, systempatterns.md baseline updated.
+- **CLAUDE.md updated:** Added automation references, quality gate table, updated file map.
 
-### Previous Session: Voucher-Receipt-Advance Settlement System (2026-04-04)
-- Foundation Entities, Voucher Enums, Core Entities, DTOs, Services, Controllers
-- Flyway V14 migration, 24 new unit tests, 489 backend tests passing
+### Previous Session: Requirements & Milestones Restructuring (2026-04-04)
+- Added M11/M12 milestone definitions to milestones.md
+- Auto-generated docs regenerated (14 requirements, 0 errors)
 
 ---
 
@@ -51,18 +58,20 @@
 
 ## Active Focus Areas
 
-Authentication module is now complete. All 10 milestones remain complete.
+Quality gate automation is now enforced in CI. All 8 gates pass. Memory bank auto-sync runs on every push to main.
 
-**New authentication capability:**
-- `/start` is the public landing page with OIDC login redirect
-- All other routes are protected by `authGuard`
-- Keycloak + OpenLDAP can be started with `docker compose up keycloak openldap`
-- Demo users: `demo-admin`/`admin123!` and `demo-accountant`/`account123!`
+**Automated enforcement (cannot be skipped):**
+- Memory bank freshness validated on every PR (test counts, modules, migrations)
+- RLS, DTO, BigDecimal, test coverage validated with regression detection
+- Memory bank auto-synced on push to main (stale values auto-corrected)
+- Agent ownership validated on every PR
 
-**For backend integration (next steps):**
-- Add `spring-boot-starter-oauth2-resource-server` to backend
-- Configure JWT validation against Keycloak JWKS endpoint
-- Extract `tenant_id` from JWT and set RLS context
+**For any new implementation:**
+1. Add the feature code
+2. Run `validate-quality-gates.sh` to check all 8 gates
+3. Run `sync-memory-bank.sh --fix` to auto-update memory bank
+4. Run `validate-agent-ownership.sh` to ensure ownership
+5. CI will enforce all of the above automatically
 
 ---
 
