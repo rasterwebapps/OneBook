@@ -11,6 +11,9 @@ docs/
 ├── milestones.md                      ← Project milestone specifications (M1–M12)
 ├── sub-agents.md                      ← Sub-agent architecture & delegation rules
 │
+├── ux/                                ← UX & product specifications
+│   └── role-based-dashboards.md       ← Role-based admin-configurable dashboard spec
+│
 ├── business/                          ← Business documentation
 │   ├── BRD.md                         ← Business Requirements Document (auto-generated)
 │   ├── FRD.md                         ← Functional Requirements Document (auto-generated)
@@ -65,3 +68,4 @@ docs/
 | **User** | [User Manual](user/user-manual.md) · [Feature Catalog](user/feature-catalog.md) |
 | **Requirements** | [RTM](requirements/RTM.md) · [Requirements Index](requirements/requirements-index.md) |
 | **Milestones** | [Project Milestones](milestones.md) |
+| **UX Specs** | [Role-Based Dashboards](ux/role-based-dashboards.md) |

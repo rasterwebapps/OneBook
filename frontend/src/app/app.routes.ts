@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard, publicGuard, auditorGuard } from './auth/guards/auth.guard';
+import { authGuard, publicGuard, auditorGuard, adminGuard } from './auth/guards/auth.guard';
 
 export const routes: Routes = [
   // Start / Landing Page (Public)
@@ -103,6 +103,20 @@ export const routes: Routes = [
     path: 'auditor', 
     loadComponent: () => import('./auditor/components/auditor-dashboard/auditor-dashboard.component').then(m => m.AuditorDashboardComponent),
     canActivate: [auditorGuard]
+  },
+
+  // Role-Based Dashboard: Runtime Workspace Shell - Protected
+  {
+    path: 'dashboard',
+    loadComponent: () => import('./dashboard/components/workspace-shell/workspace-shell.component').then(m => m.WorkspaceShellComponent),
+    canActivate: [authGuard]
+  },
+
+  // Role-Based Dashboard: Admin Template Editor - Admin Only
+  {
+    path: 'admin/dashboard-templates/:role/:workspaceId',
+    loadComponent: () => import('./dashboard/components/admin-template-editor-shell/admin-template-editor-shell.component').then(m => m.AdminTemplateEditorShellComponent),
+    canActivate: [adminGuard]
   },
 
   // Catch-all redirect to start page
