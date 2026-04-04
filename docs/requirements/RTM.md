@@ -23,6 +23,7 @@
 | [REQ-011](active/REQ-011-payment-register.md) | Payment Register | BR-011 | FR-015 | TR-008 | PaymentRegisterEntry.java<br>PaymentRegisterStatus.java<br>PaymentRegisterRepository.java<br>V11__payment_processing.sql | — | US-021 | 🔄 IN_PROGRESS |
 | [REQ-012](active/REQ-012-payment-batch-processing.md) | Payment Batch Processing | BR-012 | FR-016 | TR-008 | PaymentBatch.java<br>PaymentBatchItem.java<br>PaymentBatchStatus.java<br>V11__payment_processing.sql | — | US-022, US-023 | 🔄 IN_PROGRESS |
 | [REQ-013](active/REQ-013-payment-generation.md) | Payment File Generation | BR-013 | FR-017 | TR-008 | PaymentFileGeneratorService.java<br>V11__payment_processing.sql | — | US-024 | 🔄 IN_PROGRESS |
+| [REQ-014](active/REQ-014-employee-advances-and-settlement.md) | Employee Advances & Settlement | BR-014 | FR-018 | TR-009 | EmployeeAdvanceService.java<br>ExpenseVoucherService.java<br>AdvanceSettlementService.java<br>V15__employee_advances_settlement.sql | — | US-025, US-026, US-027, US-028 | 📝 DRAFT |
 
 ---
 
@@ -222,16 +223,32 @@
 | Migrations | V11__payment_processing.sql |
 | User Stories | US-024 |
 
+### REQ-014: Employee Advances & Settlement
+
+| Artifact | Details |
+|---------|--------|
+| Status | 📝 DRAFT |
+| Priority | HIGH |
+| Owner | @LedgerExpert |
+| Milestone | M12 |
+| BRD | BR-014 |
+| FRD | FR-018 |
+| TRD | TR-009 |
+| Java Files | EmployeeAdvance.java, ExpenseVoucher.java, AdvanceReceipt.java, PaymentAdvice.java, EmployeeAdvanceConfig.java, EmployeeAdvanceBalance.java, AdvanceLimitCheckService.java, ApprovalTierResolver.java, AdvanceSettlementService.java, EmployeeAdvanceService.java, ExpenseVoucherService.java, AdvanceReceiptService.java, PaymentAdviceService.java, AdvanceReportService.java, EmployeeAdvanceController.java, ExpenseVoucherController.java, AdvanceReceiptController.java, PaymentAdviceController.java, AdvanceReportController.java |
+| Migrations | V15__employee_advances_settlement.sql |
+| Related Requirements | REQ-004 (Voucher Posting), REQ-010 (Maker-Checker Workflow), REQ-002 (Encryption), REQ-006 (Cost Center / Department) |
+| User Stories | US-025, US-026, US-027, US-028 |
+
 ---
 
 ## Coverage Summary
 
 | Category | Total | Completed | Coverage |
 |----------|-------|-----------|----------|
-| Requirements | 13 | 10 | 77% |
-| Requirements with Tests | 13 | 0 | 0% |
-| Requirements with Code | 13 | 13 | 100% |
-| Requirements with DB Migration | 13 | 12 | 92% |
+| Requirements | 14 | 10 | 71% |
+| Requirements with Tests | 14 | 0 | 0% |
+| Requirements with Code | 14 | 13 | 93% |
+| Requirements with DB Migration | 14 | 12 | 86% |
 
 ---
 
