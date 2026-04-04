@@ -55,7 +55,7 @@ function parseMetadata(content, filename) {
 function statusIcon(status) {
   if (status.includes('COMPLETE')) return '✅';
   if (status.includes('PROGRESS')) return '🔄';
-  if (status.includes('DRAFT')) return '📋';
+  if (status.includes('DRAFT')) return '📝';
   if (status.includes('REJECT')) return '❌';
   return '❓';
 }
