@@ -61,10 +61,12 @@ OneBook/
 │           ├── dto/              ← Request/Response records
 │           ├── exception/        ← GlobalExceptionHandler
 │           ├── ingestion/        ← Gateway, Adapters, Mapper
-│           ├── model/            ← JPA entities
+│           ├── model/            ← JPA entities (foundation: Department, Payer, Payee, etc.)
+│           ├── payment/          ← Payment register, batch processing, file generation (M11)
 │           ├── repository/       ← Spring Data JPA repositories
 │           ├── security/         ← Encryption, BlindIndex, Audit
-│           └── service/          ← Business logic services
+│           ├── service/          ← Business logic services
+│           └── voucher/          ← Voucher settlement, receipt, payment advice (V14)
 └── frontend/src/app/
     ├── accounting/               ← Ledger view, voucher entry
     ├── ai/                       ← AI dashboard
@@ -177,7 +179,11 @@ Handled by `GlobalExceptionHandler` (`@RestControllerAdvice`).
 ### Database Migrations
 - Flyway naming: `V<version>__<description>.sql`
 - Never use `ddl-auto: create` or `update` in production
-- Current migrations: V1 through V10
+- Current migrations: V1–V11, V13, V14 (V12 intentionally skipped; V15 planned for M12)
+  - V1–V10: Milestones 1–10 (foundation through production hardening)
+  - V11: Payment processing pipeline (payment_register, payment_batches, payment_batch_items)
+  - V13: Merge financial events into payment register
+  - V14: Voucher-receipt-advance settlement (18 tables)
 
 ### Testing
 - Controller tests: `@WebMvcTest`
