@@ -3,7 +3,7 @@
 
 CREATE TABLE IF NOT EXISTS client_accounts (
     id              BIGSERIAL PRIMARY KEY,
-    tenant_id       VARCHAR(64)  NOT NULL,
+    tenant_id       VARCHAR(255) NOT NULL,
     ledger_account_id BIGINT     NOT NULL REFERENCES ledger_accounts(id),
     client_type     VARCHAR(20)  NOT NULL,
     client_name     VARCHAR(255) NOT NULL,

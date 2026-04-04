@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service for managing client (customer/vendor/employee/intercompany) accounts.
@@ -57,7 +56,7 @@ public class ClientAccountService {
     public List<ClientAccountResponse> list(String tenantId) {
         return clientAccountRepository.findByTenantId(tenantId).stream()
                 .map(ClientAccountResponse::from)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional(readOnly = true)
@@ -65,7 +64,7 @@ public class ClientAccountService {
         ClientAccountType clientType = parseClientType(type);
         return clientAccountRepository.findByTenantIdAndClientType(tenantId, clientType).stream()
                 .map(ClientAccountResponse::from)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional(readOnly = true)
