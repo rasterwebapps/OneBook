@@ -1,5 +1,7 @@
 # ============================================================
 # OneBook LDAP Bootstrap — Base Organisational Units & Groups
+# ⚠️  DEVELOPMENT ONLY — passwords below are for local dev.
+# For production, use secure credentials via environment variables.
 # Loaded automatically on first container start.
 # ============================================================
 

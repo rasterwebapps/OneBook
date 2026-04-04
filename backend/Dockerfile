@@ -1,6 +1,7 @@
 # ============================================================
 # OneBook Backend — Multi-stage Dockerfile
 # Produces a minimal JRE 21 image with the Spring Boot fat JAR.
+# Tests are skipped here — they run in CI (./gradlew build).
 # ============================================================
 
 # ── Stage 1: Build ───────────────────────────────────────────

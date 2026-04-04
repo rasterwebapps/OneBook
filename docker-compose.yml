@@ -6,6 +6,10 @@
 #   2. Backend         — Spring Boot API (Java 21)
 #   3. Frontend        — Angular SPA served by Nginx
 #
+# ⚠️  Credentials below are for LOCAL DEVELOPMENT only.
+#     For production, use Docker secrets or an .env file
+#     excluded from version control.
+#
 # Quick start (infrastructure only — for local development):
 #   docker compose up -d postgres redis openldap keycloak
 #

@@ -1,6 +1,7 @@
 -- ============================================================
 -- OneBook PostgreSQL Initialization Script
--- Runs once when the PostgreSQL container is first created.
+-- ⚠️  DEVELOPMENT ONLY — runs once when the container is first created.
+-- For production, use Flyway migrations and secure credentials.
 -- ============================================================
 
 -- Enable required extensions
@@ -15,6 +16,9 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 CREATE OR REPLACE FUNCTION set_tenant_context(p_tenant_id TEXT)
 RETURNS VOID AS $$
 BEGIN
+    IF p_tenant_id IS NULL OR length(p_tenant_id) = 0 THEN
+        RAISE EXCEPTION 'tenant_id must not be null or empty';
+    END IF;
     PERFORM set_config('app.tenant_id', p_tenant_id, true);
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
