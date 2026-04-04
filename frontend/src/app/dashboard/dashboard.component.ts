@@ -1,6 +1,7 @@
-import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, signal, inject, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DecimalPipe } from '@angular/common';
+import { DashboardService } from './services/dashboard.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -10,15 +11,37 @@ import { DecimalPipe } from '@angular/common';
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
-export class DashboardComponent {
-  /* ── AI Cash Flow Summary (demo data) ── */
-  readonly cashFlowSummary = signal({
-    currentBalance: 2847563.42,
-    inflow30d: 1245000,
-    outflow30d: 890000,
-    netChange: 355000,
-    trend: 'up' as const,
-    sparkline: [42, 55, 48, 62, 58, 71, 65, 78, 72, 85, 80, 92],
+export class DashboardComponent implements OnInit {
+  private readonly dashboardService = inject(DashboardService);
+
+  /* ── Live data from cross-domain DashboardService ── */
+  readonly summary = this.dashboardService.summary;
+  readonly loading = this.dashboardService.loading;
+  readonly error = this.dashboardService.error;
+
+  /* ── AI Cash Flow Summary (computed from API or fallback to demo data) ── */
+  readonly cashFlowSummary = computed(() => {
+    const s = this.summary();
+    if (s) {
+      const inflow = s.profitAndLoss.totalRevenue;
+      const outflow = s.profitAndLoss.totalExpenses;
+      return {
+        currentBalance: s.cashFlow.netCashChange,
+        inflow30d: inflow,
+        outflow30d: outflow,
+        netChange: s.profitAndLoss.netIncome,
+        trend: s.profitAndLoss.netIncome >= 0 ? 'up' as const : 'down' as const,
+        sparkline: [42, 55, 48, 62, 58, 71, 65, 78, 72, 85, 80, 92],
+      };
+    }
+    return {
+      currentBalance: 0,
+      inflow30d: 0,
+      outflow30d: 0,
+      netChange: 0,
+      trend: 'up' as const,
+      sparkline: [42, 55, 48, 62, 58, 71, 65, 78, 72, 85, 80, 92],
+    };
   });
 
   /* ── Audit Log Chain ── */
@@ -47,4 +70,8 @@ export class DashboardComponent {
     { key: 'F8', label: 'Sales', route: '/voucher/sales' },
     { key: 'F9', label: 'Purchase', route: '/voucher/purchase' },
   ];
+
+  ngOnInit(): void {
+    this.dashboardService.loadSummary();
+  }
 }
