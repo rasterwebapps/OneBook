@@ -3,7 +3,7 @@
 
 > **Complete keyboard shortcut reference for power users.**  
 > OneBook achieves Tally-equivalent keyboard speed via F-key shortcuts and Command Palette.  
-> Last Updated: 2026-03-18 | Source: `key-binding-registry.service.ts`, `docs/key-binding-registry.md`
+> Last Updated: 2026-03-18 | Source: `key-binding-registry.service.ts`, `docs/technical/key-binding-registry.md`
 
 ---
 
@@ -256,7 +256,7 @@ These are standard browser shortcuts that work within OneBook:
 
 ## Shortcut Customization
 
-OneBook's keyboard shortcuts are registered in `KeyBindingRegistry` and can be extended by IT Administrators. See `docs/key-binding-registry.md` for the full specification.
+OneBook's keyboard shortcuts are registered in `KeyBindingRegistry` and can be extended by IT Administrators. See `docs/technical/key-binding-registry.md` for the full specification.
 
 **Registry service:** `key-binding-registry.service.ts`  
 **Configuration:** Keyboard shortcuts are defined per screen context (contextual power keys adapt to the current screen).
@@ -272,4 +272,4 @@ OneBook's keyboard shortcuts are registered in `KeyBindingRegistry` and can be e
 
 ---
 
-*For the full keyboard binding specification, see `docs/key-binding-registry.md`.*
+*For the full keyboard binding specification, see `docs/technical/key-binding-registry.md`.*

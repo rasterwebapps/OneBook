@@ -1,7 +1,7 @@
 # OneBook — System Architecture
 
 > High-level Mermaid.js architecture diagram for the Nexus Universal Accounting OS.
-> For detailed diagrams (data flow, security, cache, deployment), see [`docs/architecture-diagram.md`](docs/architecture-diagram.md).
+> For detailed diagrams (data flow, security, cache, deployment), see [`technical/architecture-diagram.md`](technical/architecture-diagram.md).
 
 ```mermaid
 flowchart TD
@@ -62,9 +62,9 @@ flowchart TD
 
 | Document | Description |
 |----------|-------------|
-| [Architecture Diagrams](docs/architecture-diagram.md) | Mermaid.js diagrams: system, data flow, security, cache, deployment |
-| [Key-Binding Registry](docs/key-binding-registry.md) | Tally shortcuts, Command Palette, conflict resolution, extensibility |
-| [SQL Schema](docs/sql-schema.md) | Universal Secured Ledger schema (V1–V8 migrations) |
-| [API Documentation](docs/api-documentation.md) | REST API reference for all endpoints |
-| [Developer Guide](docs/developer-guide.md) | Onboarding, setup, coding standards, workflows |
-| [Operational Runbook](docs/operational-runbook.md) | Deployment, monitoring, troubleshooting, backup |
+| [Architecture Diagrams](technical/architecture-diagram.md) | Mermaid.js diagrams: system, data flow, security, cache, deployment |
+| [Key-Binding Registry](technical/key-binding-registry.md) | Tally shortcuts, Command Palette, conflict resolution, extensibility |
+| [SQL Schema](technical/sql-schema.md) | Universal Secured Ledger schema (V1–V8 migrations) |
+| [API Documentation](technical/api-documentation.md) | REST API reference for all endpoints |
+| [Developer Guide](technical/developer-guide.md) | Onboarding, setup, coding standards, workflows |
+| [Operational Runbook](technical/operational-runbook.md) | Deployment, monitoring, troubleshooting, backup |

@@ -46,8 +46,7 @@ OneBook/
 │   ├── keycloak/      #   Keycloak 24 realm & themes
 │   └── ldap/          #   OpenLDAP bootstrap LDIF
 ├── docs/              # Architecture & operational documentation
-├── docker-compose.yml # Full-stack orchestration (all services)
-└── milestones.md
+└── docker-compose.yml # Full-stack orchestration (all services)
 ```
 
 ## Documentation
@@ -87,9 +86,9 @@ OneBook/
 | [Data Dictionary](docs/technical/data-dictionary.md) | All entities, fields, validations |
 | [API Contracts](docs/technical/api-contracts.md) | Complete API specifications by module |
 | [Workflow Diagrams](docs/technical/workflow-diagrams.md) | Mermaid process flow diagrams |
-| [Architecture Diagram](docs/architecture-diagram.md) | Mermaid.js system, data flow, security diagrams |
-| [SQL Schema](docs/sql-schema.md) | Universal Secured Ledger schema documentation |
-| [API Documentation](docs/api-documentation.md) | REST API reference for all endpoints |
+| [Architecture Diagram](docs/technical/architecture-diagram.md) | Mermaid.js system, data flow, security diagrams |
+| [SQL Schema](docs/technical/sql-schema.md) | Universal Secured Ledger schema documentation |
+| [API Documentation](docs/technical/api-documentation.md) | REST API reference for all endpoints |
 
 ### 👤 User Documentation
 
@@ -98,15 +97,15 @@ OneBook/
 | [User Manual](docs/user/user-manual.md) | Complete user guide |
 | [Feature Catalog](docs/user/feature-catalog.md) | All features with status and endpoints |
 | [Keyboard Shortcuts](docs/user/keyboard-shortcuts.md) | Complete shortcut reference |
-| [Key-Binding Registry](docs/key-binding-registry.md) | Keyboard navigation design spec |
+| [Key-Binding Registry](docs/technical/key-binding-registry.md) | Keyboard navigation design spec |
 
 ### 🛠️ Developer Documentation
 
 | Document | Description |
 |----------|-------------|
-| [Developer Guide](docs/developer-guide.md) | Onboarding, setup, coding standards |
-| [Operational Runbook](docs/operational-runbook.md) | Deployment, monitoring, troubleshooting |
-| [Tally Features](tally_features.md) | Tally feature parity reference and breakdown |
+| [Developer Guide](docs/technical/developer-guide.md) | Onboarding, setup, coding standards |
+| [Operational Runbook](docs/technical/operational-runbook.md) | Deployment, monitoring, troubleshooting |
+| [Tally Features](docs/business/tally-features.md) | Tally feature parity reference and breakdown |
 | [Sub-Agent Instructions](.github/agents/README.md) | Design patterns for 10 specialist agents |
 | [Agent Ownership Maintenance](.github/agents/MAINTENANCE.md) | **⚠️ How to update agent ownership when adding new code** |
 

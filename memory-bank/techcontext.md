@@ -33,10 +33,6 @@ OneBook/
 ├── CLAUDE.md                     ← AI memory bank entry point
 ├── memory-bank/                  ← Persistent AI memory files
 ├── README.md                     ← Human-facing overview
-├── milestones.md                 ← Milestone specifications
-├── sub-agents.md                 ← Sub-agent architecture
-├── architecture.md               ← High-level system diagram
-├── tally_features.md             ← Tally feature parity reference
 ├── CONTRIBUTING.md               ← Branching, PR, coding standards
 ├── docker-compose.yml            ← Full-stack orchestration (all 7 services)
 ├── .github/
@@ -52,12 +48,14 @@ OneBook/
 │   │   └── themes/onebook/       ← Custom login theme CSS
 │   └── ldap/bootstrap/           ← OpenLDAP LDIF bootstrap files
 ├── docs/
-│   ├── architecture-diagram.md   ← Detailed Mermaid diagrams
-│   ├── api-documentation.md      ← REST API reference
-│   ├── sql-schema.md             ← DB schema documentation
-│   ├── developer-guide.md        ← Onboarding guide
-│   ├── operational-runbook.md    ← Deployment & monitoring
-│   └── key-binding-registry.md   ← Keyboard nav design
+│   ├── architecture.md             ← High-level Mermaid diagram
+│   ├── milestones.md               ← Milestone specifications
+│   ├── sub-agents.md               ← Sub-agent architecture
+│   ├── business/                   ← BRD, FRD, TRD, glossary, tally-features
+│   ├── technical/                  ← API docs, architecture diagrams, developer guide, etc.
+│   ├── user/                       ← User manual, feature catalog, keyboard shortcuts
+│   ├── requirements/               ← RTM, active requirements
+│   └── automation/                 ← Doc generation scripts
 ├── backend/                      ← Backend Service (Spring Boot 3.4+)
 │   ├── Dockerfile                ← Multi-stage JRE 21 image
 │   ├── .dockerignore

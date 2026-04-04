@@ -515,4 +515,4 @@ Verify:
 
 ---
 
-*For technical support, contact your IT Administrator or refer to `docs/developer-guide.md`.*
+*For technical support, contact your IT Administrator or refer to `docs/technical/developer-guide.md`.*

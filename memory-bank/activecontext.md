@@ -32,7 +32,7 @@
 - **CLAUDE.md updated:** Added automation references, quality gate table, updated file map.
 
 ### Previous Session: Requirements & Milestones Restructuring (2026-04-04)
-- Added M11/M12 milestone definitions to milestones.md
+- Added M11/M12 milestone definitions to docs/milestones.md
 - Auto-generated docs regenerated (14 requirements, 0 errors)
 
 ---

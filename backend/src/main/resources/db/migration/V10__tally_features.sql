@@ -1,6 +1,6 @@
 -- ============================================================
 -- V10 — Tally Feature Parity
--- Missing features from tally_features.md:
+-- Missing features from docs/business/tally-features.md:
 --   Credit Management, Multi-Currency, Stock/Inventory,
 --   Godowns, BOM, Batch & Expiry, Voucher Types, TDS/TCS,
 --   Cheque Management, Re-order Levels, Payroll

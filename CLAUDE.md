@@ -126,10 +126,6 @@ OneBook/
 │   ├── progress.md
 │   └── troubleshooting.md
 ├── README.md                          ← Human-facing project overview
-├── milestones.md                      ← Full milestone specifications
-├── sub-agents.md                      ← Sub-agent architecture & delegation rules
-├── architecture.md                    ← High-level Mermaid diagram
-├── tally_features.md                  ← Tally feature parity reference
 ├── CONTRIBUTING.md                    ← Branching, PR, coding standards
 ├── docker-compose.yml                 ← Full-stack orchestration (7 services)
 ├── .github/
@@ -149,12 +145,25 @@ OneBook/
 │   ├── keycloak/                      ← Keycloak 24 realm & themes
 │   └── ldap/bootstrap/                ← OpenLDAP LDIF bootstrap
 ├── docs/
-│   ├── architecture-diagram.md        ← Detailed Mermaid diagrams
-│   ├── api-documentation.md           ← REST API reference
-│   ├── sql-schema.md                  ← Database schema docs
-│   ├── developer-guide.md             ← Onboarding guide
-│   ├── operational-runbook.md         ← Deployment & monitoring
-│   └── key-binding-registry.md        ← Keyboard navigation design
+│   ├── architecture.md                ← High-level Mermaid diagram
+│   ├── milestones.md                  ← Full milestone specifications
+│   ├── sub-agents.md                  ← Sub-agent architecture & delegation rules
+│   ├── business/
+│   │   ├── tally-features.md          ← Tally feature parity reference
+│   │   ├── BRD.md, FRD.md, TRD.md    ← Business requirement docs
+│   │   └── glossary.md, user-stories.md
+│   ├── technical/
+│   │   ├── architecture-diagram.md    ← Detailed Mermaid diagrams
+│   │   ├── api-documentation.md       ← REST API reference
+│   │   ├── sql-schema.md              ← Database schema docs
+│   │   ├── developer-guide.md         ← Onboarding guide
+│   │   ├── operational-runbook.md     ← Deployment & monitoring
+│   │   ├── key-binding-registry.md    ← Keyboard navigation design
+│   │   ├── api-contracts.md, data-dictionary.md, workflow-diagrams.md
+│   │   └── ...
+│   ├── user/                          ← User-facing documentation
+│   ├── requirements/                  ← Requirements tracking (RTM, active reqs)
+│   └── automation/                    ← Doc generation scripts
 ├── backend/                           ← Backend Service (Spring Boot 3.4+)
 │   ├── Dockerfile                     ← Multi-stage JRE 21 image
 │   └── src/

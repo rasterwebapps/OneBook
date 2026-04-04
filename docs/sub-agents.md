@@ -74,7 +74,7 @@ For detailed design patterns and implementation guidelines, see:
 - CI/CD pipeline: `.github/workflows/ci.yml`
 - Backend entry point: `OneBookApplication.java`, `HealthController.java`
 - Spring configuration: `com.nexus.onebook.config/` (all `*Config.java` files)
-- Architecture docs: `architecture.md`, `docs/architecture-diagram.md`, `docs/developer-guide.md`
+- Architecture docs: `docs/architecture.md`, `docs/technical/architecture-diagram.md`, `docs/technical/developer-guide.md`
 - Flyway migration structure and naming conventions
 
 **What It Does:**
@@ -105,7 +105,7 @@ The Architect agent prevents "foundation rot" — small misconfigurations in Doc
 - **Backend DTOs:** `ledger/dto/` — all request/response records
 - **Backend Exceptions:** `ledger/exception/` — `GlobalExceptionHandler`, custom exceptions
 - **Flyway Migrations:** SQL schema design (V1–V11, V13–V15) including JSONB columns, balanced-entry triggers, payment processing, voucher settlement, and employee advances
-- **Documentation:** `docs/sql-schema.md`, `docs/api-documentation.md`
+- **Documentation:** `docs/technical/sql-schema.md`, `docs/technical/api-documentation.md`
 - **Frontend:** `accounting/` module (ledger view, voucher entry), `reports/` module
 
 **What It Does:**
@@ -193,7 +193,7 @@ The encryption layer (M3) adds latency to every database read. Without an expert
 - **Frontend Reports Module:** `reports/`
 - **Frontend i18n Module:** `i18n/` — `TranslocoConfig`, `LanguageSwitcherComponent`
 - **Angular Config:** `app.config.ts`, `app.routes.ts`, `app.component.*`
-- **Documentation:** `docs/key-binding-registry.md`
+- **Documentation:** `docs/technical/key-binding-registry.md`
 
 **What It Does:**
 - Ensures all 17 Tally shortcuts are correctly mapped (F4 Contra, F5 Payment, F7 Journal, Alt+C Create, Ctrl+A Save, etc.).
@@ -317,8 +317,8 @@ Production readiness requires a dedicated focus area. The AuditAgent ensures the
 **Milestones Served:** M9 (Architecture Documentation & Deliverables), Cross-cutting
 
 **What It Owns:**
-- **All Documentation:** `docs/` directory — `api-documentation.md`, `architecture-diagram.md`, `developer-guide.md`, `key-binding-registry.md`, `operational-runbook.md`, `sql-schema.md`
-- **Root Docs:** `README.md`, `CONTRIBUTING.md`, `architecture.md`, `milestones.md`, `tally_features.md`
+- **All Documentation:** `docs/` directory — `technical/api-documentation.md`, `technical/architecture-diagram.md`, `technical/developer-guide.md`, `technical/key-binding-registry.md`, `technical/operational-runbook.md`, `technical/sql-schema.md`
+- **Root Docs:** `README.md`, `CONTRIBUTING.md`, `docs/architecture.md`, `docs/milestones.md`, `docs/business/tally-features.md`
 - **Project State:** `PROJECT_STATE.md` (to be created after milestones complete)
 - **Code Comments:** Inline documentation standards across backend and frontend
 
