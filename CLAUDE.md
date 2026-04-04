@@ -64,6 +64,15 @@ docker compose up -d
 
 # Validate agent ownership
 ./.github/scripts/validate-agent-ownership.sh
+
+# Validate quality gates (RLS, DTO, BigDecimal, test coverage, memory bank freshness)
+./.github/scripts/validate-quality-gates.sh
+
+# Check memory bank freshness (detect stale values)
+./.github/scripts/sync-memory-bank.sh --check
+
+# Auto-fix memory bank staleness
+./.github/scripts/sync-memory-bank.sh --fix
 ```
 
 ---
@@ -125,7 +134,9 @@ OneBook/
 │   │   ├── MAINTENANCE.md             ← Agent ownership maintenance guide
 │   │   └── *.md                       ← Individual agent files
 │   ├── scripts/
-│   │   └── validate-agent-ownership.sh
+│   │   ├── validate-agent-ownership.sh    ← Agent ownership validation
+│   │   ├── validate-quality-gates.sh      ← RLS, DTO, BigDecimal, test coverage, memory bank freshness
+│   │   └── sync-memory-bank.sh            ← Auto-sync memory bank from actual repo state
 │   └── workflows/ci.yml
 ├── docs/
 │   ├── architecture-diagram.md        ← Detailed Mermaid diagrams
@@ -150,5 +161,23 @@ At the end of each task, the active AI agent MUST:
 4. **Update `memory-bank/troubleshooting.md`** — If bugs were found and fixed, or workarounds discovered.
 5. **Update agent files** (`.github/agents/*.md`) — If new modules, services, or controllers were added.
 6. **Run validation** — `./.github/scripts/validate-agent-ownership.sh` to ensure agent ownership is complete.
+7. **Run quality gates** — `./.github/scripts/validate-quality-gates.sh` to catch skipped steps (RLS, DTO, tests, BigDecimal).
+8. **Run memory bank sync** — `./.github/scripts/sync-memory-bank.sh --check` to detect stale context. Use `--fix` to auto-correct.
 
 This keeps the memory bank accurate and reduces token usage in future sessions by providing compressed, high-signal context.
+
+---
+
+## Automated Quality Gates (CI-Enforced)
+
+These checks run automatically on every PR and push to main. They **cannot be skipped**:
+
+| Gate | Script | What It Catches |
+|------|--------|-----------------|
+| Memory Bank Freshness | `sync-memory-bank.sh` | Stale test counts, missing modules, outdated migration lists |
+| Quality Gates | `validate-quality-gates.sh` | RLS missing on tenant tables, JPA entities in REST responses, double/float for money, missing test files, migration conventions |
+| Agent Ownership | `validate-agent-ownership.sh` | New services/controllers not documented in agent files |
+| Backend Build & Test | `./gradlew build` | Compilation errors, test failures |
+| Frontend Build & Test | `ng build && ng test` | Build errors, component test failures |
+
+**On push to main:** Memory bank is auto-synced (stale values auto-corrected and committed).
