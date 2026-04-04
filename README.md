@@ -29,14 +29,24 @@ This project uses a **CLAUDE.md memory bank** — a persistent AI context system
 | Database    | PostgreSQL 17+ (RLS, JSONB)       |
 | Cache       | Redis 7+                          |
 
-## Monorepo Structure
+## Repository Structure
 
 ```
 OneBook/
-├── backend/        # Spring Boot 3.4+ API (Gradle)
-├── frontend/       # Angular 19+ SPA
-├── docs/           # Architecture documentation
-├── docker-compose.yml
+├── backend/           # Backend Service — Spring Boot 3.4+ API (Gradle)
+│   ├── Dockerfile     #   Multi-stage JRE 21 image
+│   └── src/
+├── frontend/          # Frontend Service — Angular 21+ SPA
+│   ├── Dockerfile     #   Multi-stage Nginx image
+│   ├── nginx.conf     #   Production Nginx config (SPA + API proxy)
+│   └── src/
+├── infrastructure/    # Infrastructure Services
+│   ├── postgres/      #   PostgreSQL 17 init scripts
+│   ├── redis/         #   Redis 7 configuration
+│   ├── keycloak/      #   Keycloak 24 realm & themes
+│   └── ldap/          #   OpenLDAP bootstrap LDIF
+├── docs/              # Architecture & operational documentation
+├── docker-compose.yml # Full-stack orchestration (all services)
 └── milestones.md
 ```
 
@@ -111,10 +121,15 @@ OneBook/
 ### 1. Start Infrastructure
 
 ```bash
+# Infrastructure only (for local development)
+docker compose up -d postgres redis openldap keycloak
+
+# Or full stack (all services including backend + frontend)
 docker compose up -d
 ```
 
-This provisions PostgreSQL 17 and Redis 7.
+This provisions PostgreSQL 17, Redis 7, OpenLDAP, and Keycloak 24.
+See [`infrastructure/README.md`](infrastructure/README.md) for service details.
 
 ### 2. Run Backend
 

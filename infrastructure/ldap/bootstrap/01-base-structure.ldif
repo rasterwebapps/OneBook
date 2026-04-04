@@ -1,0 +1,54 @@
+# ============================================================
+# OneBook LDAP Bootstrap — Base Organisational Units & Groups
+# ⚠️  DEVELOPMENT ONLY — passwords below are for local dev.
+# For production, use secure credentials via environment variables.
+# Loaded automatically on first container start.
+# ============================================================
+
+# ─── Organisational Units ────────────────────────────────────
+dn: ou=People,dc=onebook,dc=local
+objectClass: organizationalUnit
+ou: People
+description: OneBook user accounts
+
+dn: ou=Groups,dc=onebook,dc=local
+objectClass: organizationalUnit
+ou: Groups
+description: OneBook role groups
+
+# ─── Role Groups ─────────────────────────────────────────────
+dn: cn=admins,ou=Groups,dc=onebook,dc=local
+objectClass: groupOfNames
+cn: admins
+description: Full administrative access
+member: cn=admin,dc=onebook,dc=local
+
+dn: cn=accountants,ou=Groups,dc=onebook,dc=local
+objectClass: groupOfNames
+cn: accountants
+description: Standard accounting operations
+member: cn=admin,dc=onebook,dc=local
+
+dn: cn=auditors,ou=Groups,dc=onebook,dc=local
+objectClass: groupOfNames
+cn: auditors
+description: Read-only audit portal access
+member: cn=admin,dc=onebook,dc=local
+
+dn: cn=viewers,ou=Groups,dc=onebook,dc=local
+objectClass: groupOfNames
+cn: viewers
+description: Read-only access
+member: cn=admin,dc=onebook,dc=local
+
+# ─── Default Admin User ──────────────────────────────────────
+dn: uid=onebook-admin,ou=People,dc=onebook,dc=local
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+uid: onebook-admin
+cn: OneBook Admin
+sn: Admin
+givenName: OneBook
+mail: admin@onebook.local
+userPassword: admin_secret

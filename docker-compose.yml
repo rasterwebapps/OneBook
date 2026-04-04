@@ -1,4 +1,29 @@
+# ============================================================
+# OneBook — Docker Compose (Full Stack)
+#
+# Services are organised into three groups:
+#   1. Infrastructure  — postgres, redis, openldap, keycloak
+#   2. Backend         — Spring Boot API (Java 21)
+#   3. Frontend        — Angular SPA served by Nginx
+#
+# ⚠️  Credentials below are for LOCAL DEVELOPMENT only.
+#     For production, use Docker secrets or an .env file
+#     excluded from version control.
+#
+# Quick start (infrastructure only — for local development):
+#   docker compose up -d postgres redis openldap keycloak
+#
+# Full stack:
+#   docker compose up -d
+# ============================================================
+
 services:
+
+  # ═══════════════════════════════════════════════════════════
+  # INFRASTRUCTURE SERVICES
+  # ═══════════════════════════════════════════════════════════
+
+  # ─── PostgreSQL 17 — Primary Data Store ────────────────────
   postgres:
     image: postgres:17-alpine
     container_name: onebook-postgres
@@ -10,29 +35,30 @@ services:
       - "5433:5432"  # Use 5433 externally if native postgres is on 5432
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./infrastructure/postgres/init:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U onebook"]
       interval: 10s
       timeout: 5s
       retries: 5
 
+  # ─── Redis 7 — Warm Cache (Cache-Aside Pattern) ───────────
   redis:
     image: redis:7-alpine
     container_name: onebook-redis
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
+      - ./infrastructure/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  # ─── Authentication Infrastructure ───
-
-  # OpenLDAP - User Directory (User Federation Source)
-  # Users and groups are defined here and synced to Keycloak
+  # ─── OpenLDAP 1.5 — User Directory (Keycloak Federation) ──
   openldap:
     image: osixia/openldap:1.5.0
     container_name: onebook-ldap
@@ -57,7 +83,7 @@ services:
       timeout: 10s
       retries: 3
 
-  # phpLDAPadmin - LDAP Management UI (Development Only)
+  # ─── phpLDAPadmin — LDAP Management UI (Development Only) ──
   ldapadmin:
     image: osixia/phpldapadmin:0.9.0
     container_name: onebook-ldapadmin
@@ -67,28 +93,23 @@ services:
     ports:
       - "8081:80"
     depends_on:
-      - openldap
+      openldap:
+        condition: service_healthy
 
-  # Keycloak - Identity Provider (OIDC/OAuth2)
-  # Federated with OpenLDAP - does NOT store users locally
+  # ─── Keycloak 24 — OIDC Identity Provider ─────────────────
   keycloak:
     image: quay.io/keycloak/keycloak:24.0
     container_name: onebook-keycloak
     environment:
-      # Admin credentials
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin_secret
-      # Database (uses embedded H2 for development)
       KC_DB: dev-file
-      # HTTP settings
       KC_HTTP_ENABLED: "true"
       KC_HTTP_PORT: "8180"
       KC_HOSTNAME_STRICT: "false"
       KC_HOSTNAME_STRICT_HTTPS: "false"
-      # Health endpoints
       KC_HEALTH_ENABLED: "true"
       KC_METRICS_ENABLED: "true"
-      # Custom theme path
       KC_SPI_THEME_DEFAULT: "onebook"
     command:
       - start-dev
@@ -97,16 +118,61 @@ services:
       - "8180:8180"
     volumes:
       - keycloak_data:/opt/keycloak/data
-      - ./infrastructure/keycloak/themes/onebook:/opt/keycloak/themes/onebook
-      - ./infrastructure/keycloak/realms:/opt/keycloak/data/import
+      - ./infrastructure/keycloak/themes/onebook:/opt/keycloak/themes/onebook:ro
+      - ./infrastructure/keycloak/realms:/opt/keycloak/data/import:ro
     depends_on:
-      - openldap
+      openldap:
+        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8180/health/ready || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 5
 
+  # ═══════════════════════════════════════════════════════════
+  # APPLICATION SERVICES
+  # ═══════════════════════════════════════════════════════════
+
+  # ─── Backend — Spring Boot 3.4 API (Java 21) ──────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: onebook-backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/onebook
+      SPRING_DATASOURCE_USERNAME: onebook
+      SPRING_DATASOURCE_PASSWORD: onebook_secret
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+  # ─── Frontend — Angular 21 SPA (Nginx) ─────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: onebook-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+# ═══════════════════════════════════════════════════════════
+# VOLUMES
+# ═══════════════════════════════════════════════════════════
 volumes:
   postgres_data:
   redis_data:

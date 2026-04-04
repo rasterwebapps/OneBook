@@ -116,7 +116,7 @@ Run `cd docs/automation && npm run generate-all` to regenerate all documents loc
 
 ```bash
 # 1. Start infrastructure
-docker compose up -d
+docker compose up -d postgres redis openldap keycloak
 
 # 2. Run backend
 cd backend && ./gradlew bootRun
@@ -129,6 +129,9 @@ cd backend && ./gradlew test
 
 # 5. Run frontend tests
 cd frontend && npx ng test
+
+# Full stack (all services via Docker)
+docker compose up -d
 ```
 
 ---

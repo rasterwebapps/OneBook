@@ -59,7 +59,10 @@ cd backend && ./gradlew test
 cd frontend && npm install && npx ng build
 cd frontend && npx ng test --watch=false --browsers=ChromeHeadless
 
-# Infrastructure
+# Infrastructure only (for local development)
+docker compose up -d postgres redis openldap keycloak
+
+# Full stack (all services)
 docker compose up -d
 
 # Validate agent ownership
@@ -128,6 +131,7 @@ OneBook/
 ├── architecture.md                    ← High-level Mermaid diagram
 ├── tally_features.md                  ← Tally feature parity reference
 ├── CONTRIBUTING.md                    ← Branching, PR, coding standards
+├── docker-compose.yml                 ← Full-stack orchestration (7 services)
 ├── .github/
 │   ├── agents/                        ← Agent instruction files (10 agents)
 │   │   ├── INDEX.md                   ← Design requirements quick index
@@ -138,6 +142,12 @@ OneBook/
 │   │   ├── validate-quality-gates.sh      ← RLS, DTO, BigDecimal, test coverage, memory bank freshness
 │   │   └── sync-memory-bank.sh            ← Auto-sync memory bank from actual repo state
 │   └── workflows/ci.yml
+├── infrastructure/                    ← Infrastructure service configs
+│   ├── README.md                      ← Infrastructure documentation
+│   ├── postgres/init/                 ← PostgreSQL init scripts
+│   ├── redis/redis.conf               ← Redis 7 configuration
+│   ├── keycloak/                      ← Keycloak 24 realm & themes
+│   └── ldap/bootstrap/                ← OpenLDAP LDIF bootstrap
 ├── docs/
 │   ├── architecture-diagram.md        ← Detailed Mermaid diagrams
 │   ├── api-documentation.md           ← REST API reference
@@ -145,8 +155,13 @@ OneBook/
 │   ├── developer-guide.md             ← Onboarding guide
 │   ├── operational-runbook.md         ← Deployment & monitoring
 │   └── key-binding-registry.md        ← Keyboard navigation design
-├── backend/                           ← Spring Boot 3.4+ API
-└── frontend/                          ← Angular 19+ SPA
+├── backend/                           ← Backend Service (Spring Boot 3.4+)
+│   ├── Dockerfile                     ← Multi-stage JRE 21 image
+│   └── src/
+└── frontend/                          ← Frontend Service (Angular 21+)
+    ├── Dockerfile                     ← Multi-stage Nginx image
+    ├── nginx.conf                     ← Production Nginx config
+    └── src/
 ```
 
 ---

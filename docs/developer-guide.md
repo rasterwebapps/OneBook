@@ -41,7 +41,8 @@
 
 ```
 OneBook/
-├── backend/                    # Spring Boot 3.4+ API (Gradle)
+├── backend/                    # Backend Service — Spring Boot 3.4+ API (Gradle)
+│   ├── Dockerfile              #   Multi-stage JRE 21 image
 │   ├── src/main/java/          # Java source code
 │   │   └── com/nexus/onebook/
 │   │       ├── OneBookApplication.java
@@ -59,9 +60,11 @@ OneBook/
 │   │           └── service/    # Business services
 │   ├── src/main/resources/
 │   │   ├── application.yml     # Configuration
-│   │   └── db/migration/       # Flyway SQL migrations (V1–V8)
+│   │   └── db/migration/       # Flyway SQL migrations (V1–V14)
 │   └── src/test/               # Test mirror of main structure
-├── frontend/                   # Angular 19+ SPA
+├── frontend/                   # Frontend Service — Angular 21+ SPA
+│   ├── Dockerfile              #   Multi-stage Nginx image
+│   ├── nginx.conf              #   Production Nginx config (SPA + API proxy)
 │   └── src/app/
 │       ├── keyboard/           # Keyboard navigation module
 │       │   ├── services/       # Registry, Navigation, Command
@@ -70,8 +73,14 @@ OneBook/
 │       │   └── models/         # KeyBinding, Command interfaces
 │       ├── i18n/               # Transloco i18n configuration
 │       └── ai/                 # AI dashboard components
+├── infrastructure/             # Infrastructure Services
+│   ├── README.md               # Infrastructure documentation
+│   ├── postgres/init/          # PostgreSQL 17 init scripts
+│   ├── redis/redis.conf        # Redis 7 configuration
+│   ├── keycloak/               # Keycloak 24 realm & login theme
+│   └── ldap/bootstrap/         # OpenLDAP LDIF bootstrap files
 ├── docs/                       # Architecture documentation
-├── docker-compose.yml          # PostgreSQL 17 + Redis 7
+├── docker-compose.yml          # Full-stack orchestration (all 7 services)
 ├── milestones.md               # Project milestone tracker
 ├── CONTRIBUTING.md             # Contribution guidelines
 └── architecture.md             # Mermaid.js system diagram
@@ -91,12 +100,17 @@ cd OneBook
 ### Step 2: Start Infrastructure
 
 ```bash
-docker compose up -d
+# Infrastructure only (for local development)
+docker compose up -d postgres redis openldap keycloak
 ```
 
 This provisions:
-- **PostgreSQL 17** on port 5432 (database: `onebook`, user: `onebook`, password: `onebook_secret`)
+- **PostgreSQL 17** on port 5433 (database: `onebook`, user: `onebook`, password: `onebook_secret`)
 - **Redis 7** on port 6379
+- **OpenLDAP** on port 389 (user directory, federated with Keycloak)
+- **Keycloak 24** on port 8180 (OIDC identity provider)
+
+See [`infrastructure/README.md`](../infrastructure/README.md) for full service details.
 
 Verify infrastructure health:
 

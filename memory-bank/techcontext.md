@@ -21,7 +21,7 @@
 | Security | AES-256-GCM | — | Field-level encryption |
 | Security | HMAC-SHA256 | — | Blind indexes |
 | Security | Flyway | — | Database migrations |
-| Infrastructure | Docker Compose | — | Local dev (PostgreSQL + Redis) |
+| Infrastructure | Docker Compose | — | Full-stack orchestration (7 services) |
 | CI/CD | GitHub Actions | — | Build, test, ownership validation |
 
 ---
@@ -38,11 +38,19 @@ OneBook/
 ├── architecture.md               ← High-level system diagram
 ├── tally_features.md             ← Tally feature parity reference
 ├── CONTRIBUTING.md               ← Branching, PR, coding standards
-├── docker-compose.yml            ← PostgreSQL 17 + Redis 7
+├── docker-compose.yml            ← Full-stack orchestration (all 7 services)
 ├── .github/
 │   ├── agents/                   ← 10 agent instruction files
-│   ├── scripts/                  ← validate-agent-ownership.sh
+│   ├── scripts/                  ← validate-agent-ownership.sh, validate-quality-gates.sh, sync-memory-bank.sh
 │   └── workflows/ci.yml          ← GitHub Actions CI
+├── infrastructure/               ← Infrastructure service configs
+│   ├── README.md                 ← Infrastructure documentation
+│   ├── postgres/init/            ← PostgreSQL init scripts (extensions, RLS)
+│   ├── redis/redis.conf          ← Redis 7 config (LRU, AOF)
+│   ├── keycloak/                 ← Keycloak 24 realm & login theme
+│   │   ├── realms/               ← onebook-realm.json (auto-imported)
+│   │   └── themes/onebook/       ← Custom login theme CSS
+│   └── ldap/bootstrap/           ← OpenLDAP LDIF bootstrap files
 ├── docs/
 │   ├── architecture-diagram.md   ← Detailed Mermaid diagrams
 │   ├── api-documentation.md      ← REST API reference
@@ -50,7 +58,10 @@ OneBook/
 │   ├── developer-guide.md        ← Onboarding guide
 │   ├── operational-runbook.md    ← Deployment & monitoring
 │   └── key-binding-registry.md   ← Keyboard nav design
-├── backend/
+├── backend/                      ← Backend Service (Spring Boot 3.4+)
+│   ├── Dockerfile                ← Multi-stage JRE 21 image
+│   ├── .dockerignore
+│   ├── build.gradle
 │   └── src/main/java/com/nexus/onebook/
 │       ├── OneBookApplication.java
 │       ├── HealthController.java
@@ -67,22 +78,26 @@ OneBook/
 │           ├── security/         ← Encryption, BlindIndex, Audit
 │           ├── service/          ← Business logic services
 │           └── voucher/          ← Voucher settlement, receipt, payment advice (V14)
-└── frontend/src/app/
-    ├── accounting/               ← Ledger view, voucher entry
-    ├── ai/                       ← AI dashboard
-    ├── auditor/                  ← Auditor portal
-    ├── auth/                     ← Authentication & guards
-    ├── banking/                  ← Bank reconciliation
-    ├── dashboard/                ← Main dashboard
-    ├── gst/                      ← GST compliance
-    ├── i18n/                     ← Transloco config
-    ├── inventory/                ← Stock management
-    ├── keyboard/                 ← Key-binding registry, command palette
-    ├── market/                   ← Mark-to-Market valuation
-    ├── master/                   ← Master data management
-    ├── payable/                  ← Accounts payable
-    ├── receivable/               ← Accounts receivable
-    └── reports/                  ← Report generation
+└── frontend/                     ← Frontend Service (Angular 21+)
+    ├── Dockerfile                ← Multi-stage Nginx image
+    ├── .dockerignore
+    ├── nginx.conf                ← Production Nginx config (SPA + API proxy)
+    └── src/app/
+        ├── accounting/               ← Ledger view, voucher entry
+        ├── ai/                       ← AI dashboard
+        ├── auditor/                  ← Auditor portal
+        ├── auth/                     ← Authentication & guards
+        ├── banking/                  ← Bank reconciliation
+        ├── dashboard/                ← Main dashboard
+        ├── gst/                      ← GST compliance
+        ├── i18n/                     ← Transloco config
+        ├── inventory/                ← Stock management
+        ├── keyboard/                 ← Key-binding registry, command palette
+        ├── market/                   ← Mark-to-Market valuation
+        ├── master/                   ← Master data management
+        ├── payable/                  ← Accounts payable
+        ├── receivable/               ← Accounts receivable
+        └── reports/                  ← Report generation
 ```
 
 ---
@@ -92,7 +107,10 @@ OneBook/
 ### Local Development Setup
 
 ```bash
-# 1. Start infrastructure (PostgreSQL 17 + Redis 7)
+# 1. Start infrastructure only (for local development)
+docker compose up -d postgres redis openldap keycloak
+
+# Or start full stack (all 7 services)
 docker compose up -d
 
 # 2. Run backend

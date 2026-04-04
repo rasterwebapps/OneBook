@@ -26,9 +26,12 @@
 | Component | Technology | Default Port | Purpose |
 |-----------|-----------|-------------|---------|
 | Backend API | Java 21 / Spring Boot 3.4+ | 8080 | REST API with Virtual Threads |
-| Frontend | Angular 19+ | 4200 (dev) | Single Page Application |
-| Database | PostgreSQL 17+ | 5432 | Encrypted ledger with RLS |
+| Frontend | Angular 21+ / Nginx | 80 (Docker) / 4200 (dev) | Single Page Application |
+| Database | PostgreSQL 17+ | 5433 → 5432 | Encrypted ledger with RLS |
 | Cache | Redis 7+ | 6379 | Warm cache for active sessions |
+| Identity | Keycloak 24 | 8180 | OIDC / OAuth 2.0 provider |
+| Directory | OpenLDAP 1.5 | 389, 636 | User directory (Keycloak federation) |
+| LDAP Admin | phpLDAPadmin | 8081 | LDAP management UI (dev only) |
 
 ### System Requirements
 
@@ -47,7 +50,10 @@
 ### Local Development
 
 ```bash
-# 1. Start infrastructure
+# 1. Start infrastructure only (for local development)
+docker compose up -d postgres redis openldap keycloak
+
+# Or start full stack (all services)
 docker compose up -d
 
 # 2. Verify infrastructure
@@ -67,28 +73,19 @@ npm start
 
 ### Docker Compose Services
 
-```yaml
-services:
-  postgres:
-    image: postgres:17-alpine
-    ports: ["5432:5432"]
-    environment:
-      POSTGRES_DB: onebook
-      POSTGRES_USER: onebook
-      POSTGRES_PASSWORD: onebook_secret
-    volumes: [postgres_data:/var/lib/postgresql/data]
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U onebook"]
-      interval: 10s
+The `docker-compose.yml` at the repository root orchestrates all 7 services:
 
-  redis:
-    image: redis:7-alpine
-    ports: ["6379:6379"]
-    volumes: [redis_data:/data]
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-```
+| Service | Image | Port | Purpose |
+|---------|-------|------|---------|
+| `postgres` | `postgres:17-alpine` | 5433 → 5432 | Primary data store with RLS |
+| `redis` | `redis:7-alpine` | 6379 | Warm cache (Cache-Aside) |
+| `openldap` | `osixia/openldap:1.5.0` | 389, 636 | User directory |
+| `ldapadmin` | `osixia/phpldapadmin:0.9.0` | 8081 | LDAP UI (dev only) |
+| `keycloak` | `quay.io/keycloak/keycloak:24.0` | 8180 | OIDC identity provider |
+| `backend` | `backend/Dockerfile` | 8080 | Spring Boot API |
+| `frontend` | `frontend/Dockerfile` | 80 | Angular SPA (Nginx) |
+
+Service configs live in `infrastructure/` — see [`infrastructure/README.md`](../infrastructure/README.md).
 
 ### Production Deployment Checklist
 
