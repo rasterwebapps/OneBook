@@ -200,6 +200,63 @@
 
 ---
 
+## Milestone 11 — Payment Processing Pipeline
+
+**Status:** 🔄 In Progress
+
+**Goal:** Provide a complete payment processing workflow from payment register view through batch approval to bank-ready file generation.
+
+- [x] Design payment register data model and vendor-grouping queries (REQ-011).
+- [x] Implement payment register view with vendor-grouped, due-date-sorted AP items.
+- [x] Design payment batch processing workflow with maker-checker approval (REQ-012).
+- [x] Implement batch creation, net payable calculation, and approval/rejection flows.
+- [x] Implement journal posting on batch approval (Dr Accounts Payable, Cr Bank Account).
+- [x] Design CSV payment file generation for NEFT/RTGS/IMPS (REQ-013).
+- [x] Implement payment file generator with batch status transitions.
+- [x] Flyway migration `V11__payment_processing.sql` — payment_register, payment_batches, payment_batch_items tables with RLS.
+- [x] Flyway migration `V13__merge_financial_events_into_payment_register.sql` — consolidate ingested events into payment register.
+- [ ] Complete unit and integration tests for all payment services and controllers.
+- [ ] Update BRD, FRD, TRD, RTM, and requirements index with final status.
+- [ ] Update agent ownership for payment module.
+
+**Deliverables:**
+- Flyway migrations `V11` and `V13` — 3 new tables with RLS policies
+- Backend: `PaymentRegisterEntry`, `PaymentBatch`, `PaymentBatchItem` models; `PaymentRegisterService`, `PaymentBatchService`, `PaymentFileGeneratorService` services; `PaymentRegisterController`, `PaymentBatchController` controllers
+- API endpoints: `/api/payment-register`, `/api/payment-batches`, `/api/payment-batches/{id}/generate-file`
+
+**Exit Criteria:** Payment register displays vendor-grouped AP items; batches can be created, approved/rejected with journal posting; CSV payment files can be generated from approved batches.
+
+---
+
+## Milestone 12 — Employee Advances & Settlement
+
+**Status:** 📝 Draft
+
+**Goal:** Implement a fully integrated Advance → Expense Settlement → Receipt / Payment Advice cycle with configurable limits, tiered multi-level approvals, and department-scoped visibility.
+
+- [ ] Implement per-employee advance limit configuration (REQ-014, BR-014.1).
+- [ ] Implement tiered approval workflow: HOD (≤₹10k), HOD+CEO (₹10k–₹20k), HOD+CEO+MD (>₹20k) (BR-014.6).
+- [ ] Implement expense voucher settlement logic — split between advance reduction and reimbursement payable (BR-014.7).
+- [ ] Implement advance receipt for unspent cash returns (BR-014.9).
+- [ ] Implement system-generated Payment Advice for overspend reimbursements (BR-014.8).
+- [ ] Implement department-based visibility for HOD users (BR-014.5).
+- [ ] Implement override mechanism with mandatory reason and audit logging (BR-014.3).
+- [ ] Flyway migration `V15__employee_advances_settlement.sql` — 6 new tables with RLS.
+- [ ] Build frontend components: advance request, approval queue, expense voucher, receipt, payment advice list, reports.
+- [ ] Write unit tests (≥19) and integration tests (≥7) for all new services and controllers.
+- [ ] Update BRD, FRD, TRD, RTM, and requirements index.
+- [ ] Update agent ownership for advance module.
+
+**Deliverables:**
+- Flyway migration `V15` — `employee_advance_config`, `employee_advance_balance`, `employee_advances`, `expense_vouchers`, `advance_receipts`, `payment_advices` tables
+- Backend: 6 models, 6 repositories, 7 services, 5 controllers, 6 DTOs (32+ new files)
+- Frontend: 7 new components in advance module with lazy-loaded route at `/advances`
+- Reports: Outstanding aging, pending approvals, reimbursements payable, overrides audit
+
+**Exit Criteria:** Employees can request advances with limit enforcement; tiered approval chain functions correctly; expense vouchers auto-settle against outstanding advances; Payment Advices are generated for overspend; Finance can process reimbursements; full audit trail for all state transitions.
+
+---
+
 ## 🤖 Subagent Operations (Nexus Universal)
 
 To maintain 2026-grade performance and zero-trust context management, the following delegation rules are active:
@@ -209,7 +266,7 @@ To maintain 2026-grade performance and zero-trust context management, the follow
 | Role | Milestones | Focus |
 |------|-----------|-------|
 | @Architect | 1 & 9 | Project skeleton, Monorepo structure, and Documentation |
-| @LedgerExpert | 2, 7, & 10 | SQL Schema, Double-Entry logic, Tax/Compliance, and Auditor Portal |
+| @LedgerExpert | 2, 7, 10, 11, & 12 | SQL Schema, Double-Entry logic, Tax/Compliance, Auditor Portal, Payment Processing, and Employee Advances |
 | @SecurityWarden | 3 & 10 | AES-256-GCM, HMAC-SHA256 Blind Indexing, RLS policies, and Document Vault |
 | @PerfEngineer | 4 | Redis Warm Cache, Virtual Threads (Loom), and Benchmarking |
 | @UXSpecialist | 5 & 7 | Angular 19 Signals, Keyboard Registry, Tally shortcuts, and i18n/L10n |
@@ -246,3 +303,5 @@ After a Milestone is "Exit Criteria Met," summarize the final state into `PROJEC
 | 8 | Advanced Intelligence, Forecasting & Markets | ✅ Complete | 2, 7 |
 | 9 | Architecture Documentation & Deliverables | ✅ Complete | 1–8 |
 | 10 | Hardening, Auditor Portal & Prod Readiness | ✅ Complete | 1–9 |
+| 11 | Payment Processing Pipeline | 🔄 In Progress | 2, 10 |
+| 12 | Employee Advances & Settlement | 📝 Draft | 2, 4, 6, 10 |

@@ -32,8 +32,8 @@
 
 ### Backend (Spring Boot 3.4+ / Java 21)
 - **Package:** `com.nexus.onebook.ledger`
-- **Migrations:** V1–V10 (all applied)
-- **Tests:** 405+ passing
+- **Migrations:** V1–V14 (all applied; V12 intentionally skipped)
+- **Tests:** 489 passing
 - **API:** All endpoints functional at `/api/*`
 
 ### Frontend (Angular 19+)

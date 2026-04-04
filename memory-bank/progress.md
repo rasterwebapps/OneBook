@@ -5,7 +5,7 @@
 
 ---
 
-## Overall Status: ✅ All 10 Milestones Complete
+## Overall Status: ✅ M1–M10 Complete | 🔄 M11 In Progress | 📝 M12 Draft
 
 | Milestone | Theme | Status | Tests |
 |-----------|-------|--------|-------|
@@ -19,6 +19,8 @@
 | M8 | Advanced Intelligence, Forecasting & Markets | ✅ Complete | — |
 | M9 | Architecture Documentation & Deliverables | ✅ Complete | — |
 | M10 | Hardening, Auditor Portal & Prod Readiness | ✅ Complete | — |
+| M11 | Payment Processing Pipeline | 🔄 In Progress | — |
+| M12 | Employee Advances & Settlement | 📝 Draft | — |
 
 **Total Tests:** 489 backend, 105+ frontend (all passing)
 
@@ -139,6 +141,41 @@
 **Key services:** `AuditorPortalService`, `SecurityAuditService`, `ObservabilityService`, `DisasterRecoveryService`  
 **Migration:** `V9__hardening_audit_production.sql`
 
+### M11 — Payment Processing Pipeline 🔄
+- [x] Payment register data model (vendor grouping, due-date sorting)
+- [x] PaymentRegisterEntry, PaymentRegisterStatus model + repository
+- [x] PaymentRegisterService + PaymentRegisterController
+- [x] PaymentBatch, PaymentBatchItem, PaymentBatchStatus model + repositories
+- [x] PaymentBatchService + PaymentBatchController (create, approve/reject, list)
+- [x] PaymentFileGeneratorService (CSV generation for NEFT/RTGS/IMPS)
+- [x] Journal posting on batch approval (Dr AP, Cr Bank)
+- [x] Flyway V11 + V13 migrations with RLS policies
+- [ ] Unit and integration tests for payment services
+- [ ] BRD/FRD/TRD/RTM updates
+- [ ] Agent ownership updates
+
+**Key packages:** `ledger/payment/` (model, dto, repository, service, controller)  
+**API endpoints:** `/api/payment-register`, `/api/payment-batches`, `/api/payment-batches/{id}/generate-file`  
+**Migrations:** `V11__payment_processing.sql`, `V13__merge_financial_events_into_payment_register.sql`
+
+### M12 — Employee Advances & Settlement 📝
+- [ ] Per-employee advance limit configuration
+- [ ] Tiered approval workflow (HOD → CEO → MD)
+- [ ] Expense voucher settlement logic (advance reduction + reimbursement)
+- [ ] Advance receipt for unspent cash returns
+- [ ] System-generated Payment Advice for overspend
+- [ ] Department-based HOD visibility
+- [ ] Override mechanism with mandatory reason + audit
+- [ ] Flyway V15 migration (6 new tables)
+- [ ] Frontend: 7 new components in advance module
+- [ ] Unit tests (≥19) + integration tests (≥7)
+- [ ] BRD/FRD/TRD/RTM updates
+- [ ] Agent ownership updates
+
+**Planned packages:** `ledger/advance/` (model, dto, repository, service, controller)  
+**Planned API endpoints:** `/api/advances`, `/api/expense-vouchers`, `/api/advance-receipts`, `/api/payment-advices`, `/api/advances/reports/*`  
+**Planned migration:** `V15__employee_advances_settlement.sql`
+
 ---
 
 ## Post-Milestone Enhancements
@@ -226,7 +263,9 @@
 | `docs/requirements/requirements-index.md` | Master requirements index | ✅ Auto-generated |
 | `docs/requirements/RTM.md` | Requirement Traceability Matrix | ✅ Auto-generated |
 | `docs/requirements/requirement-template.md` | Template for new requirements | ✅ Current |
-| `docs/requirements/active/REQ-001 to REQ-010` | Individual requirement files | ✅ Complete |
+| `docs/requirements/active/REQ-001 to REQ-010` | Individual requirement files (completed) | ✅ Complete |
+| `docs/requirements/active/REQ-011 to REQ-013` | Payment processing requirements | 🔄 In Progress |
+| `docs/requirements/active/REQ-014` | Employee advances & settlement requirement | 📝 Draft |
 | `docs/technical/data-dictionary.md` | Complete data model | ✅ Complete |
 | `docs/technical/api-contracts.md` | REST API specifications | ✅ Complete |
 | `docs/technical/workflow-diagrams.md` | Mermaid process flow diagrams | ✅ Complete |
