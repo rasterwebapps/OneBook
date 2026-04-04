@@ -127,7 +127,7 @@
 - [x] Operational runbook
 - [x] Key-binding registry spec
 
-**Key files:** `docs/architecture-diagram.md`, `docs/api-documentation.md`, `docs/sql-schema.md`, `docs/developer-guide.md`
+**Key files:** `docs/technical/architecture-diagram.md`, `docs/technical/api-documentation.md`, `docs/technical/sql-schema.md`, `docs/technical/developer-guide.md`
 
 ### M10 — Hardening, Auditor Portal & Prod Readiness ✅
 - [x] Auditor portal (read-only, hash-chain verification)
@@ -244,17 +244,17 @@
 | `memory-bank/progress.md` | This file | ✅ Current |
 | `memory-bank/troubleshooting.md` | Known issues | ✅ Current |
 | `README.md` | Human-facing overview | ✅ Current |
-| `milestones.md` | Full milestone specs | ✅ Complete |
-| `sub-agents.md` | Sub-agent architecture | ✅ Current |
-| `architecture.md` | High-level diagram | ✅ Complete |
-| `tally_features.md` | Tally feature reference | ✅ Complete |
+| `docs/milestones.md` | Full milestone specs | ✅ Complete |
+| `docs/sub-agents.md` | Sub-agent architecture | ✅ Current |
+| `docs/architecture.md` | High-level diagram | ✅ Complete |
+| `docs/business/tally-features.md` | Tally feature reference | ✅ Complete |
 | `CONTRIBUTING.md` | Contribution guide | ✅ Current |
-| `docs/architecture-diagram.md` | Detailed diagrams | ✅ Complete |
-| `docs/api-documentation.md` | REST API reference | ✅ Complete |
-| `docs/sql-schema.md` | DB schema docs | ✅ Complete |
-| `docs/developer-guide.md` | Onboarding | ✅ Complete |
-| `docs/operational-runbook.md` | Deployment/monitoring | ✅ Complete |
-| `docs/key-binding-registry.md` | Keyboard nav design | ✅ Complete |
+| `docs/technical/architecture-diagram.md` | Detailed diagrams | ✅ Complete |
+| `docs/technical/api-documentation.md` | REST API reference | ✅ Complete |
+| `docs/technical/sql-schema.md` | DB schema docs | ✅ Complete |
+| `docs/technical/developer-guide.md` | Onboarding | ✅ Complete |
+| `docs/technical/operational-runbook.md` | Deployment/monitoring | ✅ Complete |
+| `docs/technical/key-binding-registry.md` | Keyboard nav design | ✅ Complete |
 | `docs/business/BRD.md` | Business Requirements Document | ✅ Auto-generated |
 | `docs/business/FRD.md` | Functional Requirements Document | ✅ Auto-generated |
 | `docs/business/TRD.md` | Technical Requirements Document | ✅ Auto-generated |

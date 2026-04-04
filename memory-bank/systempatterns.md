@@ -115,7 +115,7 @@ Angular Frontend → OIDC (Authorization Code + PKCE) → Keycloak Realm → LDA
 
 ## Sub-Agent Context Budget Protocol
 
-Per `sub-agents.md` — the "3-File Rule":
+Per `docs/sub-agents.md` — the "3-File Rule":
 - **Trigger:** Task requires reading/analyzing 3+ files across different layers
 - **Action:** Spawn subagent, isolate, distill to interface/summary only
 - **Goal:** Keep Main Session context < 5,000 tokens at all times

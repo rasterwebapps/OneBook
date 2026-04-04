@@ -81,9 +81,7 @@ OneBook/
 │   └── ldap/bootstrap/         # OpenLDAP LDIF bootstrap files
 ├── docs/                       # Architecture documentation
 ├── docker-compose.yml          # Full-stack orchestration (all 7 services)
-├── milestones.md               # Project milestone tracker
-├── CONTRIBUTING.md             # Contribution guidelines
-└── architecture.md             # Mermaid.js system diagram
+└── CONTRIBUTING.md             # Contribution guidelines
 ```
 
 ---
