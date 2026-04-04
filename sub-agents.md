@@ -92,16 +92,19 @@ The Architect agent prevents "foundation rot" — small misconfigurations in Doc
 
 ### 2. 📒 @LedgerExpert — Accounting Engine Agent
 
-**Milestones Served:** M2 (Universal Ledger), M7 (Reporting & FAR), M10 (Auditor Portal)
+**Milestones Served:** M2 (Universal Ledger), M7 (Reporting & FAR), M10 (Auditor Portal), M11 (Payment Processing), M12 (Employee Advances)
 
 **What It Owns:**
 - **Backend Models:** `ledger/model/` — `LedgerAccount`, `JournalEntry`, `JournalLine`, `VoucherType`, `CostCenter`, `LedgerGroup`, `FixedAsset`, `DepreciationSchedule`
+- **Payment Module:** `ledger/payment/` — `PaymentRegisterEntry`, `PaymentBatch`, `PaymentBatchItem`, `PaymentRegisterService`, `PaymentBatchService`, `PaymentFileGeneratorService`, `PaymentRegisterController`, `PaymentBatchController`
+- **Voucher Settlement Module:** `ledger/voucher/` — `Voucher`, `VoucherItem`, `Receipt`, `PaymentAdvice`, `VoucherService`, `ReceiptService`, `PaymentAdviceService`, `UploadedFileService`, `VoucherController`, `ReceiptController`, `PaymentAdviceController`, `UploadedFileController`
+- **Advance Module (planned):** `ledger/advance/` — `EmployeeAdvance`, `ExpenseVoucher`, `AdvanceReceipt`, `AdvanceLimitCheckService`, `ApprovalTierResolver`, `AdvanceSettlementService`, `EmployeeAdvanceService`, `ExpenseVoucherService`, `AdvanceReceiptService`, `PaymentAdviceService`, `AdvanceReportService`, and corresponding controllers
 - **Backend Repositories:** `ledger/repository/` — all JPA repositories
 - **Backend Services:** `ledger/service/` — `JournalService`, `LedgerAccountService`, `TrialBalanceService`, `VoucherTypeService`, `CostCenterService`, `LedgerGroupService`, `FixedAssetService`, `ProfitAndLossService`, `BalanceSheetService`, `CashFlowService`
 - **Backend Controllers:** `ledger/controller/` — `LedgerController`, `JournalController`, `VoucherTypeController`, `CostCenterController`, `LedgerGroupController`, `ReportController`, `FixedAssetController`
 - **Backend DTOs:** `ledger/dto/` — all request/response records
 - **Backend Exceptions:** `ledger/exception/` — `GlobalExceptionHandler`, custom exceptions
-- **Flyway Migrations:** SQL schema design (V1–V9) including JSONB columns, balanced-entry triggers
+- **Flyway Migrations:** SQL schema design (V1–V11, V13–V15) including JSONB columns, balanced-entry triggers, payment processing, voucher settlement, and employee advances
 - **Documentation:** `docs/sql-schema.md`, `docs/api-documentation.md`
 - **Frontend:** `accounting/` module (ledger view, voucher entry), `reports/` module
 
@@ -112,6 +115,8 @@ The Architect agent prevents "foundation rot" — small misconfigurations in Doc
 - Manages the Fixed Asset Register (FAR): depreciation schedules, impairment, disposal.
 - Ensures Auditor Portal read-only access and sample-request workflows.
 - Validates multi-entity hierarchy: Enterprise → Branch → Cost Center.
+- Manages the Payment Processing Pipeline (M11): payment register, batch processing, payment file generation.
+- Manages Employee Advance & Settlement workflows (M12): advance limits, tiered approvals, expense settlement, advance receipts, reimbursement payment advices.
 
 **Why It's Needed:**
 The accounting engine is the **heart of the system**. Every other module (ingestion, AI, compliance) ultimately posts to the ledger. A domain expert ensures double-entry integrity is never violated, reports are mathematically correct, and the schema supports sector-agnostic metadata without corruption.
