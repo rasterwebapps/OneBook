@@ -24,6 +24,7 @@
 | [REQ-011](active/REQ-011-payment-register.md) | Payment Register | 🔄 IN_PROGRESS | HIGH | @LedgerExpert | M11 | [BR-011](../business/BRD.md) | [FR-015](../business/FRD.md) | [REQ-011-payment-register.md](active/REQ-011-payment-register.md) |
 | [REQ-012](active/REQ-012-payment-batch-processing.md) | Payment Batch Processing | 🔄 IN_PROGRESS | HIGH | @LedgerExpert | M11 | [BR-012](../business/BRD.md) | [FR-016](../business/FRD.md) | [REQ-012-payment-batch-processing.md](active/REQ-012-payment-batch-processing.md) |
 | [REQ-013](active/REQ-013-payment-generation.md) | Payment File Generation | 🔄 IN_PROGRESS | HIGH | @LedgerExpert | M11 | [BR-013](../business/BRD.md) | [FR-017](../business/FRD.md) | [REQ-013-payment-generation.md](active/REQ-013-payment-generation.md) |
+| [REQ-014](active/REQ-014-employee-advances-and-settlement.md) | Employee Advances & Settlement | 📝 DRAFT | HIGH | @LedgerExpert | M12 | [BR-014](../business/BRD.md) | [FR-018](../business/FRD.md) | [REQ-014-employee-advances-and-settlement.md](active/REQ-014-employee-advances-and-settlement.md) |
 
 ---
 
@@ -31,22 +32,23 @@
 
 | Status | Count | Percentage |
 |--------|-------|------------|
-| ✅ COMPLETED | 10 | 77% |
-| 🔄 IN_PROGRESS | 3 | 23% |
-| **Total** | **13** | **100%** |
+| ✅ COMPLETED | 10 | 71% |
+| 🔄 IN_PROGRESS | 3 | 21% |
+| 📝 DRAFT | 1 | 7% |
+| **Total** | **14** | **100%** |
 
 ## Priority Breakdown
 
 | Priority | Count | Requirements |
 |----------|-------|-------------|
 | CRITICAL | 3 | REQ-001, REQ-002, REQ-004 |
-| HIGH | 10 | REQ-003, REQ-005, REQ-006, REQ-007, REQ-008, REQ-009, REQ-010, REQ-011, REQ-012, REQ-013 |
+| HIGH | 11 | REQ-003, REQ-005, REQ-006, REQ-007, REQ-008, REQ-009, REQ-010, REQ-011, REQ-012, REQ-013, REQ-014 |
 
 ## Owner Assignments
 
 | Owner Agent | Requirements |
 |-------------|-------------|
-| @LedgerExpert | REQ-001, REQ-004, REQ-005, REQ-006, REQ-007, REQ-009, REQ-011, REQ-012, REQ-013 |
+| @LedgerExpert | REQ-001, REQ-004, REQ-005, REQ-006, REQ-007, REQ-009, REQ-011, REQ-012, REQ-013, REQ-014 |
 | @SecurityWarden | REQ-002 |
 | @IntegrationBot | REQ-003 |
 | @ComplianceAgent | REQ-008 |
@@ -59,6 +61,7 @@
 | M1/M2 | REQ-001 |
 | M10 | REQ-010 |
 | M11 | REQ-011, REQ-012, REQ-013 |
+| M12 | REQ-014 |
 | M2 | REQ-004, REQ-006 |
 | M3 | REQ-002 |
 | M6 | REQ-003 |
