@@ -71,6 +71,7 @@ OneBook/
     ├── accounting/               ← Ledger view, voucher entry
     ├── ai/                       ← AI dashboard
     ├── auditor/                  ← Auditor portal
+    ├── auth/                     ← Authentication & guards
     ├── banking/                  ← Bank reconciliation
     ├── dashboard/                ← Main dashboard
     ├── gst/                      ← GST compliance
@@ -78,7 +79,10 @@ OneBook/
     ├── inventory/                ← Stock management
     ├── keyboard/                 ← Key-binding registry, command palette
     ├── market/                   ← Mark-to-Market valuation
-    └── receivable/               ← Accounts receivable
+    ├── master/                   ← Master data management
+    ├── payable/                  ← Accounts payable
+    ├── receivable/               ← Accounts receivable
+    └── reports/                  ← Report generation
 ```
 
 ---
@@ -112,7 +116,7 @@ cd backend
 # Compile only
 ./gradlew compileJava
 
-# Run tests (405+ tests)
+# Run tests (489 tests)
 ./gradlew test
 
 # Run specific test class
@@ -204,7 +208,7 @@ Handled by `GlobalExceptionHandler` (`@RestControllerAdvice`).
 ### Routing
 - All routes are lazy-loaded
 - Routes defined in `app.routes.ts`
-- Key routes: `/accounting`, `/banking`, `/gst`, `/inventory`, `/keyboard`, `/ai`, `/market`, `/receivable`, `/auditor`
+- Key routes: `/accounting`, `/banking`, `/gst`, `/inventory`, `/keyboard`, `/ai`, `/market`, `/receivable`, `/auditor`, `/auth`, `/master`, `/payable`, `/reports`
 
 ### Design System
 - CSS custom properties (`--nx-*`) in `styles.scss`

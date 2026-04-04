@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   validate-ownership:
@@ -19,6 +19,52 @@ jobs:
 
       - name: Validate agent ownership declarations
         run: ./.github/scripts/validate-agent-ownership.sh
+
+  validate-quality-gates:
+    name: Validate Quality Gates
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Validate quality gates
+        run: ./.github/scripts/validate-quality-gates.sh
+
+  sync-memory-bank:
+    name: Sync Memory Bank
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check memory bank freshness
+        id: check
+        run: |
+          if ! ./.github/scripts/sync-memory-bank.sh --check 2>&1; then
+            echo "needs_sync=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "needs_sync=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Auto-fix memory bank
+        if: steps.check.outputs.needs_sync == 'true'
+        run: ./.github/scripts/sync-memory-bank.sh --fix
+
+      - name: Commit memory bank updates
+        if: steps.check.outputs.needs_sync == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add memory-bank/
+          git diff --staged --quiet || git commit -m "chore: auto-sync memory bank from repo state [skip ci]"
+          git push
 
   backend:
     name: Backend — Build & Test

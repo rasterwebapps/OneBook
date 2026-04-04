@@ -39,7 +39,7 @@
 - **API:** All endpoints functional at `/api/*`
 
 ### Frontend (Angular 19+)
-- **Modules:** 11 feature modules (all lazy-loaded standalone components)
+- **Modules:** 15 feature modules (all lazy-loaded standalone components)
 - **Tests:** 105+ passing (2 pre-existing AppComponent failures known)
 - **State:** Signals-based (no RxJS for simple state)
 

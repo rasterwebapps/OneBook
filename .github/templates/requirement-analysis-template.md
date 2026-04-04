@@ -106,17 +106,19 @@
 - [ ] UAT passed (HIGH+)
 - [ ] Security audit passed (CRITICAL or where @SecurityWarden involved)
 - [ ] Performance testing passed (CRITICAL or where @PerfEngineer involved)
-- [ ] Test count has not decreased (405+ backend, 105+ frontend)
+- [ ] Test count has not decreased (run `validate-quality-gates.sh` to verify)
 
 ### Gate 5 — Documentation Complete
 - [ ] API docs updated (if endpoints changed)
 - [ ] SQL schema docs updated (if migrations added)
 - [ ] Architecture diagrams updated (if topology changed)
 - [ ] Memory bank `activecontext.md` updated
+- [ ] Memory bank sync check passes (`sync-memory-bank.sh --check`)
 
 ### Gate 6 — Deployment Approved
 - [ ] @AuditAgent sign-off (HIGH and CRITICAL)
-- [ ] Agent ownership validation script passes
+- [ ] Agent ownership validation script passes (`validate-agent-ownership.sh`)
+- [ ] Quality gates validation passes (`validate-quality-gates.sh`)
 - [ ] CI pipeline green
 - [ ] Human reviewer approval (CRITICAL)
 
