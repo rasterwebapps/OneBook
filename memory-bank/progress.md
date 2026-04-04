@@ -20,7 +20,7 @@
 | M9 | Architecture Documentation & Deliverables | ✅ Complete | — |
 | M10 | Hardening, Auditor Portal & Prod Readiness | ✅ Complete | — |
 
-**Total Tests:** 405+ backend, 105+ frontend (all passing)
+**Total Tests:** 489 backend, 105+ frontend (all passing)
 
 ---
 
@@ -174,6 +174,25 @@
 - [x] `memory-bank/systempatterns.md` updated with requirement lifecycle management patterns
 - [x] `.github/scripts/validate-agent-ownership.sh` updated with @RequirementsAnalyzer and template validation
 
+### Voucher-Receipt-Advance Settlement System ✅
+- [x] Foundation entities: Department, SubDepartment, Payer/Payee + bank accounts, Application, Advance, PaymentApprovalLimit
+- [x] BankAccountType enum (SAVINGS, CURRENT, OVERDRAFT, CASH_CREDIT, NRE, NRO)
+- [x] Core voucher entities: Voucher, VoucherItem, Receipt, PaymentAdvice
+- [x] Settlement entities: AdvanceVoucherItemSettlement, AdvanceReceiptSettlement, AdvancePaymentAdviceSettlement
+- [x] Uploaded file tracking: UploadedFile entity with status workflow
+- [x] Department-level approval limits
+- [x] 7 voucher-specific enums (VoucherStatus, VoucherClosureType, VoucherItemStatus, etc.)
+- [x] 10 DTOs (request/response records)
+- [x] 4 services: VoucherService, ReceiptService, PaymentAdviceService, UploadedFileService
+- [x] 4 REST controllers at /api/vouchers, /api/receipts, /api/payment-advices, /api/uploaded-files
+- [x] 18 repositories (9 foundation + 9 voucher module)
+- [x] Flyway V14 migration with 18 tables, CHECK constraints, RLS policies, tenant isolation
+- [x] 24 unit tests (VoucherServiceTest, ReceiptServiceTest, PaymentAdviceServiceTest, UploadedFileServiceTest)
+
+**Key packages:** `ledger/voucher/` (model, dto, repository, service, controller), `ledger/model/` (foundation entities)
+**API endpoints:** `/api/vouchers`, `/api/receipts`, `/api/payment-advices`, `/api/uploaded-files`
+**Migration:** `V14__voucher_receipt_advance_settlement.sql`
+
 ---
 
 ## Documentation Inventory
@@ -233,4 +252,4 @@
 | 2026-03-13 | 405 | 105 | Post-M10 (tally features added) |
 | 2026-03-16 | 405+ | 105+ | Memory bank session (no test changes) |
 
-**Note:** 2 pre-existing AppComponent test failures in frontend are known and unrelated to features.
+| 2026-04-04 | 489 | 105+ | Voucher-Receipt-Advance settlement system (24 new tests) |
