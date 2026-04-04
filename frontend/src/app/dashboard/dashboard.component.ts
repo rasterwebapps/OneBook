@@ -19,18 +19,16 @@ export class DashboardComponent implements OnInit {
   readonly loading = this.dashboardService.loading;
   readonly error = this.dashboardService.error;
 
-  /* ── AI Cash Flow Summary (computed from API or fallback to demo data) ── */
+  /* ── AI Cash Flow Summary (computed from API or fallback to zero) ── */
   readonly cashFlowSummary = computed(() => {
     const s = this.summary();
     if (s) {
-      const inflow = s.profitAndLoss.totalRevenue;
-      const outflow = s.profitAndLoss.totalExpenses;
       return {
-        currentBalance: s.cashFlow.netCashChange,
-        inflow30d: inflow,
-        outflow30d: outflow,
-        netChange: s.profitAndLoss.netIncome,
-        trend: s.profitAndLoss.netIncome >= 0 ? 'up' as const : 'down' as const,
+        currentBalance: s.cashFlow.netCashFromOperating,
+        inflow30d: s.cashFlow.netCashFromOperating > 0 ? s.cashFlow.netCashFromOperating : 0,
+        outflow30d: Math.abs(s.cashFlow.netCashFromInvesting) + Math.abs(s.cashFlow.netCashFromFinancing),
+        netChange: s.cashFlow.netCashChange,
+        trend: s.cashFlow.netCashChange >= 0 ? 'up' as const : 'down' as const,
         sparkline: [42, 55, 48, 62, 58, 71, 65, 78, 72, 85, 80, 92],
       };
     }
