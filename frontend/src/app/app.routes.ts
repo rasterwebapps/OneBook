@@ -77,6 +77,13 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
 
+  // Client Accounts (Customers, Vendors, Employees, Intercompany) - Protected
+  {
+    path: 'client-accounts',
+    loadComponent: () => import('./client-accounts/components/client-accounts/client-accounts.component').then(m => m.ClientAccountsComponent),
+    canActivate: [authGuard]
+  },
+
   // Banking & Reconciliation - Protected
   { 
     path: 'banking', 

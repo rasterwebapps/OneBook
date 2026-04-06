@@ -1,0 +1,192 @@
+<div class="ca-screen">
+
+  <!-- Header -->
+  <div class="ca-header">
+    <div class="ca-title">
+      <span class="ca-icon">👥</span>
+      <h2>Client Accounts</h2>
+    </div>
+    <div class="ca-summary">
+      <div class="summary-item">
+        <span class="summary-label">Total Accounts</span>
+        <span class="summary-value">{{ accountCounts().total }}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">Active</span>
+        <span class="summary-value nx-success">{{ accountCounts().active }}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">Credit Exposure</span>
+        <span class="summary-value nx-number">₹{{ totalCreditExposure() | number:'1.0-0' }}</span>
+      </div>
+    </div>
+  </div>
+
+  @if (mode() === 'list') {
+
+    <!-- Toolbar -->
+    <div class="ca-toolbar">
+      <input type="text" class="search-input" placeholder="Search by name, contact, or email..."
+             [value]="searchQuery()"
+             (input)="updateSearch($any($event.target).value)" />
+
+      <div class="filter-chips">
+        <button class="chip" [class.active]="filterType() === 'ALL'" (click)="setFilterType('ALL')">All</button>
+        <button class="chip" [class.active]="filterType() === 'CUSTOMER'" (click)="setFilterType('CUSTOMER')">
+          👤 Customers ({{ accountCounts().customers }})
+        </button>
+        <button class="chip" [class.active]="filterType() === 'VENDOR'" (click)="setFilterType('VENDOR')">
+          🏭 Vendors ({{ accountCounts().vendors }})
+        </button>
+        <button class="chip" [class.active]="filterType() === 'EMPLOYEE'" (click)="setFilterType('EMPLOYEE')">
+          💼 Employees ({{ accountCounts().employees }})
+        </button>
+        <button class="chip" [class.active]="filterType() === 'INTERCOMPANY'" (click)="setFilterType('INTERCOMPANY')">
+          🏢 Intercompany ({{ accountCounts().intercompany }})
+        </button>
+      </div>
+
+      <button class="btn-create" (click)="startCreate()">+ New Client [C]</button>
+    </div>
+
+    <!-- List -->
+    <div class="ca-list">
+      @for (account of filteredAccounts(); track account.id) {
+        <div class="ca-card"
+             [class.selected]="selectedId() === account.id"
+             [class.inactive]="!account.active"
+             (click)="selectAccount(account.id)"
+             (dblclick)="editAccount(account)">
+          <div class="card-header">
+            <span class="type-icon">{{ clientTypeIcon(account.clientType) }}</span>
+            <div class="card-info">
+              <span class="client-name">{{ account.clientName }}</span>
+              <span class="client-meta">
+                <span class="type-badge">{{ clientTypeLabel(account.clientType) }}</span>
+                · {{ account.ledgerAccountName }}
+                @if (!account.active) {
+                  <span class="inactive-badge">Inactive</span>
+                }
+              </span>
+            </div>
+            <div class="card-actions">
+              @if (account.active) {
+                <button class="btn-icon" title="Edit" (click)="editAccount(account); $event.stopPropagation()">✏️</button>
+                <button class="btn-icon danger" title="Deactivate" (click)="deactivateAccount(account.id); $event.stopPropagation()">🗑️</button>
+              }
+            </div>
+          </div>
+          <div class="card-details">
+            @if (account.contactPerson) {
+              <span class="detail">📞 {{ account.contactPerson }}</span>
+            }
+            @if (account.email) {
+              <span class="detail">✉️ {{ account.email }}</span>
+            }
+            @if (account.phone) {
+              <span class="detail">📱 {{ account.phone }}</span>
+            }
+            @if (account.creditLimit > 0) {
+              <span class="detail">💰 Credit: ₹{{ account.creditLimit | number:'1.0-0' }}</span>
+            }
+            @if (account.paymentTermsDays > 0) {
+              <span class="detail">📅 {{ account.paymentTermsDays }} days</span>
+            }
+            @if (account.gstin) {
+              <span class="detail">🏛️ GSTIN: {{ account.gstin }}</span>
+            }
+          </div>
+        </div>
+      } @empty {
+        <div class="empty-state">
+          <span class="empty-icon">📋</span>
+          <p>No client accounts found.</p>
+          <button class="btn-create" (click)="startCreate()">+ Create First Client</button>
+        </div>
+      }
+    </div>
+
+  } @else {
+
+    <!-- Form -->
+    <div class="ca-form">
+      <div class="form-header">
+        <h3>{{ editingAccount() ? 'Edit Client Account' : 'New Client Account' }}</h3>
+        <button class="btn-back" (click)="backToList()">← Back [Esc]</button>
+      </div>
+
+      @if (formError()) {
+        <div class="form-error">{{ formError() }}</div>
+      }
+
+      <div class="form-grid">
+        <div class="form-group required">
+          <label>Client Name</label>
+          <input type="text" [value]="fClientName()" (input)="updateClientName($any($event.target).value)" />
+        </div>
+
+        <div class="form-group required">
+          <label>Client Type</label>
+          <select [value]="fClientType()" (change)="updateClientType($any($event.target).value)">
+            <option value="CUSTOMER">Customer</option>
+            <option value="VENDOR">Vendor</option>
+            <option value="EMPLOYEE">Employee</option>
+            <option value="INTERCOMPANY">Intercompany</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Contact Person</label>
+          <input type="text" [value]="fContactPerson()" (input)="updateContactPerson($any($event.target).value)" />
+        </div>
+
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" [value]="fEmail()" (input)="updateEmail($any($event.target).value)" />
+        </div>
+
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="tel" [value]="fPhone()" (input)="updatePhone($any($event.target).value)" />
+        </div>
+
+        <div class="form-group">
+          <label>GSTIN</label>
+          <input type="text" [value]="fGstin()" (input)="updateGstin($any($event.target).value)" maxlength="15" />
+        </div>
+
+        <div class="form-group">
+          <label>PAN</label>
+          <input type="text" [value]="fPan()" (input)="updatePan($any($event.target).value)" maxlength="10" />
+        </div>
+
+        <div class="form-group">
+          <label>Credit Limit (₹)</label>
+          <input type="number" [value]="fCreditLimit()" (input)="updateCreditLimit(+$any($event.target).value)" min="0" />
+        </div>
+
+        <div class="form-group">
+          <label>Payment Terms (days)</label>
+          <input type="number" [value]="fPaymentTermsDays()" (input)="updatePaymentTermsDays(+$any($event.target).value)" min="0" />
+        </div>
+
+        <div class="form-group full-width">
+          <label>Billing Address</label>
+          <textarea [value]="fBillingAddress()" (input)="updateBillingAddress($any($event.target).value)" rows="2"></textarea>
+        </div>
+
+        <div class="form-group full-width">
+          <label>Shipping Address</label>
+          <textarea [value]="fShippingAddress()" (input)="updateShippingAddress($any($event.target).value)" rows="2"></textarea>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-save" (click)="saveAccount()">💾 Save [Ctrl+S]</button>
+        <button class="btn-cancel" (click)="backToList()">Cancel</button>
+      </div>
+    </div>
+
+  }
+
+</div>
