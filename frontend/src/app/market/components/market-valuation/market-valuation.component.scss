@@ -364,3 +364,32 @@
     grid-column: span 1;
   }
 }
+
+/* ─── Summary stat cards row ─── */
+.market-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+@media (max-width: 768px) { .market-stats { grid-template-columns: 1fr; } }
+
+/* ─── Portfolio table P&L coloring ─── */
+.pnl-positive {
+  color: var(--nx-success, #4caf50);
+  font-weight: 600;
+  font-family: var(--nx-font-mono, monospace);
+  &::before { content: '▲ '; font-size: 0.7em; }
+}
+
+.pnl-negative {
+  color: var(--nx-danger, #ef5350);
+  font-weight: 600;
+  font-family: var(--nx-font-mono, monospace);
+  &::before { content: '▼ '; font-size: 0.7em; }
+}
+
+/* ─── Action signal badges ─── */
+.signal-buy { background: rgba(76,175,80,0.12); color: var(--nx-success); padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; }
+.signal-sell { background: rgba(239,83,80,0.12); color: var(--nx-danger); padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; }
+.signal-hold { background: rgba(255,152,0,0.12); color: var(--nx-warning); padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; }

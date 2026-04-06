@@ -226,36 +226,50 @@ import { ReportsService } from '../../services/reports.service';
     </div>
   `,
   styles: [`
-    .reports-shell { padding: 16px; }
-    .reports-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
-    .reports-header h1 { margin: 0; font-size: 1.5rem; }
-    .header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .date-filter { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .date-filter label { font-size: 0.85rem; display: flex; align-items: center; gap: 4px; }
-    .date-input { padding: 4px 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.85rem; }
-    .btn { padding: 6px 14px; border-radius: 4px; cursor: pointer; border: 1px solid #ccc; background: #fff; font-size: 0.85rem; }
-    .btn-secondary:hover { background: #f0f0f0; }
-    .btn-primary { background: #26a69a; color: #fff; border-color: #26a69a; }
-    .btn-primary:hover { background: #1e8e83; }
-    .btn-export { background: #fff3e0; color: #e65100; border-color: #ffcc80; }
-    .btn-export:hover { background: #ffe0b2; }
-    .btn-link { background: transparent; border-color: transparent; color: #26a69a; padding: 6px 8px; }
-    .btn-link:hover { text-decoration: underline; }
-    .loading { padding: 24px; text-align: center; color: #888; }
-    .empty-state { padding: 48px; text-align: center; color: #999; }
-    .report-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
-    .report-table th, .report-table td { padding: 8px 12px; border-bottom: 1px solid #e0e0e0; text-align: left; }
-    .report-table th { background: #f5f5f5; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; }
-    .report-table .num { text-align: right; font-variant-numeric: tabular-nums; }
-    .total-row td { font-weight: 700; border-top: 2px solid #333; }
-    .balance-status { text-align: center; padding: 8px; font-weight: 600; }
-    .pl-sections, .bs-sections, .cf-sections { display: flex; flex-wrap: wrap; gap: 24px; }
-    .pl-section, .bs-section, .cf-section { flex: 1; min-width: 300px; }
-    .pl-section h3, .bs-section h3, .cf-section h3 { margin: 0 0 8px; font-size: 1.1rem; color: #333; }
-    .net-income { padding: 12px 16px; border-radius: 6px; font-size: 1.1rem; background: #f0f9ff; margin-top: 12px; width: 100%; }
-    .net-income.profit { background: #f0fff0; color: #2e7d32; }
-    .net-income.loss { background: #fff5f5; color: #c62828; }
-  `]
+  .reports-shell { padding: 16px; }
+  .reports-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
+  .reports-header h1 { margin: 0; font-size: 1.5rem; }
+  .header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .date-filter { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .date-filter label { font-size: 0.82rem; display: flex; align-items: center; gap: 4px; color: var(--nx-text-secondary); }
+  .date-input { padding: 5px 10px; border: 1px solid var(--nx-border); border-radius: 4px; font-size: 0.82rem; background: var(--nx-bg-card); color: var(--nx-text-primary); }
+  .btn { padding: 6px 14px; border-radius: 4px; cursor: pointer; border: 1px solid var(--nx-border); background: var(--nx-bg-card); font-size: 0.82rem; color: var(--nx-text-primary); transition: background 0.15s; }
+  .btn-secondary:hover { background: var(--nx-bg-card-hover); }
+  .btn-primary { background: var(--nx-emerald, #26a69a); color: #fff; border-color: var(--nx-emerald, #26a69a); }
+  .btn-primary:hover { background: #1e8e83; }
+  .btn-export { background: rgba(255,152,0,0.08); color: var(--nx-warning, #ff9800); border-color: rgba(255,152,0,0.3); }
+  .btn-export:hover { background: rgba(255,152,0,0.15); }
+  .btn-link { background: transparent; border-color: transparent; color: var(--nx-emerald, #26a69a); padding: 6px 8px; }
+  .btn-link:hover { text-decoration: underline; }
+  .loading { padding: 24px; text-align: center; color: var(--nx-text-muted); }
+  .empty-state { padding: 48px; text-align: center; color: var(--nx-text-muted); }
+
+  /* Report table */
+  .report-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+  .report-table thead tr { position: sticky; top: 0; z-index: 10; }
+  .report-table th { background: var(--nx-bg-surface); padding: 8px 12px; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--nx-text-muted); border-bottom: 2px solid var(--nx-border); text-align: left; }
+  .report-table td { padding: 8px 12px; border-bottom: 1px solid var(--nx-border); font-size: 0.82rem; color: var(--nx-text-primary); }
+  .report-table tbody tr:hover { background: var(--nx-bg-card-hover); }
+  .report-table tbody tr:nth-child(even) { background: var(--nx-bg-surface); }
+  .report-table tbody tr:nth-child(even):hover { background: var(--nx-bg-card-hover); }
+  .report-table .num { text-align: right; font-family: var(--nx-font-mono, monospace); font-variant-numeric: tabular-nums; }
+  .total-row td { font-weight: 700; border-top: 2px solid var(--nx-border); background: var(--nx-bg-surface); }
+  .balance-status { text-align: center; padding: 8px; font-weight: 600; }
+
+  /* P&L / BS sections */
+  .pl-sections, .bs-sections, .cf-sections { display: flex; flex-wrap: wrap; gap: 24px; }
+  .pl-section, .bs-section, .cf-section { flex: 1; min-width: 300px; background: var(--nx-bg-card); border: 1px solid var(--nx-border); border-radius: var(--nx-radius-lg, 8px); padding: 16px; box-shadow: var(--nx-shadow-sm); }
+  .pl-section h3, .bs-section h3, .cf-section h3 { margin: 0 0 12px; font-size: 1rem; color: var(--nx-text-primary); padding-bottom: 8px; border-bottom: 1px solid var(--nx-border); }
+  .net-income { padding: 14px 18px; border-radius: var(--nx-radius-lg, 8px); font-size: 1.05rem; font-weight: 600; margin-top: 12px; width: 100%; box-sizing: border-box; background: var(--nx-bg-card); border: 1px solid var(--nx-border); }
+  .net-income.profit { background: rgba(76,175,80,0.08); color: var(--nx-success, #4caf50); border-color: rgba(76,175,80,0.3); }
+  .net-income.loss { background: rgba(239,83,80,0.08); color: var(--nx-danger, #ef5350); border-color: rgba(239,83,80,0.3); }
+
+  @media print {
+    .header-actions, .date-filter { display: none !important; }
+    .pl-sections, .bs-sections, .cf-sections { flex-direction: column; }
+    .report-table thead tr { position: static; }
+  }
+`]
 })
 export class ReportsComponent {
   readonly svc = inject(ReportsService);

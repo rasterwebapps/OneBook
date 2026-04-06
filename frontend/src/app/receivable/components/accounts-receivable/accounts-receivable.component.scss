@@ -325,3 +325,46 @@
 
   .search-input { max-width: none; }
 }
+
+/* ─── Summary stat cards ─── */
+.ar-summary {
+  display: flex;
+  gap: var(--nx-space-4, 16px);
+  flex-wrap: wrap;
+
+  .summary-item {
+    background: var(--nx-bg-card);
+    border: 1px solid var(--nx-border);
+    border-radius: var(--nx-radius-lg, 8px);
+    padding: var(--nx-space-4, 16px) var(--nx-space-5, 20px);
+    box-shadow: var(--nx-shadow-sm);
+    min-width: 160px;
+
+    &.overdue .summary-value { color: var(--nx-danger); }
+    &.collection .summary-value { color: var(--nx-info); }
+  }
+
+  .summary-label { font-size: var(--nx-text-xs, 0.6875rem); text-transform: uppercase; letter-spacing: 0.05em; color: var(--nx-text-muted); margin-bottom: 4px; }
+  .summary-value { font-size: 1.4rem; font-weight: 700; font-family: var(--nx-font-mono); font-variant-numeric: tabular-nums; color: var(--nx-emerald); }
+}
+
+/* ─── Aging columns color coding ─── */
+.aging-current { color: var(--nx-success, #4caf50); font-weight: 500; }
+.aging-30 { color: #cddc39; font-weight: 500; }
+.aging-60 { color: var(--nx-warning, #ff9800); font-weight: 500; }
+.aging-90 { color: var(--nx-danger, #ef5350); font-weight: 600; }
+
+/* ─── Quick action buttons in table ─── */
+.btn-reminder {
+  background: rgba(66,165,245,0.08); color: var(--nx-info, #42a5f5);
+  border: 1px solid rgba(66,165,245,0.3); padding: 4px 10px;
+  border-radius: var(--nx-radius-sm, 4px); cursor: pointer; font-size: 0.75rem;
+  &:hover { background: rgba(66,165,245,0.15); }
+}
+
+.btn-receipt {
+  background: rgba(76,175,80,0.08); color: var(--nx-success, #4caf50);
+  border: 1px solid rgba(76,175,80,0.3); padding: 4px 10px;
+  border-radius: var(--nx-radius-sm, 4px); cursor: pointer; font-size: 0.75rem;
+  &:hover { background: rgba(76,175,80,0.15); }
+}

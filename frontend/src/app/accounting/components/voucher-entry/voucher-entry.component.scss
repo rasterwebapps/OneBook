@@ -423,3 +423,54 @@ textarea.input {
     border-bottom: 1px solid var(--nx-border);
   }
 }
+
+/* ─── Form validation states ─── */
+.ng-invalid.ng-touched {
+  border-color: var(--nx-danger) !important;
+}
+
+.field-error {
+  color: var(--nx-danger);
+  font-size: var(--nx-text-xs, 0.6875rem);
+  margin-top: 2px;
+  display: block;
+}
+
+/* ─── Amount input (monospace, right-aligned) ─── */
+.amount-input, [type="number"].amount-field {
+  font-family: var(--nx-font-mono);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─── Action bar button groups ─── */
+.action-bar {
+  display: flex;
+  gap: var(--nx-space-2, 8px);
+  align-items: center;
+  padding: var(--nx-space-3, 12px) 0;
+  border-top: 1px solid var(--nx-border);
+  margin-top: var(--nx-space-4, 16px);
+
+  .btn-primary { background: var(--nx-emerald); color: #fff; border: 1px solid var(--nx-emerald); padding: 8px 20px; border-radius: var(--nx-radius-sm, 4px); cursor: pointer; font-weight: 600; &:hover { background: #2bbbad; } }
+  .btn-secondary { background: var(--nx-bg-card); color: var(--nx-text-primary); border: 1px solid var(--nx-border); padding: 8px 16px; border-radius: var(--nx-radius-sm, 4px); cursor: pointer; &:hover { background: var(--nx-bg-card-hover); } }
+  .btn-danger { background: rgba(239,83,80,0.08); color: var(--nx-danger); border: 1px solid rgba(239,83,80,0.3); padding: 8px 16px; border-radius: var(--nx-radius-sm, 4px); cursor: pointer; &:hover { background: rgba(239,83,80,0.15); } }
+}
+
+/* ─── Line items table improvements ─── */
+.voucher-table {
+  th {
+    background: var(--nx-bg-surface);
+    font-size: var(--nx-text-xs, 0.6875rem);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--nx-text-muted);
+    border-bottom: 2px solid var(--nx-border);
+  }
+
+  tbody tr:hover { background: var(--nx-bg-card-hover); }
+  tbody tr:nth-child(even) { background: var(--nx-bg-surface); }
+  tbody tr:nth-child(even):hover { background: var(--nx-bg-card-hover); }
+
+  .col-amount { font-family: var(--nx-font-mono); text-align: right; font-variant-numeric: tabular-nums; }
+}

@@ -711,3 +711,57 @@
   background: var(--nx-bg-surface);
   border-top: 1px solid var(--nx-border);
 }
+
+/* ─── Tab design improvements ─── */
+.tab-bar {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--nx-border);
+  margin-bottom: var(--nx-space-4, 16px);
+
+  .tab-btn {
+    padding: 8px 20px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--nx-text-muted);
+    transition: all var(--nx-transition-fast, 0.15s);
+
+    &.active {
+      color: var(--nx-emerald);
+      border-bottom-color: var(--nx-emerald);
+    }
+    &:hover:not(.active) { color: var(--nx-text-primary); }
+  }
+}
+
+/* ─── Status badges in payables ─── */
+.status-pending { background: rgba(255,152,0,0.1); color: var(--nx-warning, #ff9800); padding: 2px 8px; border-radius: var(--nx-radius-sm, 4px); font-size: 0.75rem; font-weight: 500; }
+.status-approved { background: rgba(76,175,80,0.1); color: var(--nx-success, #4caf50); padding: 2px 8px; border-radius: var(--nx-radius-sm, 4px); font-size: 0.75rem; font-weight: 500; }
+.status-rejected { background: rgba(239,83,80,0.1); color: var(--nx-danger, #ef5350); padding: 2px 8px; border-radius: var(--nx-radius-sm, 4px); font-size: 0.75rem; font-weight: 500; }
+
+/* ─── CSV Download button ─── */
+.btn-csv {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(76,175,80,0.08); color: var(--nx-success, #4caf50);
+  border: 1px solid rgba(76,175,80,0.3); padding: 6px 14px;
+  border-radius: var(--nx-radius-sm, 4px); cursor: pointer; font-size: 0.82rem;
+  &:hover { background: rgba(76,175,80,0.15); }
+  &::before { content: '⬇'; }
+}
+
+/* ─── Vendor summary cards ─── */
+.vendor-card {
+  background: var(--nx-bg-card);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-lg, 8px);
+  padding: var(--nx-space-4, 16px);
+  box-shadow: var(--nx-shadow-sm);
+
+  .vendor-name { font-weight: 600; margin-bottom: 8px; }
+  .vendor-outstanding { font-family: var(--nx-font-mono); font-size: 1.1rem; color: var(--nx-danger); font-variant-numeric: tabular-nums; }
+}

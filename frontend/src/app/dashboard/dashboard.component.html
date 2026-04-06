@@ -1,11 +1,41 @@
 <div class="omni-dashboard">
+  <!-- KPI Row -->
+  <div class="kpi-row">
+    <div class="nx-stat-card emerald">
+      <div class="stat-icon">💰</div>
+      <div class="stat-label">Cash Balance</div>
+      <div class="stat-value nx-number">₹{{ cashFlowSummary().currentBalance | number:'1.0-0' }}</div>
+      <div class="stat-trend" [class]="cashFlowSummary().trend">
+        {{ cashFlowSummary().trend === 'up' ? '▲' : '▼' }} MTD
+      </div>
+    </div>
+    <div class="nx-stat-card purple">
+      <div class="stat-icon">📈</div>
+      <div class="stat-label">Revenue MTD</div>
+      <div class="stat-value nx-number">₹{{ cashFlowSummary().inflow30d | number:'1.0-0' }}</div>
+      <div class="stat-trend up">▲ This month</div>
+    </div>
+    <div class="nx-stat-card amber">
+      <div class="stat-icon">📉</div>
+      <div class="stat-label">Expenses MTD</div>
+      <div class="stat-value nx-number">₹{{ cashFlowSummary().outflow30d | number:'1.0-0' }}</div>
+      <div class="stat-trend neutral">→ This month</div>
+    </div>
+    <div class="nx-stat-card" [class.emerald]="cashFlowSummary().netChange >= 0" [class.danger]="cashFlowSummary().netChange < 0">
+      <div class="stat-icon">{{ cashFlowSummary().netChange >= 0 ? '✅' : '⚠️' }}</div>
+      <div class="stat-label">Net Profit</div>
+      <div class="stat-value nx-number">₹{{ (cashFlowSummary().netChange < 0 ? -cashFlowSummary().netChange : cashFlowSummary().netChange) | number:'1.0-0' }}</div>
+      <div class="stat-trend" [class]="cashFlowSummary().trend">{{ cashFlowSummary().trend === 'up' ? '▲' : '▼' }} vs last month</div>
+    </div>
+  </div>
+
   <!-- Floating Command Palette Hint -->
   <div class="cmd-palette-hint nx-glass">
     <span class="cmd-icon">⌘</span>
     <span class="cmd-text">Press <kbd>Ctrl+K</kbd> to open Command Palette — Search anything, navigate anywhere</span>
   </div>
 
-  <!-- Bento Grid -->
+  <!-- Main Grid -->
   <div class="bento-grid">
     <!-- ✨ AI Cash Flow Summary -->
     <div class="bento-tile tile-cashflow">
@@ -131,19 +161,93 @@
         </div>
       </div>
 
-      <div class="shortcut-grid">
-        @for (s of shortcuts; track s.key) {
-          <a [routerLink]="s.route" class="shortcut-btn">
-            <kbd>{{ s.key }}</kbd>
-            <span>{{ s.label }}</span>
-          </a>
-        }
+      <div class="quick-action-grid">
+        <a [routerLink]="'/voucher/sales'" class="quick-action-btn emerald">
+          <span class="qa-icon">🧾</span>
+          <span class="qa-label">New Sale</span>
+          <kbd>F8</kbd>
+        </a>
+        <a [routerLink]="'/voucher/purchase'" class="quick-action-btn purple">
+          <span class="qa-icon">🛒</span>
+          <span class="qa-label">New Purchase</span>
+          <kbd>F9</kbd>
+        </a>
+        <a [routerLink]="'/voucher/payment'" class="quick-action-btn amber">
+          <span class="qa-icon">💸</span>
+          <span class="qa-label">New Payment</span>
+          <kbd>F5</kbd>
+        </a>
+        <a [routerLink]="'/voucher/receipt'" class="quick-action-btn info">
+          <span class="qa-icon">📥</span>
+          <span class="qa-label">New Receipt</span>
+          <kbd>F6</kbd>
+        </a>
+        <a [routerLink]="'/reports/profit-loss'" class="quick-action-btn neutral">
+          <span class="qa-icon">📊</span>
+          <span class="qa-label">View Reports</span>
+        </a>
+        <a [routerLink]="'/master'" class="quick-action-btn neutral">
+          <span class="qa-icon">🗂️</span>
+          <span class="qa-label">Masters</span>
+        </a>
       </div>
 
       <div class="shortcut-hint">
         <kbd>Ctrl+K</kbd> Command Palette &nbsp;·&nbsp;
         <kbd>Alt+C</kbd> Create Master &nbsp;·&nbsp;
         <kbd>Ctrl+S</kbd> Save
+      </div>
+    </div>
+
+    <!-- 📋 Recent Activity -->
+    <div class="bento-tile tile-recent nx-bento-tile--span-2">
+      <div class="tile-header">
+        <div class="tile-title">
+          <span class="tile-icon">📋</span>
+          <h3>Recent Activity</h3>
+        </div>
+      </div>
+      <div class="recent-list">
+        <div class="recent-item">
+          <span class="recent-dot emerald"></span>
+          <div class="recent-info">
+            <span class="recent-title">Invoice #INV-2487 created</span>
+            <span class="recent-time">2 min ago</span>
+          </div>
+          <span class="recent-amount positive nx-number">+₹45,000</span>
+        </div>
+        <div class="recent-item">
+          <span class="recent-dot purple"></span>
+          <div class="recent-info">
+            <span class="recent-title">Payment PMT-892 approved</span>
+            <span class="recent-time">8 min ago</span>
+          </div>
+          <span class="recent-amount negative nx-number">-₹12,500</span>
+        </div>
+        <div class="recent-item">
+          <span class="recent-dot amber"></span>
+          <div class="recent-info">
+            <span class="recent-title">Purchase PO-1024 received</span>
+            <span class="recent-time">15 min ago</span>
+          </div>
+          <span class="recent-amount negative nx-number">-₹78,200</span>
+        </div>
+        <div class="recent-item">
+          <span class="recent-dot emerald"></span>
+          <div class="recent-info">
+            <span class="recent-title">Receipt RCT-445 posted</span>
+            <span class="recent-time">22 min ago</span>
+          </div>
+          <span class="recent-amount positive nx-number">+₹32,000</span>
+        </div>
+        <div class="recent-item">
+          <span class="recent-dot info"></span>
+          <div class="recent-info">
+            <span class="recent-title">Journal JV-1024 posted</span>
+            <span class="recent-time">34 min ago</span>
+          </div>
+          <span class="recent-amount neutral nx-number">₹0</span>
+        </div>
       </div>
     </div>
   </div>

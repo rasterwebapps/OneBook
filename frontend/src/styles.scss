@@ -89,6 +89,39 @@
   --nx-danger: #ef5350;
   --nx-warning: #ff9800;
   --nx-info: #42a5f5;
+
+  /* ── Spacing Scale (4px base) ── */
+  --nx-space-1: 4px;
+  --nx-space-2: 8px;
+  --nx-space-3: 12px;
+  --nx-space-4: 16px;
+  --nx-space-5: 20px;
+  --nx-space-6: 24px;
+  --nx-space-8: 32px;
+  --nx-space-10: 40px;
+  --nx-space-12: 48px;
+
+  /* ── Extended Shadows ── */
+  --nx-shadow-xl: 0 20px 25px rgba(0,0,0,0.10), 0 10px 10px rgba(0,0,0,0.04);
+
+  /* ── Typography Scale ── */
+  --nx-text-xs: 0.6875rem;
+  --nx-text-sm: 0.8125rem;
+  --nx-text-base: 0.875rem;
+  --nx-text-lg: 1rem;
+  --nx-text-xl: 1.125rem;
+  --nx-text-2xl: 1.375rem;
+  --nx-text-3xl: 1.75rem;
+  --nx-font-weight-normal: 400;
+  --nx-font-weight-medium: 500;
+  --nx-font-weight-semibold: 600;
+  --nx-font-weight-bold: 700;
+
+  /* ── Z-Index Scale ── */
+  --nx-z-dropdown: 100;
+  --nx-z-sticky: 200;
+  --nx-z-modal: 400;
+  --nx-z-tooltip: 600;
 }
 
 /* Dark mode overrides */
@@ -365,5 +398,172 @@ kbd {
   &:hover {
     background: rgba(0, 0, 0, 0.06);
   }
+}
+
+/* ─── nx-card Utility ─── */
+.nx-card {
+  background: var(--nx-bg-card);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-lg);
+  box-shadow: var(--nx-shadow-sm);
+  overflow: hidden;
+
+  .nx-card-header {
+    padding: var(--nx-space-4) var(--nx-space-5);
+    border-bottom: 1px solid var(--nx-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    h3, h4 { margin: 0; font-size: var(--nx-text-base); font-weight: var(--nx-font-weight-semibold); }
+  }
+
+  .nx-card-body {
+    padding: var(--nx-space-5);
+  }
+
+  .nx-card-footer {
+    padding: var(--nx-space-3) var(--nx-space-5);
+    border-top: 1px solid var(--nx-border);
+    background: var(--nx-bg-surface);
+    display: flex;
+    align-items: center;
+    gap: var(--nx-space-2);
+  }
+}
+
+/* ─── nx-amount Utility ─── */
+.nx-amount {
+  font-family: var(--nx-font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--nx-text-sm);
+  &.debit { color: var(--nx-danger); }
+  &.credit { color: var(--nx-success); }
+}
+
+/* ─── nx-stat-card Utility ─── */
+.nx-stat-card {
+  background: var(--nx-bg-card);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-lg);
+  padding: var(--nx-space-5);
+  box-shadow: var(--nx-shadow-sm);
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow var(--nx-transition-normal), transform var(--nx-transition-fast);
+
+  &:hover { box-shadow: var(--nx-shadow-md); transform: translateY(-1px); }
+
+  .stat-icon {
+    width: 40px; height: 40px;
+    border-radius: var(--nx-radius-md);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.25rem;
+    margin-bottom: var(--nx-space-3);
+  }
+
+  .stat-label {
+    font-size: var(--nx-text-xs);
+    color: var(--nx-text-muted);
+    font-weight: var(--nx-font-weight-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--nx-space-1);
+  }
+
+  .stat-value {
+    font-size: var(--nx-text-2xl);
+    font-weight: var(--nx-font-weight-bold);
+    font-family: var(--nx-font-mono);
+    font-variant-numeric: tabular-nums;
+    color: var(--nx-text-primary);
+    line-height: 1.2;
+    margin-bottom: var(--nx-space-2);
+  }
+
+  .stat-trend {
+    font-size: var(--nx-text-xs);
+    font-weight: var(--nx-font-weight-medium);
+    display: flex; align-items: center; gap: 2px;
+    &.up { color: var(--nx-success); }
+    &.down { color: var(--nx-danger); }
+    &.neutral { color: var(--nx-text-muted); }
+  }
+
+  &.emerald .stat-icon { background: var(--nx-emerald-dim); color: var(--nx-emerald); }
+  &.purple .stat-icon { background: var(--nx-purple-dim); color: var(--nx-purple); }
+  &.amber .stat-icon { background: var(--nx-amber-dim); color: var(--nx-amber); }
+  &.danger .stat-icon { background: rgba(239, 83, 80, 0.08); color: var(--nx-danger); }
+}
+
+/* ─── nx-skeleton Utility ─── */
+@keyframes nx-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.nx-skeleton {
+  background: linear-gradient(90deg, var(--nx-border) 25%, var(--nx-bg-card-hover) 50%, var(--nx-border) 75%);
+  background-size: 200% 100%;
+  animation: nx-shimmer 1.6s ease-in-out infinite;
+  border-radius: var(--nx-radius-sm);
+}
+
+/* ─── nx-empty-state Utility ─── */
+.nx-empty-state {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; padding: var(--nx-space-12) var(--nx-space-6);
+  text-align: center; color: var(--nx-text-muted);
+
+  .empty-icon { font-size: 3rem; margin-bottom: var(--nx-space-4); opacity: 0.6; }
+  .empty-title { font-size: var(--nx-text-lg); font-weight: var(--nx-font-weight-semibold); color: var(--nx-text-secondary); margin-bottom: var(--nx-space-2); }
+  .empty-desc { font-size: var(--nx-text-sm); max-width: 360px; margin-bottom: var(--nx-space-5); }
+}
+
+/* ─── nx-data-table Utility ─── */
+.nx-data-table {
+  width: 100%; border-collapse: collapse;
+
+  thead tr {
+    position: sticky; top: 0; z-index: var(--nx-z-sticky);
+    background: var(--nx-bg-surface);
+  }
+
+  th {
+    padding: var(--nx-space-2) var(--nx-space-4);
+    text-align: left; font-size: var(--nx-text-xs);
+    font-weight: var(--nx-font-weight-semibold);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--nx-text-muted); border-bottom: 2px solid var(--nx-border);
+    white-space: nowrap; user-select: none;
+  }
+
+  td {
+    padding: var(--nx-space-2) var(--nx-space-4);
+    border-bottom: 1px solid var(--nx-border);
+    font-size: var(--nx-text-sm); color: var(--nx-text-primary);
+  }
+
+  tbody tr {
+    transition: background var(--nx-transition-fast);
+    &:hover { background: var(--nx-bg-card-hover); }
+    &:nth-child(even) { background: var(--nx-bg-surface); }
+    &:nth-child(even):hover { background: var(--nx-bg-card-hover); }
+  }
+
+  tfoot tr {
+    background: var(--nx-bg-surface);
+    td { font-weight: var(--nx-font-weight-semibold); border-top: 2px solid var(--nx-border); }
+  }
+
+  .num { text-align: right; font-family: var(--nx-font-mono); font-variant-numeric: tabular-nums; }
+  .col-actions { white-space: nowrap; text-align: right; }
+}
+
+/* ─── Print Utility ─── */
+@media print {
+  .no-print { display: none !important; }
+  .nx-data-table thead tr { position: static; }
+  body { background: #fff; color: #000; }
 }
 
