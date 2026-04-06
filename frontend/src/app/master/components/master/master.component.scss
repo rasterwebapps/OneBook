@@ -228,3 +228,46 @@ textarea.input { resize: vertical; min-height: 48px; }
   .spacer { flex: 1; }
   .count { color: #8395a7; }
 }
+
+/* ─── Form card sections ─── */
+.form-section {
+  background: var(--nx-bg-card);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-lg, 8px);
+  padding: var(--nx-space-5, 20px);
+  margin-bottom: var(--nx-space-4, 16px);
+  box-shadow: var(--nx-shadow-sm);
+
+  .form-section-title {
+    font-size: var(--nx-text-sm, 0.8125rem);
+    font-weight: var(--nx-font-weight-semibold, 600);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--nx-text-muted);
+    margin-bottom: var(--nx-space-4, 16px);
+    padding-bottom: var(--nx-space-2, 8px);
+    border-bottom: 1px solid var(--nx-border);
+  }
+}
+
+/* ─── Ledger group hierarchy indent ─── */
+.group-child { padding-left: 24px; border-left: 2px solid var(--nx-border); margin-left: 12px; }
+.group-grandchild { padding-left: 48px; }
+.group-nature-badge {
+  font-size: 0.7rem; padding: 1px 6px; border-radius: var(--nx-radius-sm, 4px);
+  &.Assets { background: rgba(66,165,245,0.1); color: var(--nx-info); }
+  &.Liabilities { background: rgba(239,83,80,0.1); color: var(--nx-danger); }
+  &.Income { background: rgba(76,175,80,0.1); color: var(--nx-success); }
+  &.Expenses { background: rgba(255,152,0,0.1); color: var(--nx-warning); }
+}
+
+/* ─── Top-aligned form labels ─── */
+.field-label {
+  display: block;
+  font-size: var(--nx-text-xs, 0.6875rem);
+  font-weight: var(--nx-font-weight-medium, 500);
+  color: var(--nx-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
