@@ -53,24 +53,45 @@
       </div>
 
       <div class="sparkline-container">
-        <svg class="sparkline" viewBox="0 0 120 40" preserveAspectRatio="none">
+        <svg class="sparkline" viewBox="0 0 120 50" preserveAspectRatio="none">
+          <!-- Gradient Definition -->
+          <defs>
+            <linearGradient id="sparkline-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="var(--nx-emerald)" stop-opacity="0.4"/>
+              <stop offset="100%" stop-color="var(--nx-emerald)" stop-opacity="0"/>
+            </linearGradient>
+            <linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="var(--nx-emerald)" stop-opacity="0.5"/>
+              <stop offset="50%" stop-color="var(--nx-emerald)"/>
+              <stop offset="100%" stop-color="var(--nx-emerald)" stop-opacity="0.5"/>
+            </linearGradient>
+          </defs>
+
+          <!-- Area Fill -->
+          <path
+            [attr.d]="'M 0 50 ' + getSparklinePath() + ' L 120 50 Z'"
+            fill="url(#sparkline-gradient)" />
+
+          <!-- Line -->
+          <path
+            [attr.d]="'M ' + getSparklinePath()"
+            fill="none"
+            stroke="url(#line-gradient)"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round" />
+
+          <!-- Data Points -->
           @for (point of cashFlowSummary().sparkline; track $index) {
             <circle
               [attr.cx]="$index * (120 / (cashFlowSummary().sparkline.length - 1))"
-              [attr.cy]="40 - (point / 100) * 40"
-              r="1.5"
-              fill="var(--nx-emerald)"
-              opacity="0.8" />
-            @if ($index > 0) {
-              <line
-                [attr.x1]="($index - 1) * (120 / (cashFlowSummary().sparkline.length - 1))"
-                [attr.y1]="40 - (cashFlowSummary().sparkline[$index - 1] / 100) * 40"
-                [attr.x2]="$index * (120 / (cashFlowSummary().sparkline.length - 1))"
-                [attr.y2]="40 - (point / 100) * 40"
-                stroke="var(--nx-emerald)"
-                stroke-width="1.5"
-                opacity="0.6" />
-            }
+              [attr.cy]="50 - (point / 100) * 45"
+              r="3"
+              fill="var(--nx-bg-card)"
+              stroke="var(--nx-emerald)"
+              stroke-width="2"
+              class="sparkline-dot"
+              opacity="0" />
           }
         </svg>
       </div>

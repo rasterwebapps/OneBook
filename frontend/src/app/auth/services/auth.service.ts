@@ -1,13 +1,16 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { OAuthService, OAuthEvent } from 'angular-oauth2-oidc';
-import { authConfig } from '../auth.config';
+import { authConfig, AUTH_CONFIG } from '../auth.config';
 
 /**
  * Authentication Service for OneBook
  *
  * Manages OIDC authentication flow with Keycloak.
  * Uses Angular Signals for reactive state management.
+ *
+ * DEMO MODE: When Keycloak is unavailable, enables local demo authentication
+ * for development and UI preview purposes.
  */
 @Injectable({
   providedIn: 'root'
@@ -16,17 +19,30 @@ export class AuthService {
   private readonly oauthService = inject(OAuthService);
   private readonly router = inject(Router);
 
+  // Demo mode state
+  private readonly _demoMode = signal(false);
+  private readonly _keycloakAvailable = signal<boolean | null>(null); // null = not checked yet
+  private readonly _showDemoLogin = signal(false);
+
   // Reactive authentication state using Signals
   private readonly _isAuthenticated = signal(false);
   private readonly _userProfile = signal<UserProfile | null>(null);
-  private readonly _isLoading = signal(true);
+  private readonly _isLoading = signal(false);
   private readonly _roles = signal<string[]>([]);
+  private readonly _authError = signal<string | null>(null);
 
   // Public readonly signals
   readonly isAuthenticated = this._isAuthenticated.asReadonly();
   readonly userProfile = this._userProfile.asReadonly();
   readonly isLoading = this._isLoading.asReadonly();
   readonly roles = this._roles.asReadonly();
+  readonly demoMode = this._demoMode.asReadonly();
+  readonly showDemoLogin = this._showDemoLogin.asReadonly();
+  readonly authError = this._authError.asReadonly();
+  readonly keycloakAvailable = this._keycloakAvailable.asReadonly();
+
+  // Demo users for demo mode
+  readonly demoUsers = AUTH_CONFIG.demoUsers;
 
   // Computed signals
   readonly isAdmin = computed(() => this._roles().includes('ROLE_ADMIN'));
@@ -41,7 +57,8 @@ export class AuthService {
 
   constructor() {
     this.configureOAuth();
-    this.subscribeToEvents();
+    // Check for Keycloak availability on startup
+    this.checkKeycloakAvailability();
   }
 
   /**
@@ -49,7 +66,42 @@ export class AuthService {
    */
   private configureOAuth(): void {
     this.oauthService.configure(authConfig);
-    this.oauthService.setupAutomaticSilentRefresh();
+  }
+
+  /**
+   * Check if Keycloak is available
+   */
+  private async checkKeycloakAvailability(): Promise<boolean> {
+    if (!AUTH_CONFIG.demoModeEnabled) {
+      this._keycloakAvailable.set(true);
+      return true;
+    }
+
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000);
+
+      const response = await fetch(`${AUTH_CONFIG.keycloakUrl}/realms/onebook/.well-known/openid-configuration`, {
+        signal: controller.signal,
+        mode: 'cors'
+      });
+
+      clearTimeout(timeoutId);
+      const available = response.ok;
+      this._keycloakAvailable.set(available);
+
+      if (!available) {
+        console.warn('Keycloak not available, demo mode enabled');
+        this._demoMode.set(true);
+      }
+
+      return available;
+    } catch {
+      console.warn('Keycloak connection failed, demo mode enabled');
+      this._keycloakAvailable.set(false);
+      this._demoMode.set(true);
+      return false;
+    }
   }
 
   /**
@@ -78,34 +130,104 @@ export class AuthService {
    */
   async initialize(): Promise<void> {
     this._isLoading.set(true);
+    this._authError.set(null);
 
     try {
-      // Load discovery document and try to login
-      await this.oauthService.loadDiscoveryDocumentAndTryLogin();
-      this.updateAuthState();
+      const keycloakAvailable = await this.checkKeycloakAvailability();
+
+      if (keycloakAvailable) {
+        this.subscribeToEvents();
+        this.oauthService.setupAutomaticSilentRefresh();
+        await this.oauthService.loadDiscoveryDocumentAndTryLogin();
+        this.updateAuthState();
+      } else {
+        // In demo mode, check for stored demo session
+        this.restoreDemoSession();
+      }
     } catch (error) {
       console.error('Auth initialization failed:', error);
-      this.clearAuthState();
+      this._demoMode.set(true);
+      this.restoreDemoSession();
     } finally {
       this._isLoading.set(false);
     }
   }
 
   /**
-   * Redirect to Keycloak login page
+   * Redirect to Keycloak login page or show demo login
    */
   async login(): Promise<void> {
-    try {
-      // Ensure discovery document is loaded before initiating login
-      if (!this.oauthService.discoveryDocumentLoaded) {
-        await this.oauthService.loadDiscoveryDocument();
+    this._authError.set(null);
+
+    // Check Keycloak availability first
+    const keycloakAvailable = await this.checkKeycloakAvailability();
+
+    if (keycloakAvailable) {
+      try {
+        // Ensure discovery document is loaded before initiating login
+        if (!this.oauthService.discoveryDocumentLoaded) {
+          await this.oauthService.loadDiscoveryDocument();
+        }
+        this.oauthService.initCodeFlow();
+      } catch (error) {
+        console.error('Keycloak login failed, falling back to demo mode:', error);
+        this._demoMode.set(true);
+        this._showDemoLogin.set(true);
       }
-      this.oauthService.initCodeFlow();
-    } catch (error) {
-      console.error('Login failed:', error);
-      // Fallback: direct redirect to Keycloak
-      const authUrl = `${authConfig.issuer}/protocol/openid-connect/auth?client_id=${authConfig.clientId}&redirect_uri=${encodeURIComponent(authConfig.redirectUri || window.location.origin)}&response_type=code&scope=${encodeURIComponent(authConfig.scope || 'openid')}`
-      window.location.href = authUrl;
+    } else {
+      // Show demo login modal
+      this._showDemoLogin.set(true);
+    }
+  }
+
+  /**
+   * Demo login - authenticate with a demo user
+   */
+  demoLogin(username: string): void {
+    const demoUser = this.demoUsers.find(u => u.username === username);
+
+    if (!demoUser) {
+      this._authError.set('Invalid demo user');
+      return;
+    }
+
+    // Set demo session
+    const profile: UserProfile = {
+      sub: `demo-${username}`,
+      name: demoUser.name,
+      preferred_username: username,
+      email: `${username}@onebook.demo`,
+      email_verified: true,
+      tenant_id: 'demo-tenant'
+    };
+
+    this._userProfile.set(profile);
+    this._roles.set(demoUser.roles);
+    this._isAuthenticated.set(true);
+    this._showDemoLogin.set(false);
+    this._authError.set(null);
+
+    // Store demo session
+    sessionStorage.setItem('onebook_demo_user', username);
+
+    // Navigate to dashboard
+    this.router.navigate(['/']);
+  }
+
+  /**
+   * Close demo login modal
+   */
+  closeDemoLogin(): void {
+    this._showDemoLogin.set(false);
+  }
+
+  /**
+   * Restore demo session from storage
+   */
+  private restoreDemoSession(): void {
+    const storedUser = sessionStorage.getItem('onebook_demo_user');
+    if (storedUser) {
+      this.demoLogin(storedUser);
     }
   }
 
@@ -113,15 +235,26 @@ export class AuthService {
    * Logout and redirect to start page
    */
   logout(): void {
-    this.oauthService.logOut();
-    this.clearAuthState();
-    this.router.navigate(['/start']);
+    if (this._demoMode()) {
+      // Demo logout
+      sessionStorage.removeItem('onebook_demo_user');
+      this.clearAuthState();
+      this.router.navigate(['/start']);
+    } else {
+      // OAuth logout
+      this.oauthService.logOut();
+      this.clearAuthState();
+      this.router.navigate(['/start']);
+    }
   }
 
   /**
    * Get the current access token
    */
   getAccessToken(): string | null {
+    if (this._demoMode()) {
+      return 'demo-token';
+    }
     return this.oauthService.getAccessToken();
   }
 
@@ -129,6 +262,9 @@ export class AuthService {
    * Get the current ID token
    */
   getIdToken(): string | null {
+    if (this._demoMode()) {
+      return 'demo-id-token';
+    }
     return this.oauthService.getIdToken();
   }
 
@@ -180,6 +316,7 @@ export class AuthService {
     this._isAuthenticated.set(false);
     this._userProfile.set(null);
     this._roles.set([]);
+    this._authError.set(null);
   }
 }
 
@@ -190,8 +327,12 @@ export interface UserProfile {
   sub: string;
   name?: string;
   email?: string;
+  email_verified?: boolean;
   preferred_username?: string;
   tenant_id?: string;
+  realm_access?: {
+    roles: string[];
+  };
 }
 
 /**

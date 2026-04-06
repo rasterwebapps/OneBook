@@ -1,4 +1,4 @@
-@if (authService.isAuthenticated()) {
+@if (showAppShell()) {
 <div class="app-layout" [class.sidebar-collapsed]="sidebarCollapsed()">
   <!-- Top Header Bar (Compact with integrated breadcrumbs) -->
   <header class="top-header">
