@@ -4,6 +4,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   selector: 'nx-card',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  // Slot order: [card-header], [card-body], unslotted fallback content, [card-footer]
   template: `
     <div class="nx-card">
       <ng-content select="[card-header]"></ng-content>
