@@ -69,6 +69,19 @@ export class DashboardComponent implements OnInit {
     { key: 'F9', label: 'Purchase', route: '/voucher/purchase' },
   ];
 
+  /* ── Sparkline Path Generator for Premium Charts ── */
+  getSparklinePath(): string {
+    const data = this.cashFlowSummary().sparkline;
+    const width = 120;
+    const height = 45;
+
+    return data.map((val, i) => {
+      const x = i * (width / (data.length - 1));
+      const y = 50 - (val / 100) * height;
+      return `${i === 0 ? '' : 'L '}${x.toFixed(1)} ${y.toFixed(1)}`;
+    }).join(' ');
+  }
+
   ngOnInit(): void {
     this.dashboardService.loadSummary();
   }

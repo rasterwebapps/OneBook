@@ -81,6 +81,9 @@ export class AppComponent implements OnInit {
   redisStatus = signal('Checking...');
   sidebarCollapsed = signal(false);
 
+  // Track if we're on a public page (start page)
+  isPublicPage = signal(false);
+
   // Dynamic breadcrumbs
   breadcrumbs = signal<Breadcrumb[]>([{ label: 'Dashboard' }]);
 
@@ -94,6 +97,10 @@ export class AppComponent implements OnInit {
   sectionManagement = signal(true);
   sectionIntelligence = signal(true);
 
+  // Computed: show app shell only when NOT on public page
+  // When unauthenticated, user should be on /start anyway, but we also check isPublicPage
+  showAppShell = computed(() => !this.isPublicPage());
+
   statusMessage = computed(() =>
     `${this.title()} — Backend: ${this.backendStatus()}`
   );
@@ -105,15 +112,18 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.commandBootstrap.bootstrap();
 
-    // Subscribe to route changes for breadcrumbs
+    // Subscribe to route changes for breadcrumbs and public page detection
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
-      this.updateBreadcrumbs(event.urlAfterRedirects || event.url);
+      const url = event.urlAfterRedirects || event.url;
+      this.updateBreadcrumbs(url);
+      this.checkPublicPage(url);
     });
 
-    // Set initial breadcrumbs
+    // Set initial state
     this.updateBreadcrumbs(this.router.url);
+    this.checkPublicPage(this.router.url);
 
     this.http.get<HealthResponse>('/api/health')
       .subscribe({
@@ -131,6 +141,12 @@ export class AppComponent implements OnInit {
           this.redisStatus.set('Offline');
         }
       });
+  }
+
+  private checkPublicPage(url: string): void {
+    const path = url.split('?')[0];
+    // Public pages that should NOT show the app shell
+    this.isPublicPage.set(path === '/start' || path.startsWith('/start'));
   }
 
   private updateBreadcrumbs(url: string): void {

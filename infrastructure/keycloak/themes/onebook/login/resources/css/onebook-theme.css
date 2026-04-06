@@ -1,365 +1,208 @@
-/* ─── OneBook Keycloak Login Theme ─── */
-/* 2026 SaaS Aesthetic: Deep Slate + Neon Emerald */
+/* OneBook Keycloak Login - Clean & Simple */
 
-/* ─── Design Tokens ─── */
-:root {
-  --ob-bg-primary: #0f1419;
-  --ob-bg-secondary: #1a2332;
-  --ob-bg-card: rgba(26, 35, 50, 0.95);
-  --ob-emerald: #00d9a5;
-  --ob-emerald-glow: rgba(0, 217, 165, 0.4);
-  --ob-emerald-dim: rgba(0, 217, 165, 0.1);
-  --ob-purple: #7c3aed;
-  --ob-purple-glow: rgba(124, 58, 237, 0.3);
-  --ob-text-primary: #ffffff;
-  --ob-text-secondary: rgba(255, 255, 255, 0.7);
-  --ob-text-muted: rgba(255, 255, 255, 0.4);
-  --ob-border: rgba(255, 255, 255, 0.08);
-  --ob-danger: #ef5350;
-  --ob-warning: #ff9800;
-  --ob-radius: 12px;
-  --ob-radius-sm: 8px;
-  --ob-transition: 0.2s ease;
+/* ========== NO SCROLL ========== */
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  height: 100vh !important;
+  width: 100vw !important;
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%) !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-/* ─── Body & Background ─── */
-body.kcBodyClass {
-  background: var(--ob-bg-primary);
-  background-image: 
-    radial-gradient(ellipse 80% 50% at 20% 40%, var(--ob-emerald-dim), transparent),
-    radial-gradient(ellipse 60% 40% at 80% 60%, var(--ob-purple-glow), transparent);
-  min-height: 100vh;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+/* Hide default background */
+.pf-c-background-image {
+  display: none !important;
 }
 
-/* ─── Login Container ─── */
-.login-pf-page {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 20px;
+/* ========== PAGE LAYOUT ========== */
+.pf-c-login {
+  background: transparent !important;
+  height: 100vh !important;
+  width: 100vw !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
 }
 
-/* ─── Login Card ─── */
-#kc-form-wrapper,
-.card-pf {
-  background: var(--ob-bg-card);
-  backdrop-filter: blur(20px);
-  border: 1px solid var(--ob-border);
-  border-radius: var(--ob-radius);
-  box-shadow: 
-    0 0 0 1px rgba(0, 217, 165, 0.1),
-    0 20px 40px rgba(0, 0, 0, 0.4);
-  max-width: 420px;
-  width: 100%;
-  padding: 40px;
-}
-
-/* ─── Header/Logo ─── */
-.kc-logo-text,
-#kc-header-wrapper {
+/* ========== HEADER ========== */
+.pf-c-login__header {
+  padding: 0 !important;
+  margin-bottom: 24px !important;
   text-align: center;
-  margin-bottom: 32px;
+  flex-shrink: 0;
+}
+
+#kc-header-wrapper {
+  color: #fff;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+/* ========== LOGIN CARD ========== */
+.pf-c-login__main {
+  background: #ffffff !important;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  max-width: 400px;
+  width: 90%;
+  overflow: hidden !important;
+}
+
+.pf-c-login__main-header {
+  padding: 32px 32px 8px;
+  background: transparent !important;
 }
 
 #kc-page-title {
-  color: var(--ob-text-primary);
-  font-size: 28px;
-  font-weight: 700;
-  margin-bottom: 8px;
+  color: #1e293b;
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
 }
 
-#kc-header-wrapper .subtitle {
-  color: var(--ob-text-secondary);
+/* ========== FORM BODY ========== */
+.pf-c-login__main-body {
+  padding: 16px 32px 32px !important;
+  background: transparent !important;
+}
+
+/* ========== FORM ELEMENTS ========== */
+.pf-c-form__group {
+  margin-bottom: 20px;
+}
+
+.pf-c-form__label-text {
+  color: #64748b;
   font-size: 14px;
-}
-
-/* ─── Form Labels ─── */
-.control-label,
-label {
-  color: var(--ob-text-secondary);
-  font-size: 13px;
   font-weight: 500;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   display: block;
 }
 
-/* ─── Form Inputs ─── */
-.form-control,
-input[type="text"],
-input[type="password"],
-input[type="email"] {
-  background: var(--ob-bg-secondary);
-  border: 1px solid var(--ob-border);
-  border-radius: var(--ob-radius-sm);
-  color: var(--ob-text-primary);
-  padding: 14px 16px;
-  font-size: 15px;
+/* Input fields */
+.pf-c-form-control {
   width: 100%;
-  transition: border-color var(--ob-transition), box-shadow var(--ob-transition);
+  background: #f1f5f9 !important;
+  border: 2px solid #e2e8f0 !important;
+  border-radius: 10px !important;
+  padding: 14px 16px !important;
+  font-size: 16px !important;
+  color: #1e293b !important;
+  transition: all 0.2s ease;
 }
 
-.form-control:focus,
-input:focus {
-  outline: none;
-  border-color: var(--ob-emerald);
-  box-shadow: 0 0 0 3px var(--ob-emerald-dim);
+.pf-c-form-control:focus {
+  background: #fff !important;
+  border-color: #10b981 !important;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.12) !important;
+  outline: none !important;
 }
 
-.form-control::placeholder,
-input::placeholder {
-  color: var(--ob-text-muted);
+/* Password input group */
+.pf-c-input-group {
+  display: flex;
+  width: 100%;
 }
 
-/* ─── Form Groups ─── */
-.form-group {
-  margin-bottom: 20px;
+.pf-c-input-group .pf-c-form-control {
+  flex: 1;
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-right: none !important;
 }
 
-/* ─── Primary Button (Login) ─── */
-.btn-primary,
-#kc-login {
-  background: linear-gradient(135deg, var(--ob-emerald), #00c896);
-  border: none;
-  border-radius: var(--ob-radius-sm);
-  color: var(--ob-bg-primary);
+.pf-c-input-group .pf-c-button.pf-m-control {
+  background: #f1f5f9 !important;
+  border: 2px solid #e2e8f0 !important;
+  border-left: none !important;
+  border-radius: 0 10px 10px 0 !important;
+  color: #64748b !important;
+  padding: 0 16px !important;
   cursor: pointer;
-  font-size: 16px;
-  font-weight: 600;
-  padding: 16px 24px;
+}
+
+/* ========== BUTTONS ========== */
+.pf-c-button.pf-m-primary {
   width: 100%;
-  transition: all var(--ob-transition);
-  box-shadow: 
-    0 0 0 1px rgba(0, 217, 165, 0.3),
-    0 4px 16px var(--ob-emerald-glow);
+  background: linear-gradient(135deg, #10b981, #059669) !important;
+  border: none !important;
+  border-radius: 10px !important;
+  color: #fff !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  padding: 16px 24px !important;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
-.btn-primary:hover,
-#kc-login:hover {
-  transform: translateY(-2px);
-  box-shadow: 
-    0 0 0 1px var(--ob-emerald),
-    0 8px 24px var(--ob-emerald-glow);
+.pf-c-button.pf-m-primary:hover {
+  background: linear-gradient(135deg, #059669, #047857) !important;
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+  transform: translateY(-1px);
 }
 
-.btn-primary:active,
-#kc-login:active {
+.pf-c-button.pf-m-primary:active {
   transform: translateY(0);
 }
 
-/* ─── Secondary/Cancel Button ─── */
-.btn-default,
-#kc-cancel {
-  background: transparent;
-  border: 1px solid var(--ob-border);
-  border-radius: var(--ob-radius-sm);
-  color: var(--ob-text-secondary);
-  cursor: pointer;
-  font-size: 14px;
-  padding: 12px 20px;
-  transition: all var(--ob-transition);
-}
-
-.btn-default:hover,
-#kc-cancel:hover {
-  background: var(--ob-bg-secondary);
-  border-color: var(--ob-text-muted);
-  color: var(--ob-text-primary);
-}
-
-/* ─── Links ─── */
-a,
-.kc-form-options a,
-#kc-registration a {
-  color: var(--ob-emerald);
+/* ========== LINKS ========== */
+a, .pf-c-button.pf-m-link {
+  color: #10b981 !important;
   text-decoration: none;
-  font-size: 13px;
-  transition: color var(--ob-transition);
+  font-size: 14px;
 }
 
 a:hover {
-  color: #00ffcc;
   text-decoration: underline;
 }
 
-/* ─── Form Options (Remember me, Forgot password) ─── */
-.kc-form-options {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 16px;
-  font-size: 13px;
+/* Forgot password */
+.pf-c-login__main-footer-links {
+  margin-top: 20px;
+  text-align: left;
 }
 
-/* ─── Checkbox ─── */
-input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  accent-color: var(--ob-emerald);
+/* ========== FOOTER ========== */
+.pf-c-login__main-footer {
+  padding: 0 32px 24px;
 }
 
-.checkbox label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--ob-text-secondary);
+.pf-c-login__footer {
+  display: none !important;
 }
 
-/* ─── Error Messages ─── */
-.alert-error,
-.kc-feedback-text,
-.pf-m-error {
-  background: rgba(239, 83, 80, 0.1);
-  border: 1px solid rgba(239, 83, 80, 0.3);
-  border-radius: var(--ob-radius-sm);
-  color: var(--ob-danger);
-  padding: 12px 16px;
+/* ========== ALERTS ========== */
+.pf-c-alert {
+  background: #fef2f2 !important;
+  border: 1px solid #fecaca !important;
+  border-radius: 10px;
+  padding: 14px 16px;
   margin-bottom: 20px;
-  font-size: 13px;
 }
 
-/* ─── Warning Messages ─── */
-.alert-warning {
-  background: rgba(255, 152, 0, 0.1);
-  border: 1px solid rgba(255, 152, 0, 0.3);
-  border-radius: var(--ob-radius-sm);
-  color: var(--ob-warning);
-  padding: 12px 16px;
-  margin-bottom: 20px;
-  font-size: 13px;
-}
-
-/* ─── Success Messages ─── */
-.alert-success {
-  background: var(--ob-emerald-dim);
-  border: 1px solid rgba(0, 217, 165, 0.3);
-  border-radius: var(--ob-radius-sm);
-  color: var(--ob-emerald);
-  padding: 12px 16px;
-  margin-bottom: 20px;
-  font-size: 13px;
-}
-
-/* ─── Social Login Buttons ─── */
-.kc-social-provider-name {
+.pf-c-alert__title {
+  color: #dc2626 !important;
+  font-weight: 500;
   font-size: 14px;
 }
 
-.kc-social-links {
-  margin-top: 24px;
-  padding-top: 24px;
-  border-top: 1px solid var(--ob-border);
-}
-
-.kc-social-link {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  background: var(--ob-bg-secondary);
-  border: 1px solid var(--ob-border);
-  border-radius: var(--ob-radius-sm);
-  color: var(--ob-text-secondary);
-  padding: 12px 16px;
-  margin-bottom: 10px;
-  text-decoration: none;
-  transition: all var(--ob-transition);
-}
-
-.kc-social-link:hover {
-  background: var(--ob-bg-primary);
-  border-color: var(--ob-text-muted);
-  color: var(--ob-text-primary);
-}
-
-/* ─── Registration Link ─── */
-#kc-registration {
-  text-align: center;
-  margin-top: 24px;
-  padding-top: 24px;
-  border-top: 1px solid var(--ob-border);
-  color: var(--ob-text-muted);
-  font-size: 13px;
-}
-
-/* ─── Footer ─── */
-#kc-info-wrapper {
-  text-align: center;
-  margin-top: 32px;
-  color: var(--ob-text-muted);
-  font-size: 12px;
-}
-
-/* ─── Logo/Brand ─── */
-.login-pf-page .login-pf-brand,
-.kc-logo-text {
-  color: var(--ob-text-primary);
-  font-size: 32px;
-  font-weight: 800;
-  margin-bottom: 8px;
-}
-
-/* Note: Using Unicode emoji for brand icon. For production, replace with SVG icon for better cross-browser support */
-.kc-logo-text::before {
-  content: "📒 ";
-}
-
-/* ─── Powered by Text ─── */
-#kc-info-message p {
-  color: var(--ob-text-muted);
-  font-size: 12px;
-}
-
-/* ─── OTP/2FA Fields ─── */
-.otp-input {
-  font-family: 'JetBrains Mono', monospace;
-  letter-spacing: 0.3em;
-  text-align: center;
-}
-
-/* ─── Locale Selector ─── */
-#kc-locale-dropdown {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-}
-
-#kc-locale-dropdown button {
-  background: transparent;
-  border: 1px solid var(--ob-border);
-  border-radius: var(--ob-radius-sm);
-  color: var(--ob-text-secondary);
-  padding: 8px 12px;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-/* ─── Password Visibility Toggle ─── */
-.pf-c-button.pf-m-control {
-  background: transparent;
-  border: none;
-  color: var(--ob-text-muted);
-  cursor: pointer;
-}
-
-/* ─── Input Icons ─── */
-.pf-c-input-group__prepend,
-.pf-c-input-group__append {
-  background: var(--ob-bg-secondary);
-  border: 1px solid var(--ob-border);
-  color: var(--ob-text-muted);
-}
-
-/* ─── Responsive Adjustments ─── */
+/* ========== RESPONSIVE ========== */
 @media (max-width: 480px) {
-  #kc-form-wrapper,
-  .card-pf {
-    padding: 28px 24px;
-    margin: 10px;
+  .pf-c-login__main {
+    width: 95%;
+    margin: 0 auto 24px;
   }
-  
-  #kc-page-title {
-    font-size: 24px;
+
+  .pf-c-login__main-header,
+  .pf-c-login__main-body {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
   }
 }
+
