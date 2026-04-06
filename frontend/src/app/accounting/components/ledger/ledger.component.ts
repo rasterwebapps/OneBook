@@ -52,7 +52,7 @@ interface LedgerEntry {
       @if (selectedAccountId()) {
         <div class="ledger-view">
           <div class="ledger-title-bar">
-            <button class="btn btn-secondary" (click)="clearSelection()">← Back to Accounts</button>
+            <button class="btn btn-secondary no-print" (click)="clearSelection()">← Back to Accounts</button>
             <h2>{{ selectedAccountName() }}</h2>
           </div>
 
@@ -67,6 +67,7 @@ interface LedgerEntry {
           }
 
           @if (ledgerEntries().length > 0) {
+            <div class="table-wrapper">
             <table class="ledger-table">
               <thead>
                 <tr>
@@ -86,7 +87,7 @@ interface LedgerEntry {
                     <td>{{ entry.particulars }}</td>
                     <td class="num">{{ entry.debit ? (entry.debit | number:'1.2-2') : '' }}</td>
                     <td class="num">{{ entry.credit ? (entry.credit | number:'1.2-2') : '' }}</td>
-                    <td class="num" [class.dr]="entry.balance >= 0" [class.cr]="entry.balance < 0">
+                    <td class="num" [class.balance-positive]="entry.balance >= 0" [class.balance-negative]="entry.balance < 0">
                       {{ (entry.balance < 0 ? -entry.balance : entry.balance) | number:'1.2-2' }}
                       {{ entry.balance >= 0 ? 'Dr' : 'Cr' }}
                     </td>
@@ -94,39 +95,70 @@ interface LedgerEntry {
                 }
               </tbody>
             </table>
+            </div>
           }
         </div>
       }
     </div>
   `,
   styles: [`
-    .ledger-shell { padding: 16px; }
-    .ledger-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
-    .ledger-header h1 { margin: 0; font-size: 1.5rem; }
-    .account-picker { max-width: 600px; }
-    .account-picker h3 { margin: 0 0 12px; }
-    .search-input { width: 100%; padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 12px; font-size: 0.95rem; }
-    .account-list { max-height: 400px; overflow-y: auto; border: 1px solid #e0e0e0; border-radius: 4px; }
-    .account-item { display: flex; gap: 12px; padding: 10px 14px; cursor: pointer; border-bottom: 1px solid #f0f0f0; }
-    .account-item:hover { background: #f0f9ff; }
-    .account-code { font-weight: 600; min-width: 80px; color: #555; }
-    .account-name { flex: 1; }
-    .account-type { font-size: 0.8rem; color: #888; text-transform: uppercase; }
-    .ledger-view { }
-    .ledger-title-bar { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
-    .ledger-title-bar h2 { margin: 0; font-size: 1.3rem; }
-    .btn { padding: 6px 14px; border-radius: 4px; cursor: pointer; border: 1px solid #ccc; background: #fff; }
-    .btn-secondary:hover { background: #f0f0f0; }
-    .input { padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; }
-    .loading { padding: 24px; text-align: center; color: #888; }
-    .empty-state { padding: 48px; text-align: center; color: #999; }
-    .ledger-table { width: 100%; border-collapse: collapse; }
-    .ledger-table th, .ledger-table td { padding: 8px 12px; border-bottom: 1px solid #e0e0e0; text-align: left; }
-    .ledger-table th { background: #f5f5f5; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; }
-    .ledger-table .num { text-align: right; font-variant-numeric: tabular-nums; }
-    .dr { color: #1565c0; }
-    .cr { color: #c62828; }
-  `]
+  .ledger-shell { padding: 16px; }
+  .ledger-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+  .ledger-header h1 { margin: 0; font-size: 1.5rem; }
+
+  /* Date filter bar */
+  .date-filter-bar {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    padding: 10px 16px; background: var(--nx-bg-surface); border-radius: var(--nx-radius-md, 6px);
+    border: 1px solid var(--nx-border); margin-bottom: 16px;
+  }
+  .date-filter-bar label { font-size: 0.8rem; color: var(--nx-text-secondary); }
+  .date-input { padding: 5px 10px; border: 1px solid var(--nx-border); border-radius: var(--nx-radius-sm, 4px); font-size: 0.82rem; background: var(--nx-bg-card); color: var(--nx-text-primary); }
+
+  /* Account picker */
+  .account-picker { max-width: 600px; }
+  .account-picker h3 { margin: 0 0 12px; font-size: 1.1rem; }
+  .search-input { width: 100%; padding: 8px 12px; border: 1px solid var(--nx-border); border-radius: var(--nx-radius-md, 6px); margin-bottom: 12px; font-size: 0.9rem; background: var(--nx-bg-card); color: var(--nx-text-primary); }
+  .account-list { max-height: 400px; overflow-y: auto; border: 1px solid var(--nx-border); border-radius: var(--nx-radius-md, 6px); }
+  .account-item { display: flex; gap: 12px; padding: 10px 14px; cursor: pointer; border-bottom: 1px solid var(--nx-border); transition: background 0.15s; }
+  .account-item:hover { background: var(--nx-bg-card-hover); }
+  .account-code { font-weight: 600; min-width: 80px; color: var(--nx-text-secondary); font-family: var(--nx-font-mono, monospace); font-size: 0.82rem; }
+  .account-name { flex: 1; }
+  .account-type { font-size: 0.75rem; color: var(--nx-text-muted); text-transform: uppercase; }
+
+  /* Ledger view */
+  .ledger-title-bar { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+  .ledger-title-bar h2 { margin: 0; font-size: 1.2rem; }
+  .btn { padding: 6px 14px; border-radius: var(--nx-radius-sm, 4px); cursor: pointer; border: 1px solid var(--nx-border); background: var(--nx-bg-card); color: var(--nx-text-primary); font-size: 0.82rem; transition: background 0.15s; }
+  .btn-secondary:hover { background: var(--nx-bg-card-hover); }
+  .input { padding: 8px 12px; border: 1px solid var(--nx-border); border-radius: var(--nx-radius-sm, 4px); }
+
+  /* Loading + empty */
+  .loading { padding: 24px; text-align: center; color: var(--nx-text-muted); }
+  .empty-state { padding: 48px; text-align: center; color: var(--nx-text-muted); }
+
+  /* Ledger table */
+  .table-wrapper { overflow-x: auto; }
+  .ledger-table { width: 100%; border-collapse: collapse; }
+  .ledger-table thead tr { position: sticky; top: 0; z-index: 10; }
+  .ledger-table th { background: var(--nx-bg-surface); padding: 8px 12px; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--nx-text-muted); border-bottom: 2px solid var(--nx-border); white-space: nowrap; }
+  .ledger-table td { padding: 8px 12px; border-bottom: 1px solid var(--nx-border); font-size: 0.82rem; color: var(--nx-text-primary); }
+  .ledger-table tbody tr { transition: background 0.12s; }
+  .ledger-table tbody tr:hover { background: var(--nx-bg-card-hover); }
+  .ledger-table tbody tr:nth-child(even) { background: var(--nx-bg-surface); }
+  .ledger-table tbody tr:nth-child(even):hover { background: var(--nx-bg-card-hover); }
+  .ledger-table tfoot tr td { font-weight: 700; border-top: 2px solid var(--nx-border); background: var(--nx-bg-surface); }
+  .ledger-table .num { text-align: right; font-family: var(--nx-font-mono, monospace); font-variant-numeric: tabular-nums; }
+  .dr { color: var(--nx-info, #42a5f5); font-weight: 500; }
+  .cr { color: var(--nx-danger, #ef5350); font-weight: 500; }
+  .balance-positive { color: var(--nx-success, #4caf50); font-weight: 600; }
+  .balance-negative { color: var(--nx-danger, #ef5350); font-weight: 600; }
+
+  @media print {
+    .no-print { display: none !important; }
+    .ledger-table thead tr { position: static; }
+  }
+`]
 })
 export class LedgerComponent {
   private readonly route = inject(ActivatedRoute);
