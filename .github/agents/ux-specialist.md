@@ -31,6 +31,7 @@ You are responsible for the frontend user experience, including keyboard-first n
 - `frontend/src/app/market/` - Market Valuation UI (collaborates with @AIEngineer for data contracts)
 - `frontend/src/app/ai/` - AI dashboard components (collaborates with @AIEngineer for data contracts)
 - `frontend/src/app/auditor/` - Auditor portal UI (collaborates with @AuditAgent for workflows)
+- `frontend/src/app/payable/` - Accounts Payable components (collaborates with @LedgerExpert for payment data contracts)
 
 #### Frontend - Authentication Module
 - `frontend/src/app/auth/` - OIDC authentication with Keycloak (collaborates with @SecurityWarden for security patterns)

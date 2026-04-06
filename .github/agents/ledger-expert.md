@@ -21,6 +21,15 @@ You are responsible for the core accounting engine — the double-entry ledger s
   - `dto/`: `PaymentRegisterEntryResponse`, `VendorGroupResponse`, `CreateBatchRequest`, `BatchApprovalRequest`, `PaymentBatchResponse`
   - `service/`: `PaymentRegisterService`, `PaymentBatchService`, `PaymentFileGeneratorService`
   - `controller/`: `PaymentRegisterController`, `PaymentBatchController`
+- `backend/src/main/java/com/nexus/onebook/ledger/voucher/` - Voucher-Receipt-Advance settlement system
+  - `model/`: Voucher, VoucherItem, Receipt, PaymentAdvice, AdvanceVoucherItemSettlement, AdvanceReceiptSettlement, AdvancePaymentAdviceSettlement, UploadedFile
+  - `repository/`: 9 voucher-module repositories
+  - `dto/`: 10 request/response DTOs
+  - `service/`: VoucherService, ReceiptService, PaymentAdviceService, UploadedFileService
+  - `controller/`: VoucherController, ReceiptController, PaymentAdviceController, UploadedFileController
+- `backend/src/main/java/com/nexus/onebook/ledger/dashboard/` - Cross-domain dashboard aggregation (read-only; depends on services, not repositories)
+  - `service/`: `DashboardService` - aggregates TrialBalance, BalanceSheet, ProfitAndLoss, CashFlow data
+  - `controller/`: `DashboardController` - GET /api/dashboard/summary
 - `backend/src/main/java/com/nexus/onebook/ledger/repository/` - All JPA repositories
 - `backend/src/main/java/com/nexus/onebook/ledger/service/` - Core business services
   - `JournalService`, `LedgerAccountService`, `TrialBalanceService`
@@ -50,6 +59,8 @@ You are responsible for the core accounting engine — the double-entry ledger s
 - `backend/src/main/resources/db/migration/V7__reporting_compliance_far.sql`
 - `backend/src/main/resources/db/migration/V10__tally_features.sql` - Extended voucher types, credit management, multi-currency, inventory/stock tables
 - `backend/src/main/resources/db/migration/V11__payment_processing.sql` - Payment register, payment batches, payment batch items tables with RLS
+- `backend/src/main/resources/db/migration/V13__merge_financial_events_into_payment_register.sql` - Merge financial events into payment register
+- `backend/src/main/resources/db/migration/V14__voucher_receipt_advance_settlement.sql` - Voucher, receipt, advance settlement tables with RLS
 
 #### Documentation
 - `docs/sql-schema.md` - Complete database schema documentation
