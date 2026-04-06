@@ -222,3 +222,80 @@
 .comment-item.resolved {
   opacity: 0.6;
 }
+
+/* ─── Read-only view indicator banner ─── */
+.auditor-readonly-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(66,165,245,0.08);
+  border: 1px solid rgba(66,165,245,0.25);
+  border-radius: var(--nx-radius-md, 6px);
+  padding: 10px 16px;
+  margin-bottom: 20px;
+  color: var(--nx-info, #42a5f5);
+  font-size: 0.85rem;
+  font-weight: 500;
+
+  .banner-icon { font-size: 1rem; }
+}
+
+/* ─── Audit trail timeline layout ─── */
+.audit-timeline {
+  position: relative;
+  padding-left: 24px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 4px;
+    bottom: 4px;
+    width: 2px;
+    background: var(--nx-border);
+    border-radius: 2px;
+  }
+}
+
+.timeline-item {
+  position: relative;
+  padding: 12px 0 12px 16px;
+  margin-bottom: 4px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: -22px;
+    top: 18px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--nx-emerald, #26a69a);
+    border: 2px solid var(--nx-bg-card, #fff);
+    box-shadow: 0 0 0 2px var(--nx-emerald-glow);
+  }
+
+  .timeline-time { font-size: 0.72rem; color: var(--nx-text-muted); margin-bottom: 2px; }
+  .timeline-action { font-size: 0.85rem; font-weight: 500; color: var(--nx-text-primary); }
+  .timeline-detail { font-size: 0.78rem; color: var(--nx-text-secondary); margin-top: 2px; }
+}
+
+/* ─── Report access cards (no edit controls) ─── */
+.report-access-card {
+  background: var(--nx-bg-card);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-lg, 8px);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all var(--nx-transition-fast, 0.15s);
+
+  &:hover { background: var(--nx-bg-card-hover); box-shadow: var(--nx-shadow-sm); }
+
+  .report-icon { font-size: 1.5rem; }
+  .report-name { font-weight: 600; font-size: 0.9rem; }
+  .report-desc { font-size: 0.78rem; color: var(--nx-text-muted); }
+  .report-arrow { margin-left: auto; color: var(--nx-text-muted); }
+}
