@@ -149,11 +149,8 @@ interface LedgerEntry {
   .ledger-table tbody tr:nth-child(even):hover { background: var(--nx-bg-card-hover); }
   .ledger-table tfoot tr td { font-weight: 700; border-top: 2px solid var(--nx-border); background: var(--nx-bg-surface); }
   .ledger-table .num { text-align: right; font-family: var(--nx-font-mono, monospace); font-variant-numeric: tabular-nums; }
-  .dr { color: var(--nx-info, #42a5f5); font-weight: 500; }
-  .cr { color: var(--nx-danger, #ef5350); font-weight: 500; }
   .balance-positive { color: var(--nx-success, #4caf50); font-weight: 600; }
   .balance-negative { color: var(--nx-danger, #ef5350); font-weight: 600; }
-
   @media print {
     .no-print { display: none !important; }
     .ledger-table thead tr { position: static; }
