@@ -183,8 +183,8 @@ export class VoucherExplorerComponent implements OnInit {
   /* ── Keyboard shortcuts ── */
   @HostListener('window:keydown', ['$event'])
   onKey(e: KeyboardEvent): void {
-    // Ctrl+S / Ctrl+Enter — save in entry mode
-    if ((e.ctrlKey && (e.key === 's' || e.key === 'Enter'))) {
+    // Ctrl+S — save in entry mode
+    if (e.ctrlKey && e.key === 's') {
       if (this.mode() === 'entry') {
         e.preventDefault();
         this.save();
@@ -203,6 +203,7 @@ export class VoucherExplorerComponent implements OnInit {
     if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
 
     if (this.mode() === 'explorer') {
+      // 'C' creates a generic voucher (Payment is the most common type, matching Tally default)
       if (e.key === 'c' || e.key === 'C') {
         this.openNewEntry('PAYMENT');
       } else if (e.key === 'F4') { e.preventDefault(); this.openNewEntry('CONTRA'); }

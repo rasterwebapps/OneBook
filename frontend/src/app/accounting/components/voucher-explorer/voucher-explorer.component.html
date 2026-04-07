@@ -49,7 +49,7 @@
         <select
           class="filter-input"
           [value]="filterCategory()"
-          (change)="filterCategory.set($any($any($event.target).value)); currentPage.set(1)"
+          (change)="filterCategory.set($any($event.target).value); currentPage.set(1)"
         >
           <option value="ALL">All Types</option>
           @for (cat of allCategories; track cat) {
