@@ -175,9 +175,7 @@ export class VoucherExplorerComponent implements OnInit {
 
   /* ── Load all voucher types ── */
   loadAllVouchers(): void {
-    // Load one type at a time to merge into a single signal.
-    // We iterate all F-key categories sequentially.
-    this.fKeyCategories.forEach(cat => this.svc.loadVouchers(cat));
+    this.svc.loadAllVouchers();
   }
 
   /* ── Keyboard shortcuts ── */

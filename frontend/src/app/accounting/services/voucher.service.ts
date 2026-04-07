@@ -82,6 +82,37 @@ export class VoucherService {
     ).subscribe();
   }
 
+  /* ── Load all voucher types in a single request ── */
+  loadAllVouchers(): void {
+    this.http.get<BackendJournalTransaction[]>('/api/journal/transactions', {
+      params: { tenantId: TENANT_ID },
+    }).pipe(
+      map(txns => {
+        // First pass: resolve type for each transaction
+        const typed = txns.map(t => {
+          let type: VoucherCategory = 'JOURNAL';
+          try {
+            type = (JSON.parse(t.metadata || '{}').voucherType as VoucherCategory) || 'JOURNAL';
+          } catch (_e) {
+            // malformed metadata — default to JOURNAL
+          }
+          return { t, type };
+        });
+
+        // Second pass: count per type so seqMap is correct before building vouchers
+        const typeCount: Record<string, number> = {};
+        for (const { type } of typed) {
+          typeCount[type] = (typeCount[type] ?? 0) + 1;
+        }
+        Object.assign(this.seqMap, typeCount);
+
+        return typed.map(({ t, type }) => this.backendToVoucher(t, type));
+      }),
+      tap(vs => this.vouchers.set(vs)),
+      catchError(() => { this.vouchers.set([]); return of([]); }),
+    ).subscribe();
+  }
+
   /* ── Legacy: load contra vouchers ── */
   loadContraVouchers(): void {
     this.loadVouchers('CONTRA');
@@ -110,11 +141,7 @@ export class VoucherService {
     return this.http.post<BackendJournalTransaction>('/api/journal/transactions', req).pipe(
       map(txn => this.backendToVoucher(txn, type)),
       tap(v => this.vouchers.update(list => [v, ...list])),
-      catchError(() => {
-        const v = this.offlineVoucher(type, date, debitAccountId, creditAccountId, amount, narration);
-        this.vouchers.update(list => [v, ...list]);
-        return of(v);
-      }),
+      catchError(err => throwError(() => err)),
     );
   }
 
@@ -149,14 +176,7 @@ export class VoucherService {
     return this.http.put<BackendJournalTransaction>(`/api/journal/transactions/${uuid}`, req).pipe(
       map(txn => this.backendToVoucher(txn, type)),
       tap(v => this.vouchers.update(list => list.map(x => x.uuid === uuid ? v : x))),
-      catchError(() => {
-        const updated = this.buildVoucher(
-          type, uuid, this.voucherNumberFor(uuid, type),
-          date, debitAccountId, creditAccountId, amount, narration,
-        );
-        this.vouchers.update(list => list.map(x => x.uuid === uuid ? updated : x));
-        return of(updated);
-      }),
+      catchError(err => throwError(() => err)),
     );
   }
 
