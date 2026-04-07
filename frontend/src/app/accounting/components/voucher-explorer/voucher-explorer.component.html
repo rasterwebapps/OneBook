@@ -1,0 +1,450 @@
+<div class="explorer-shell">
+
+  <!-- ══════════════════════════════════════════════════════════
+       EXPLORER MODE — Default Screen
+       ══════════════════════════════════════════════════════════ -->
+  @if (mode() === 'explorer') {
+
+    <!-- Header -->
+    <div class="explorer-header">
+      <div class="header-left">
+        <span class="explorer-icon">📒</span>
+        <h2 class="explorer-title">Voucher Explorer</h2>
+      </div>
+
+      <!-- Summary Cards -->
+      <div class="summary-cards">
+        <div class="summary-card">
+          <span class="card-label">Total</span>
+          <span class="card-value">{{ totalCount() }}</span>
+        </div>
+        <div class="summary-card posted">
+          <span class="card-label">Posted</span>
+          <span class="card-value">{{ postedCount() }}</span>
+        </div>
+        <div class="summary-card unposted">
+          <span class="card-label">Unposted</span>
+          <span class="card-value">{{ unpostedCount() }}</span>
+        </div>
+        <div class="summary-card amount">
+          <span class="card-label">Total Amount</span>
+          <span class="card-value nx-number">₹{{ totalAmount() | number:'1.2-2' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter Toolbar -->
+    <div class="filter-toolbar">
+      <div class="filter-group">
+        <input
+          type="search"
+          class="filter-input search-input"
+          placeholder="🔍 Search vouchers…"
+          [value]="filterSearch()"
+          (input)="filterSearch.set($any($event.target).value); currentPage.set(1)"
+        />
+      </div>
+
+      <div class="filter-group">
+        <select
+          class="filter-input"
+          [value]="filterCategory()"
+          (change)="filterCategory.set($any($any($event.target).value)); currentPage.set(1)"
+        >
+          <option value="ALL">All Types</option>
+          @for (cat of allCategories; track cat) {
+            <option [value]="cat">{{ categoryLabels[cat] }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <select
+          class="filter-input"
+          [value]="filterStatus()"
+          (change)="filterStatus.set($any($event.target).value); currentPage.set(1)"
+        >
+          <option value="ALL">All Status</option>
+          <option value="POSTED">Posted</option>
+          <option value="UNPOSTED">Unposted</option>
+        </select>
+      </div>
+
+      <div class="filter-group date-range">
+        <input
+          type="date"
+          class="filter-input"
+          title="From date"
+          [value]="filterDateFrom()"
+          (input)="filterDateFrom.set($any($event.target).value); currentPage.set(1)"
+        />
+        <span class="date-sep">→</span>
+        <input
+          type="date"
+          class="filter-input"
+          title="To date"
+          [value]="filterDateTo()"
+          (input)="filterDateTo.set($any($event.target).value); currentPage.set(1)"
+        />
+      </div>
+
+      @if (filterSearch() || filterCategory() !== 'ALL' || filterStatus() !== 'ALL' || filterDateFrom() || filterDateTo()) {
+        <button class="nx-btn nx-btn--ghost filter-clear" (click)="clearFilters()">
+          ✕ Clear
+        </button>
+      }
+    </div>
+
+    <!-- Quick-Create Row -->
+    <div class="quick-create-row">
+      <span class="quick-label">Quick Create:</span>
+      @for (cat of fKeyCategories; track cat) {
+        <button
+          class="nx-btn quick-btn"
+          [style.--badge-color]="categoryColors[cat]"
+          (click)="openNewEntry(cat)"
+          [title]="categoryLabels[cat] + ' (' + voucherTypeConfig[cat].fKey + ')'"
+        >
+          <kbd>{{ voucherTypeConfig[cat].fKey }}</kbd>
+          {{ categoryLabels[cat] }}
+        </button>
+      }
+    </div>
+
+    <!-- Data Grid -->
+    @if (filteredVouchers().length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">📒</div>
+        <p>No vouchers found.</p>
+        @if (filterSearch() || filterCategory() !== 'ALL' || filterStatus() !== 'ALL') {
+          <p class="hint">Try adjusting your filters, or <button class="link-btn" (click)="clearFilters()">clear all filters</button>.</p>
+        } @else {
+          <p class="hint">Press <kbd>C</kbd> to create your first voucher.</p>
+        }
+      </div>
+    } @else {
+      <div class="grid-wrap">
+        <table class="voucher-grid">
+          <thead>
+            <tr>
+              <th class="col-vno sortable" (click)="toggleSort('voucherNumber')">
+                Vch No.
+                @if (sortField() === 'voucherNumber') {
+                  <span class="sort-arrow">{{ sortDir() === 'asc' ? '↑' : '↓' }}</span>
+                }
+              </th>
+              <th class="col-type">Type</th>
+              <th class="col-date sortable" (click)="toggleSort('date')">
+                Date
+                @if (sortField() === 'date') {
+                  <span class="sort-arrow">{{ sortDir() === 'asc' ? '↑' : '↓' }}</span>
+                }
+              </th>
+              <th class="col-debit hide-sm">Debit (To)</th>
+              <th class="col-credit hide-sm">Credit (By)</th>
+              <th class="col-amount sortable" (click)="toggleSort('amount')">
+                Amount (₹)
+                @if (sortField() === 'amount') {
+                  <span class="sort-arrow">{{ sortDir() === 'asc' ? '↑' : '↓' }}</span>
+                }
+              </th>
+              <th class="col-narration hide-md">Narration</th>
+              <th class="col-status">Status</th>
+              <th class="col-actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (v of pagedVouchers(); track v.uuid) {
+              <tr
+                [class.selected]="selectedUuid() === v.uuid"
+                (click)="selectVoucher(v.uuid)"
+                (dblclick)="startEdit(v)"
+              >
+                <td class="col-vno">{{ v.voucherNumber }}</td>
+                <td class="col-type">
+                  <span
+                    class="type-badge"
+                    [style.background]="categoryColors[v.voucherType] + '22'"
+                    [style.color]="categoryColors[v.voucherType]"
+                    [style.border-color]="categoryColors[v.voucherType] + '66'"
+                  >{{ categoryLabels[v.voucherType] }}</span>
+                </td>
+                <td class="col-date">{{ v.date | date:'dd/MM/yyyy' }}</td>
+                <td class="col-debit hide-sm">{{ v.debitAccountName }}</td>
+                <td class="col-credit hide-sm">{{ v.creditAccountName }}</td>
+                <td class="col-amount nx-number">{{ v.amount | number:'1.2-2' }}</td>
+                <td class="col-narration hide-md">{{ v.narration }}</td>
+                <td class="col-status">
+                  @if (v.posted) {
+                    <span class="status-pill posted">Posted</span>
+                  } @else {
+                    <span class="status-pill draft">Draft</span>
+                  }
+                </td>
+                <td class="col-actions">
+                  @if (!v.posted) {
+                    <button class="btn-icon btn-post" title="Post" (click)="postVoucher(v.uuid); $event.stopPropagation()">📌</button>
+                  }
+                  <button class="btn-icon" title="Edit" (click)="startEdit(v); $event.stopPropagation()">✏️</button>
+                  <button class="btn-icon btn-delete" title="Delete" (click)="deleteVoucher(v.uuid); $event.stopPropagation()">🗑️</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      @if (totalPages() > 1) {
+        <div class="pagination">
+          <button class="nx-btn nx-btn--ghost" (click)="prevPage()" [disabled]="currentPage() === 1">
+            ◀ Prev
+          </button>
+          <span class="page-info">Page {{ currentPage() }} of {{ totalPages() }}</span>
+          <button class="nx-btn nx-btn--ghost" (click)="nextPage()" [disabled]="currentPage() === totalPages()">
+            Next ▶
+          </button>
+        </div>
+      }
+    }
+
+    <!-- Footer -->
+    <div class="explorer-footer">
+      <span><kbd>C</kbd> Create</span>
+      <span><kbd>Enter</kbd> Edit selected</span>
+      <span><kbd>Del</kbd> Delete selected</span>
+      <span><kbd>↑↓</kbd> Navigate</span>
+      <span><kbd>F4</kbd>–<kbd>F9</kbd> Quick create by type</span>
+      <span class="spacer"></span>
+      <span class="footer-count">
+        Showing {{ pagedVouchers().length }} of {{ filteredVouchers().length }} vouchers
+      </span>
+    </div>
+  }
+
+  <!-- ══════════════════════════════════════════════════════════
+       ENTRY MODE — Full-Page Form
+       ══════════════════════════════════════════════════════════ -->
+  @if (mode() === 'entry') {
+    <div class="entry-shell">
+
+      <!-- Entry Header -->
+      <div class="entry-header">
+        <button class="nx-btn nx-btn--ghost back-btn" (click)="closeEntry()">
+          ← Back to Explorer
+        </button>
+        <div class="entry-title">
+          <span class="entry-type-badge"
+            [style.background]="categoryColors[formType()] + '22'"
+            [style.color]="categoryColors[formType()]"
+            [style.border-color]="categoryColors[formType()] + '66'"
+          >{{ categoryLabels[formType()] }}</span>
+          <h2>
+            {{ editing() ? 'Edit' : 'New' }} {{ categoryLabels[formType()] }} Voucher
+          </h2>
+          @if (editing()) {
+            <span class="edit-badge">{{ editingVoucherNumber() }}</span>
+          }
+        </div>
+        <div class="entry-actions">
+          <button class="nx-btn" (click)="closeEntry()">
+            <kbd>Esc</kbd> Cancel
+          </button>
+          <button class="nx-btn nx-btn--emerald" (click)="save()" [disabled]="saving()">
+            <kbd>Ctrl+S</kbd> {{ saving() ? 'Saving…' : (editing() ? 'Update' : 'Save') }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Entry Split Layout -->
+      <div class="entry-split">
+
+        <!-- Left: Form Fields -->
+        <div class="entry-form">
+          <div class="form-section-title">Voucher Details</div>
+          <div class="form-body">
+
+            <!-- Voucher Type -->
+            <div class="form-row">
+              <label>Voucher Type</label>
+              <select
+                #typeSelect
+                class="input"
+                [value]="formType()"
+                (change)="formType.set($any(typeSelect.value))"
+                [disabled]="editing()"
+              >
+                @for (cat of allCategories; track cat) {
+                  <option [value]="cat">{{ categoryLabels[cat] }}</option>
+                }
+              </select>
+            </div>
+
+            <!-- Date -->
+            <div class="form-row">
+              <label>Date</label>
+              <input
+                #dateInput
+                type="date"
+                class="input"
+                [value]="formDate()"
+                (input)="formDate.set(dateInput.value)"
+              />
+            </div>
+
+            <!-- Debit Account -->
+            <div class="form-row">
+              <label>Account <span class="dr-tag">Dr</span> (To)</label>
+              <select
+                #drSelect
+                class="input"
+                [value]="formDebitAccountId()"
+                (change)="formDebitAccountId.set(+drSelect.value)"
+              >
+                <option value="0" disabled>— Select account —</option>
+                @for (a of debitAccounts(); track a.id) {
+                  <option [value]="a.id">{{ a.accountCode }} — {{ a.accountName }}</option>
+                }
+              </select>
+            </div>
+
+            <!-- Credit Account -->
+            <div class="form-row">
+              <label>Account <span class="cr-tag">Cr</span> (By)</label>
+              <select
+                #crSelect
+                class="input"
+                [value]="formCreditAccountId()"
+                (change)="formCreditAccountId.set(+crSelect.value)"
+              >
+                <option value="0" disabled>— Select account —</option>
+                @for (a of creditAccounts(); track a.id) {
+                  <option [value]="a.id">{{ a.accountCode }} — {{ a.accountName }}</option>
+                }
+              </select>
+            </div>
+
+            <!-- Amount -->
+            <div class="form-row">
+              <label>Amount (₹)</label>
+              <input
+                #amtInput
+                type="number"
+                step="0.01"
+                min="0"
+                class="input amount-input"
+                placeholder="0.00"
+                [value]="formAmount()"
+                (input)="formAmount.set(+amtInput.value)"
+              />
+            </div>
+
+            <!-- Narration -->
+            <div class="form-row">
+              <label>Narration</label>
+              <textarea
+                #narrInput
+                rows="3"
+                class="input"
+                [placeholder]="'e.g. ' + categoryLabels[formType()] + ' transaction narration'"
+                [value]="formNarration()"
+                (input)="formNarration.set(narrInput.value)"
+              ></textarea>
+            </div>
+
+            @if (formError()) {
+              <div class="form-error">⚠ {{ formError() }}</div>
+            }
+          </div>
+
+          <!-- Form Footer Buttons -->
+          <div class="form-footer">
+            <span class="form-hint">
+              <kbd>Ctrl+S</kbd> to save &nbsp;·&nbsp; <kbd>Esc</kbd> to cancel
+            </span>
+            <div class="form-buttons">
+              <button class="nx-btn" (click)="closeEntry()">Cancel</button>
+              <button class="nx-btn nx-btn--emerald" (click)="save()" [disabled]="saving()">
+                {{ saving() ? 'Saving…' : (editing() ? 'Update' : 'Save') }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Live Ledger Preview -->
+        <div class="ledger-preview nx-glass">
+          <div class="preview-header">
+            <span class="preview-icon">📖</span>
+            <h3>Live Ledger Preview</h3>
+          </div>
+
+          <div class="preview-table-wrap">
+            <table class="preview-table">
+              <thead>
+                <tr>
+                  <th>Account</th>
+                  <th class="col-dr">Debit (Dr)</th>
+                  <th class="col-cr">Credit (Cr)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="dr-row">
+                  <td>
+                    @if (formDebitAccountId()) {
+                      <span class="preview-account">{{ getAccountName(formDebitAccountId(), 'debit') }}</span>
+                    } @else {
+                      <span class="preview-placeholder">Select debit account…</span>
+                    }
+                  </td>
+                  <td class="col-dr nx-number">
+                    @if (formAmount() > 0) { ₹{{ formAmount() | number:'1.2-2' }} }
+                  </td>
+                  <td class="col-cr">—</td>
+                </tr>
+                <tr class="cr-row">
+                  <td>
+                    @if (formCreditAccountId()) {
+                      <span class="preview-account">&nbsp;&nbsp;To {{ getAccountName(formCreditAccountId(), 'credit') }}</span>
+                    } @else {
+                      <span class="preview-placeholder">&nbsp;&nbsp;Select credit account…</span>
+                    }
+                  </td>
+                  <td class="col-dr">—</td>
+                  <td class="col-cr nx-number">
+                    @if (formAmount() > 0) { ₹{{ formAmount() | number:'1.2-2' }} }
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td class="preview-total-label">Total</td>
+                  <td class="col-dr nx-number preview-total">
+                    @if (formAmount() > 0) { ₹{{ formAmount() | number:'1.2-2' }} }
+                  </td>
+                  <td class="col-cr nx-number preview-total">
+                    @if (formAmount() > 0) { ₹{{ formAmount() | number:'1.2-2' }} }
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+
+          @if (formNarration()) {
+            <div class="preview-narration">
+              <span class="narr-label">Narration:</span> {{ formNarration() }}
+            </div>
+          }
+
+          <div class="preview-status">
+            @if (formAmount() > 0 && formDebitAccountId() && formCreditAccountId()) {
+              <span class="status-balanced">✓ Balanced — Ready to post</span>
+            } @else {
+              <span class="status-incomplete">○ Incomplete entry</span>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+</div>
