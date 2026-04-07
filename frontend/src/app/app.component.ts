@@ -38,12 +38,7 @@ const TENANTS: Tenant[] = [
 // Route to breadcrumb mapping
 const ROUTE_BREADCRUMBS: Record<string, Breadcrumb[]> = {
   '/': [{ label: 'Dashboard' }],
-  '/voucher/sales': [{ label: 'Accounting' }, { label: 'Sales Voucher' }],
-  '/voucher/purchase': [{ label: 'Accounting' }, { label: 'Purchase Voucher' }],
-  '/voucher/payment': [{ label: 'Accounting' }, { label: 'Payment Voucher' }],
-  '/voucher/receipt': [{ label: 'Accounting' }, { label: 'Receipt Voucher' }],
-  '/voucher/contra': [{ label: 'Accounting' }, { label: 'Contra Voucher' }],
-  '/voucher/journal': [{ label: 'Accounting' }, { label: 'Journal Voucher' }],
+  '/vouchers': [{ label: 'Accounting' }, { label: 'Voucher Explorer' }],
   '/ledger': [{ label: 'Accounting' }, { label: 'Ledger' }],
   '/receivable': [{ label: 'Accounting' }, { label: 'Receivables' }],
   '/payable': [{ label: 'Accounting' }, { label: 'Payables' }],
@@ -153,9 +148,12 @@ export class AppComponent implements OnInit {
     // Remove query params
     const path = url.split('?')[0];
 
-    // Find matching breadcrumbs or use default
-    const crumbs = ROUTE_BREADCRUMBS[path] || [{ label: 'Dashboard' }];
-    this.breadcrumbs.set(crumbs);
+    // Find matching breadcrumbs; fall back to generic /voucher entry for /voucher/:type
+    let crumbs = ROUTE_BREADCRUMBS[path];
+    if (!crumbs && path.startsWith('/voucher/')) {
+      crumbs = [{ label: 'Accounting' }, { label: 'Voucher Entry' }];
+    }
+    this.breadcrumbs.set(crumbs || [{ label: 'Dashboard' }]);
   }
 
   toggleSidebar(): void {
