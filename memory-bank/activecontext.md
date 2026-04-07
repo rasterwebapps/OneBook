@@ -42,11 +42,11 @@
 ### Backend (Spring Boot 3.4+ / Java 21)
 - **Package:** `com.nexus.onebook.ledger`
 - **Migrations:** V1–V14 (all applied; V12 intentionally skipped)
-- **Tests:** 489 passing
+- **Tests:** 514 passing
 - **API:** All endpoints functional at `/api/*`
 
 ### Frontend (Angular 19+)
-- **Modules:** 15 feature modules (all lazy-loaded standalone components)
+- **Modules:** 17 feature modules (all lazy-loaded standalone components)
 - **Tests:** 105+ passing (2 pre-existing AppComponent failures known)
 - **State:** Signals-based (no RxJS for simple state)
 

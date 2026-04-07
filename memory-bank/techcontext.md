@@ -60,7 +60,9 @@ OneBook/
 │   ├── Dockerfile                ← Multi-stage JRE 21 image
 │   ├── .dockerignore
 │   ├── build.gradle
-│   └── src/main/java/com/nexus/onebook/
+│   ├── src/main/java/com/nexus/onebook/
+    └── shared/                   ← Shared module
+    └── client-accounts/          ← Client-accounts module
 │       ├── OneBookApplication.java
 │       ├── HealthController.java
 │       ├── config/               ← HeadlessApiConfig, RedisConfig
@@ -132,7 +134,7 @@ cd backend
 # Compile only
 ./gradlew compileJava
 
-# Run tests (489 tests)
+# Run tests (514 tests)
 ./gradlew test
 
 # Run specific test class

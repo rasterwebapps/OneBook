@@ -17,6 +17,13 @@ export const routes: Routes = [
     // canActivate: [authGuard]
   },
 
+  // Voucher Explorer & Entry Screen - Protected
+  {
+    path: 'vouchers',
+    loadComponent: () => import('./accounting/components/voucher-explorer/voucher-explorer.component').then(m => m.VoucherExplorerComponent),
+    // canActivate: [authGuard]
+  },
+
   // Voucher Entry (F4-F9 shortcuts) - Protected
   {
     path: 'voucher/:type',
