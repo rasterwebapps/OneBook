@@ -5,7 +5,7 @@
 
 ---
 
-## Overall Status: ✅ M1–M10 Complete | 🔄 M11 In Progress | 📝 M12 Draft
+## Overall Status: ✅ M1–M11 Complete | 📝 M12 Draft
 
 | Milestone | Theme | Status | Tests |
 |-----------|-------|--------|-------|
@@ -19,10 +19,10 @@
 | M8 | Advanced Intelligence, Forecasting & Markets | ✅ Complete | — |
 | M9 | Architecture Documentation & Deliverables | ✅ Complete | — |
 | M10 | Hardening, Auditor Portal & Prod Readiness | ✅ Complete | — |
-| M11 | Payment Processing Pipeline | 🔄 In Progress | — |
+| M11 | Payment Processing Pipeline | ✅ Complete | 22 |
 | M12 | Employee Advances & Settlement | 📝 Draft | — |
 
-**Total Tests:** 514 backend, 105+ frontend (all passing)
+**Total Tests:** 525 backend, 105+ frontend (all passing)
 
 ---
 
@@ -141,7 +141,7 @@
 **Key services:** `AuditorPortalService`, `SecurityAuditService`, `ObservabilityService`, `DisasterRecoveryService`  
 **Migration:** `V9__hardening_audit_production.sql`
 
-### M11 — Payment Processing Pipeline 🔄
+### M11 — Payment Processing Pipeline ✅
 - [x] Payment register data model (vendor grouping, due-date sorting)
 - [x] PaymentRegisterEntry, PaymentRegisterStatus model + repository
 - [x] PaymentRegisterService + PaymentRegisterController
@@ -150,9 +150,9 @@
 - [x] PaymentFileGeneratorService (CSV generation for NEFT/RTGS/IMPS)
 - [x] Journal posting on batch approval (Dr AP, Cr Bank)
 - [x] Flyway V11 + V13 migrations with RLS policies
-- [ ] Unit and integration tests for payment services
-- [ ] BRD/FRD/TRD/RTM updates
-- [ ] Agent ownership updates
+- [x] Unit and integration tests for payment services (22 tests)
+- [x] BRD/FRD/TRD/RTM updates
+- [x] Agent ownership updates
 
 **Key packages:** `ledger/payment/` (model, dto, repository, service, controller)  
 **API endpoints:** `/api/payment-register`, `/api/payment-batches`, `/api/payment-batches/{id}/generate-file`  
@@ -264,7 +264,7 @@
 | `docs/requirements/RTM.md` | Requirement Traceability Matrix | ✅ Auto-generated |
 | `docs/requirements/requirement-template.md` | Template for new requirements | ✅ Current |
 | `docs/requirements/active/REQ-001 to REQ-010` | Individual requirement files (completed) | ✅ Complete |
-| `docs/requirements/active/REQ-011 to REQ-013` | Payment processing requirements | 🔄 In Progress |
+| `docs/requirements/active/REQ-011 to REQ-013` | Payment processing requirements | ✅ Complete |
 | `docs/requirements/active/REQ-014` | Employee advances & settlement requirement | 📝 Draft |
 | `docs/technical/data-dictionary.md` | Complete data model | ✅ Complete |
 | `docs/technical/api-contracts.md` | REST API specifications | ✅ Complete |
@@ -292,3 +292,4 @@
 | 2026-03-16 | 405+ | 105+ | Memory bank session (no test changes) |
 
 | 2026-04-04 | 489 | 105+ | Voucher-Receipt-Advance settlement system (24 new tests) |
+| 2026-04-07 | 525 | 105+ | M11 payment tests complete (11 new tests) |

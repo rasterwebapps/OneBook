@@ -134,7 +134,7 @@ cd backend
 # Compile only
 ./gradlew compileJava
 
-# Run tests (514 tests)
+# Run tests (525 tests)
 ./gradlew test
 
 # Run specific test class

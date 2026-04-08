@@ -148,10 +148,10 @@ export class AppComponent implements OnInit {
     // Remove query params
     const path = url.split('?')[0];
 
-    // Find matching breadcrumbs; fall back to generic /voucher entry for /voucher/:type
+    // Find matching breadcrumbs; fall back to Voucher Explorer for /voucher/:type
     let crumbs = ROUTE_BREADCRUMBS[path];
     if (!crumbs && path.startsWith('/voucher/')) {
-      crumbs = [{ label: 'Accounting' }, { label: 'Voucher Entry' }];
+      crumbs = [{ label: 'Accounting' }, { label: 'Voucher Explorer' }];
     }
     this.breadcrumbs.set(crumbs || [{ label: 'Dashboard' }]);
   }

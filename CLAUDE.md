@@ -31,7 +31,7 @@ memory-bank/
 | **Project** | OneBook — Nexus Universal |
 | **Type** | Sector-agnostic, Zero-Trust, High-Performance Accounting OS |
 | **Vision** | Tally-speed keyboard UX + 2026-grade security + AI intelligence |
-| **Status** | Milestones 1–10 complete (see `memory-bank/progress.md`) |
+| **Status** | Milestones 1–11 complete (see `memory-bank/progress.md`) |
 
 ---
 
