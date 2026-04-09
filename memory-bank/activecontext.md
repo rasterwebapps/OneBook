@@ -15,7 +15,26 @@
 
 ## Recent Changes (Latest Session)
 
-### Selective Documentation Update Strategy Implementation (2026-04-09)
+### Copilot Skills & Environment Setup (2026-04-09)
+- **CREATED: `.github/copilot-setup-steps.yml`** — Configures Copilot cloud agent environment with PostgreSQL 17, Redis 7, Java 21, and Node.js so agents can build, test, and run the full stack.
+- **CREATED: `.github/skills/` (8 skills)** — Added Copilot Skills for all 8 agents:
+  - `analyze-requirement` — @partner: classify, plan, track requirements through SDLC
+  - `add-rest-endpoint` — @backend: scaffold DTO → Repository → Service → Controller → Test
+  - `create-angular-component` — @frontend: standalone component with Signals, i18n, routing
+  - `create-flyway-migration` — @database: migration with RLS, tenant isolation, proper types
+  - `security-review` — @security: RLS, encryption, secrets, OWASP compliance review
+  - `setup-dev-environment` — @infra: Docker Compose dev environment management
+  - `update-documentation` — @docs: Selective Documentation Update Protocol
+  - `run-quality-gates` — @quality: full quality validation pipeline (8 gates)
+- **UPDATED: All 8 `.agent.md` files** — Added `skills:` frontmatter and Skills reference section
+- **UPDATED: `.github/copilot-instructions.md`** — Added Copilot Skills table to Agent System section
+- **UPDATED: `.github/agents/INDEX.md`** — Added skills table with locations
+- **UPDATED: `.github/agents/README.md`** — Added Copilot Skills section and Environment Setup
+- **UPDATED: `CLAUDE.md`** — Added Copilot Skills table, Environment Setup, and skills/ to Key File Map
+
+**Summary:** Agents define WHO does the work (persona + rules + scope). Skills define HOW to do specific tasks (step-by-step procedures + templates). Together they form the complete Copilot automation layer. The copilot-setup-steps.yml ensures PostgreSQL and Redis are available for dev builds.
+
+### Previous Session: Selective Documentation Update Strategy (2026-04-09)
 - **UPDATED: `CLAUDE.md`** — Added full "Selective Documentation Update Protocol" section with:
   - Documentation Impact Matrix (11 change types → which docs to update/skip)
   - Decision flow for @docs agent (how to determine what needs updating)

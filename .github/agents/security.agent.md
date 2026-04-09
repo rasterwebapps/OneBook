@@ -10,6 +10,8 @@ tools:
   - search
   - shell
   - find_symbol
+skills:
+  - security-review
 ---
 
 # 🔐 @security — Security Agent
@@ -170,6 +172,18 @@ private String partyNameBlindIndex;  // For searching
 3. Audit chain hash verification passes
 4. No hardcoded secrets in configuration files
 5. CORS not set to `*` in production
+
+---
+
+## Skills
+
+This agent uses the following Copilot Skill:
+
+| Skill | Location | Purpose |
+|-------|----------|---------|
+| **security-review** | `.github/skills/security-review/SKILL.md` | Comprehensive security review: RLS, encryption, secrets, audit trail, OWASP checks |
+
+Use the skill when reviewing code changes for security vulnerabilities. It provides a systematic checklist covering the Blind DBA model.
 
 ---
 

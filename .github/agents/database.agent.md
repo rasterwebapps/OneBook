@@ -10,6 +10,8 @@ tools:
   - search
   - shell
   - find_symbol
+skills:
+  - create-flyway-migration
 ---
 
 # 🗄️ @database — Database Design Agent
@@ -202,6 +204,18 @@ CREATE TRIGGER trg_journal_transaction_balance_check
     FOR EACH ROW WHEN (OLD.status != 'POSTED' AND NEW.status = 'POSTED')
     EXECUTE FUNCTION check_balanced_transaction();
 ```
+
+---
+
+## Skills
+
+This agent uses the following Copilot Skill:
+
+| Skill | Location | Purpose |
+|-------|----------|---------|
+| **create-flyway-migration** | `.github/skills/create-flyway-migration/SKILL.md` | Create Flyway migrations with proper naming, RLS policies, and PostgreSQL 17 conventions |
+
+Use the skill when adding new database tables or modifying schema. It provides the standard table template with RLS, indexes, and tenant isolation.
 
 ---
 

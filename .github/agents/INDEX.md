@@ -25,6 +25,19 @@ Users invoke ONLY `@partner`. It orchestrates the full SDLC lifecycle with Agile
 
 **Workflow:** User → @partner → domain agents → @partner validates → @quality tests → @docs documents → done.
 
+**Copilot Skills:** Each agent has an associated skill in `.github/skills/` providing reusable task procedures:
+
+| Agent | Skill | Location |
+|-------|-------|----------|
+| @partner | `analyze-requirement` | `.github/skills/analyze-requirement/SKILL.md` |
+| @backend | `add-rest-endpoint` | `.github/skills/add-rest-endpoint/SKILL.md` |
+| @frontend | `create-angular-component` | `.github/skills/create-angular-component/SKILL.md` |
+| @database | `create-flyway-migration` | `.github/skills/create-flyway-migration/SKILL.md` |
+| @security | `security-review` | `.github/skills/security-review/SKILL.md` |
+| @infra | `setup-dev-environment` | `.github/skills/setup-dev-environment/SKILL.md` |
+| @docs | `update-documentation` | `.github/skills/update-documentation/SKILL.md` |
+| @quality | `run-quality-gates` | `.github/skills/run-quality-gates/SKILL.md` |
+
 **Feedback Loops:**
 - After every agent phase: @partner reviews → issues route back → fix → re-review
 - After all phases: @quality tests → failures route back → fix → re-test

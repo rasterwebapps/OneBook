@@ -9,6 +9,8 @@ tools:
   - edit
   - search
   - shell
+skills:
+  - setup-dev-environment
 ---
 
 # 🏗️ @infra — Infrastructure Agent
@@ -160,6 +162,18 @@ Redis is an **optional performance enhancer**, not a required dependency:
 **Issues Found**: {none or description}
 **Ready For**: @{next agent}
 ```
+
+---
+
+## Skills
+
+This agent uses the following Copilot Skill:
+
+| Skill | Location | Purpose |
+|-------|----------|---------|
+| **setup-dev-environment** | `.github/skills/setup-dev-environment/SKILL.md` | Set up and manage local dev environment with Docker Compose (PostgreSQL, Redis, Keycloak) |
+
+Use the skill when setting up development environments, adding Docker services, or troubleshooting infrastructure.
 
 ---
 

@@ -10,6 +10,8 @@ tools:
   - search
   - shell
   - find_symbol
+skills:
+  - add-rest-endpoint
 ---
 
 # 📒 @backend — Backend Development Agent
@@ -285,6 +287,18 @@ public class GlobalExceptionHandler {
 - Use `repository.saveAll(items)` for batch operations (not individual saves in loop)
 - Never delete posted transactions — mark as `VOID` instead
 - Never hardcode account IDs — resolve by account code via repository
+
+---
+
+## Skills
+
+This agent uses the following Copilot Skill:
+
+| Skill | Location | Purpose |
+|-------|----------|---------|
+| **add-rest-endpoint** | `.github/skills/add-rest-endpoint/SKILL.md` | Scaffold a complete REST API endpoint (DTO → Repository → Service → Controller → Test) |
+
+Use the skill when adding new API endpoints. It provides step-by-step instructions and templates following OneBook conventions.
 
 ---
 

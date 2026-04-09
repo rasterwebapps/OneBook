@@ -1,0 +1,58 @@
+# Copilot Cloud Agent Environment Setup
+# This file configures the development environment for GitHub Copilot agents.
+# It installs PostgreSQL, Redis, and project dependencies so that agents can
+# build, test, and run the OneBook application.
+
+setup:
+  # Start infrastructure services required for development
+  - name: Start PostgreSQL 17
+    run: |
+      sudo apt-get update -qq
+      sudo apt-get install -y -qq postgresql-17 postgresql-client-17
+      sudo systemctl start postgresql
+      sudo -u postgres psql -c "CREATE USER onebook WITH PASSWORD 'onebook_secret';"
+      sudo -u postgres psql -c "CREATE DATABASE onebook OWNER onebook;"
+      sudo -u postgres psql -c "ALTER USER onebook CREATEDB;"
+
+  - name: Start Redis 7
+    run: |
+      sudo apt-get install -y -qq redis-server
+      sudo systemctl start redis-server
+
+  - name: Setup Java 21
+    run: |
+      # Install Eclipse Temurin JDK 21 (portable across Ubuntu/Debian versions)
+      sudo apt-get install -y -qq wget apt-transport-https gpg
+      wget -qO - https://packages.adoptium.net/artifactory/api/gpg/key/public | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/adoptium.gpg > /dev/null
+      echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | sudo tee /etc/apt/sources.list.d/adoptium.list
+      sudo apt-get update -qq
+      sudo apt-get install -y -qq temurin-21-jdk
+      echo "JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64" >> $GITHUB_ENV
+
+  - name: Setup Node.js and Angular CLI
+    run: |
+      curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+      sudo apt-get install -y -qq nodejs
+      npm install -g @angular/cli
+
+  - name: Install backend dependencies
+    run: |
+      cd backend
+      ./gradlew dependencies --no-daemon
+
+  - name: Install frontend dependencies
+    run: |
+      cd frontend
+      npm ci
+
+  - name: Verify environment
+    run: |
+      echo "=== Java ==="
+      java -version
+      echo "=== Node ==="
+      node --version
+      echo "=== PostgreSQL ==="
+      pg_isready -h localhost -p 5432
+      echo "=== Redis ==="
+      redis-cli ping
+      echo "=== Environment ready for OneBook development ==="

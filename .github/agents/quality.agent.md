@@ -10,6 +10,8 @@ tools:
   - search
   - shell
   - find_symbol
+skills:
+  - run-quality-gates
 ---
 
 # ✅ @quality — Quality Assurance Agent
@@ -170,6 +172,18 @@ When issues are found:
 6. Repeat until all green
 
 **This is the Agile feedback loop in action.**
+
+---
+
+## Skills
+
+This agent uses the following Copilot Skill:
+
+| Skill | Location | Purpose |
+|-------|----------|---------|
+| **run-quality-gates** | `.github/skills/run-quality-gates/SKILL.md` | Execute all quality validation: build, tests, 8 quality gates, ownership, memory bank |
+
+Use the skill when running the full quality validation pipeline. It provides step-by-step execution order and the standard report template.
 
 ---
 

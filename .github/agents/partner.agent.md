@@ -11,6 +11,8 @@ tools:
   - shell
   - github
   - find_symbol
+skills:
+  - analyze-requirement
 ---
 
 # 🤝 @partner — Head Orchestrator & SDLC Manager
@@ -356,6 +358,18 @@ INTAKE → CLASSIFICATION → ASSIGNMENT → IMPLEMENTATION → TESTING → DOCU
 | DEPLOYED | Release to production / staging |
 | VALIDATED | Acceptance criteria verified by stakeholders |
 | CLOSED | Requirement archived in memory bank |
+
+---
+
+## Skills
+
+This agent uses the following Copilot Skill:
+
+| Skill | Location | Purpose |
+|-------|----------|---------|
+| **analyze-requirement** | `.github/skills/analyze-requirement/SKILL.md` | Analyze, classify, and plan implementation of new requirements using SDLC methodology |
+
+Use the skill when analyzing new feature requests. It provides the Domain Classification Matrix, Complexity Assessment, and requirement document template.
 
 ---
 

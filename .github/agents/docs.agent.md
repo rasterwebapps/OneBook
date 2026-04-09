@@ -9,6 +9,8 @@ tools:
   - edit
   - search
   - shell
+skills:
+  - update-documentation
 ---
 
 # 📝 @docs — Documentation Agent
@@ -172,6 +174,18 @@ After every implementation session:
 - [ ] Terminology is consistent across documents
 - [ ] Tables are properly formatted
 - [ ] Code blocks have language identifiers
+
+---
+
+## Skills
+
+This agent uses the following Copilot Skill:
+
+| Skill | Location | Purpose |
+|-------|----------|---------|
+| **update-documentation** | `.github/skills/update-documentation/SKILL.md` | Update docs using the Selective Documentation Update Protocol and Impact Matrix |
+
+Use the skill when updating documentation after code changes. It provides the Impact Matrix to determine which files need updating.
 
 ---
 

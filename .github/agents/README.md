@@ -54,6 +54,25 @@ User → @partner (analyzes requirement)
 
 `.github/copilot-instructions.md` — Cross-cutting rules injected into ALL Copilot interactions.
 
+### Copilot Skills
+
+Each agent has a paired **Copilot Skill** in `.github/skills/<skill-name>/SKILL.md` that provides reusable, step-by-step procedures for common tasks. Agents define WHO (persona + rules); Skills define HOW (task recipes + templates).
+
+| Agent | Skill | What It Does |
+|-------|-------|-------------|
+| @partner | `analyze-requirement` | Classify, plan, and track requirements through SDLC |
+| @backend | `add-rest-endpoint` | Scaffold DTO → Repository → Service → Controller → Test |
+| @frontend | `create-angular-component` | Create standalone component with Signals, i18n, routing |
+| @database | `create-flyway-migration` | Create migration with RLS, tenant isolation, proper types |
+| @security | `security-review` | Review for RLS, encryption, secrets, OWASP compliance |
+| @infra | `setup-dev-environment` | Set up/manage Docker Compose dev environment |
+| @docs | `update-documentation` | Update docs using Selective Documentation Update Protocol |
+| @quality | `run-quality-gates` | Execute full quality validation pipeline (8 gates) |
+
+### Environment Setup
+
+`.github/copilot-setup-steps.yml` — Configures the Copilot cloud agent environment with PostgreSQL 17, Redis 7, Java 21, and Node.js for development builds and tests.
+
 ---
 
 ## How It Works: SDLC with Agile Feedback Loops

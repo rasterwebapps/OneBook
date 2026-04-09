@@ -76,6 +76,24 @@ This repository uses a hierarchical agent system for SDLC automation:
 
 **Workflow**: User → `@partner` → domain agents → `@partner` validates → `@quality` tests → `@docs` documents → done.
 
+### Copilot Skills
+
+Each agent has an associated **Copilot Skill** in `.github/skills/` that provides reusable, step-by-step task procedures:
+
+| Agent | Skill | Purpose |
+|-------|-------|---------|
+| @partner | `analyze-requirement` | Classify, plan, and track new requirements |
+| @backend | `add-rest-endpoint` | Scaffold DTO → Repository → Service → Controller → Test |
+| @frontend | `create-angular-component` | Create standalone component with Signals, i18n, routing |
+| @database | `create-flyway-migration` | Create migration with RLS, tenant isolation, proper types |
+| @security | `security-review` | Review for RLS, encryption, secrets, OWASP compliance |
+| @infra | `setup-dev-environment` | Set up/manage Docker Compose dev environment |
+| @docs | `update-documentation` | Update docs using Selective Documentation Update Protocol |
+| @quality | `run-quality-gates` | Execute full quality validation pipeline (8 gates) |
+
+**Agents** define WHO does the work and WHAT rules to follow.
+**Skills** define HOW to do specific tasks step-by-step.
+
 ### Selective Documentation Update Rule
 
 **⚡ @docs updates ONLY the documentation files affected by the current change — NOT all docs for every input.**
