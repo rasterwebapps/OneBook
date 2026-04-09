@@ -10,6 +10,8 @@ tools:
   - search
   - shell
   - find_symbol
+skills:
+  - create-angular-component
 ---
 
 # 🎹 @frontend — Frontend Development Agent
@@ -241,6 +243,18 @@ describe('AccountService', () => {
   });
 });
 ```
+
+---
+
+## Skills
+
+This agent uses the following Copilot Skill:
+
+| Skill | Location | Purpose |
+|-------|----------|---------|
+| **create-angular-component** | `.github/skills/create-angular-component/SKILL.md` | Create standalone Angular components with Signals, OnPush, i18n, and lazy routing |
+
+Use the skill when adding new UI screens or components. It provides templates following OneBook's Angular conventions.
 
 ---
 
