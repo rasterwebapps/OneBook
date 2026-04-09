@@ -15,30 +15,17 @@
 
 ## Recent Changes (Latest Session)
 
-### SDLC Agent System with @partner Orchestrator (2026-04-09)
-- **NEW: `.github/copilot-instructions.md`** — Global cross-cutting rules injected into ALL Copilot interactions (BigDecimal, tenantId, DTOs, naming conventions, build commands)
-- **NEW: `.github/agents/partner.agent.md`** — Head orchestrator agent (`@partner`). The ONLY agent users invoke. Combines BA + PM + Team Lead roles. Implements full SDLC workflow with Agile feedback loops.
-- **NEW: `.github/agents/backend.agent.md`** — Backend dev agent (`@backend`). Consolidates @LedgerExpert, @IntegrationBot, @AIEngineer, @ComplianceAgent, @PerfEngineer knowledge. Sub-task decomposition: Model → Repository → Service → Controller → Tests.
-- **NEW: `.github/agents/frontend.agent.md`** — Frontend dev agent (`@frontend`). Consolidates @UXSpecialist knowledge. Standalone Angular components, Signals, OnPush, i18n, keyboard navigation.
-- **NEW: `.github/agents/database.agent.md`** — DB design agent (`@database`). Schema design, RLS policies, Flyway migrations, NUMERIC(19,4), TIMESTAMPTZ conventions.
-- **NEW: `.github/agents/security.agent.md`** — Security agent (`@security`). AES-256-GCM, blind indexes, RLS, audit trails, Blind DBA model.
-- **NEW: `.github/agents/infra.agent.md`** — Infrastructure agent (`@infra`). Docker, CI/CD, Redis, Spring config.
-- **NEW: `.github/agents/docs.agent.md`** — Documentation agent (`@docs`). API docs, schema docs, memory bank, diagrams.
-- **NEW: `.github/agents/quality.agent.md`** — QA agent (`@quality`). 7-check testing protocol, regression detection, quality gates.
-- **UPDATED: `.github/agents/README.md`** — Rewritten with Tier 1 (invocable agents) and Tier 2 (knowledge base) architecture, SDLC mapping, feedback loop protocol.
-- **UPDATED: `.github/agents/INDEX.md`** — Added SDLC Agent System section with all 8 invocable agents.
-- **UPDATED: `CLAUDE.md`** — Agent System section updated with new Tier 1/Tier 2 architecture, file map updated with all new files.
-- **Existing `.md` files preserved** — All 11 legacy agent docs remain as knowledge base, referenced by Tier 1 agents.
+### Selective Documentation Update Strategy Implementation (2026-04-09)
+- **UPDATED: `CLAUDE.md`** — Added full "Selective Documentation Update Protocol" section with:
+  - Documentation Impact Matrix (11 change types → which docs to update/skip)
+  - Decision flow for @docs agent (how to determine what needs updating)
+  - Auto-generated docs guidance (run specific generators, not `generate-all`)
+  - Three concrete examples (bug fix, new feature, keyboard shortcut)
+- **UPDATED: `.github/copilot-instructions.md`** — Added "Selective Documentation Update Rule" to global Agent System section. All agents now see the rule that @docs updates ONLY affected docs.
+- **UPDATED: `memory-bank/systempatterns.md`** — Added "Selective Documentation Update Protocol" pattern with decision flow, key rules, and rationale.
+- **UPDATED: `memory-bank/activecontext.md`** — This file, recording the session changes.
 
-### SDLC Workflow Implemented
-The agent system maps to a real-world SDLC with Agile feedback loops:
-1. User → @partner (requirement intake)
-2. @partner analyzes, classifies, plans phases
-3. @partner delegates to @database → @backend → @frontend → @security
-4. @partner validates each phase output (feedback loop)
-5. @quality runs full test suite (feedback loop on failures)
-6. @docs updates all documentation and memory bank
-7. @partner delivers final status report
+**Strategy summary:** When @partner delegates to @docs in Phase 6, the @docs agent consults the Documentation Impact Matrix to determine which files to update. `activecontext.md` is always updated. All other docs are only touched if the current change directly affects their content. This prevents unnecessary doc regeneration, reduces errors, and speeds up the SDLC workflow.
 
 ### Previous Session: Automated Quality Gate Enforcement (2026-04-04)
 - Added validate-quality-gates.sh (8 gates), sync-memory-bank.sh, quality-gate-baselines.conf

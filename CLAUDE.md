@@ -215,6 +215,70 @@ This keeps the memory bank accurate and reduces token usage in future sessions b
 
 ---
 
+## Selective Documentation Update Protocol
+
+**⚡ CRITICAL: Update ONLY the docs affected by the current change — NOT all docs on every input.**
+
+Documentation updates must be **targeted and proportional** to the change made. Use the Documentation Impact Matrix below to determine which files need updating for a given change type.
+
+### Documentation Impact Matrix
+
+| Change Type | ALWAYS Update | CONDITIONALLY Update | NEVER Touch |
+|---|---|---|---|
+| **Bug fix** (no API/schema change) | `activecontext.md`, `troubleshooting.md` | — | User manual, feature catalog, API docs, schema docs |
+| **New API endpoint** | `activecontext.md`, `progress.md` | `api-documentation.md`, `api-contracts.md`, `feature-catalog.md` | Keyboard shortcuts, architecture diagrams (unless new module) |
+| **New DB table/migration** | `activecontext.md`, `progress.md` | `sql-schema.md`, `data-dictionary.md` | User manual, keyboard shortcuts, architecture diagrams |
+| **New UI screen/component** | `activecontext.md`, `progress.md` | `user-manual.md`, `feature-catalog.md` | SQL schema, API docs (unless new endpoints too) |
+| **New keyboard shortcut** | `activecontext.md` | `keyboard-shortcuts.md`, `key-binding-registry.md`, `user-manual.md` | SQL schema, API docs, architecture diagrams |
+| **New module/package** | `activecontext.md`, `progress.md` | Agent ownership files, `architecture-diagram.md`, `developer-guide.md` | User manual (unless user-facing), keyboard shortcuts |
+| **Security change** | `activecontext.md`, `systempatterns.md` | `operational-runbook.md` | User manual, feature catalog |
+| **Infrastructure change** | `activecontext.md` | `operational-runbook.md`, `developer-guide.md`, `docker-compose.yml` docs | User manual, feature catalog, API docs |
+| **Full new feature** (DB + API + UI) | `activecontext.md`, `progress.md` | All docs in the feature's scope (see below) | Docs for unrelated features |
+| **Documentation-only change** | `activecontext.md` | The specific doc being improved | All other docs |
+| **Refactor** (no behavior change) | `activecontext.md` | `developer-guide.md` (if patterns changed) | User manual, feature catalog, API docs |
+
+### How @docs Determines What to Update
+
+When `@partner` delegates to `@docs` in Phase 6, the `@docs` agent MUST:
+
+1. **Identify the change scope** — What domains were touched? (DB, Backend, Frontend, Security, Infra)
+2. **Consult the Impact Matrix** — Map the change type to the affected doc categories
+3. **Update ONLY affected docs** — Do not regenerate or rewrite docs that are unrelated to the change
+4. **Always update `activecontext.md`** — This is the one file that is updated on every task, regardless of scope
+
+### Auto-Generated Docs
+
+For docs that can be auto-generated (`BRD.md`, `FRD.md`, `TRD.md`, `RTM.md`, `data-dictionary.md`), use the automation scripts in `docs/automation/` — but ONLY run the specific generator for the affected doc:
+
+```bash
+# DON'T: Regenerate everything
+# npm run generate-all    ← Only when explicitly needed
+
+# DO: Run only the specific generator
+npm run generate-brd       # Only if business requirements changed
+npm run generate-frd       # Only if functional requirements changed
+npm run generate-trd       # Only if technical requirements changed
+npm run generate-rtm       # Only if requirement traceability changed
+npm run generate-data-dict # Only if data model changed
+npm run validate           # Always run to check consistency
+```
+
+### Examples
+
+**Example 1: "Fix trial balance calculation bug"**
+- ✅ Update: `activecontext.md`, `troubleshooting.md`
+- ❌ Skip: User manual, feature catalog, API docs, schema docs, keyboard shortcuts
+
+**Example 2: "Add vendor master with CRUD + list screen"**
+- ✅ Update: `activecontext.md`, `progress.md`, `user-manual.md`, `feature-catalog.md`, `api-documentation.md`, `api-contracts.md`, `sql-schema.md`, `data-dictionary.md`
+- ❌ Skip: Keyboard shortcuts, architecture diagrams, operational runbook
+
+**Example 3: "Add keyboard shortcut Alt+V for voucher entry"**
+- ✅ Update: `activecontext.md`, `keyboard-shortcuts.md`, `key-binding-registry.md`, `user-manual.md` (shortcuts section only)
+- ❌ Skip: API docs, SQL schema, feature catalog, architecture diagrams
+
+---
+
 ## Automated Quality Gates (CI-Enforced)
 
 These checks run automatically on every PR and push to main. They **cannot be skipped**:

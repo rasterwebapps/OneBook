@@ -76,6 +76,16 @@ This repository uses a hierarchical agent system for SDLC automation:
 
 **Workflow**: User → `@partner` → domain agents → `@partner` validates → `@quality` tests → `@docs` documents → done.
 
+### Selective Documentation Update Rule
+
+**⚡ @docs updates ONLY the documentation files affected by the current change — NOT all docs for every input.**
+
+| Always Updated | Conditionally Updated | Never Touched (if unrelated) |
+|---|---|---|
+| `memory-bank/activecontext.md` | Docs in the change's scope (see CLAUDE.md Impact Matrix) | Docs for unrelated features/modules |
+
+Refer to the **Documentation Impact Matrix** in `CLAUDE.md` → "Selective Documentation Update Protocol" for the full mapping of change types to affected docs.
+
 ---
 
 ## Memory Bank
