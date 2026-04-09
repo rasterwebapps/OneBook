@@ -171,5 +171,5 @@ Feature: Payment Register
 | TRD | [TR-008](../../business/TRD.md#tr-008-payment-processing-pipeline) |
 | RTM | [RTM Row REQ-011](../RTM.md) |
 | User Stories | [US-021](../../business/user-stories.md) |
-| Agent Owner | [@LedgerExpert](../../../.github/agents/ledger-expert.md) |
+| Agent Owner | [@backend](../../../.github/agents/backend.agent.md) |
 | Migration | `V11__payment_processing.sql` |

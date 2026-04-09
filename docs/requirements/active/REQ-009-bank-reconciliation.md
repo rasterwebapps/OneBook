@@ -149,5 +149,5 @@ Feature: Bank Reconciliation
 | TRD | [TR-005](../../business/TRD.md#6-tr-005-double-entry-validation) |
 | RTM | [RTM Row REQ-009](../RTM.md) |
 | User Stories | [US-009](../../business/user-stories.md) |
-| Agent Owner | [@LedgerExpert](../../../.github/agents/ledger-expert.md) |
+| Agent Owner | [@backend](../../../.github/agents/backend.agent.md) |
 | Migration | `V7__reporting_compliance_far.sql` |

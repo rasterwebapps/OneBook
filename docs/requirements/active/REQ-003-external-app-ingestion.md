@@ -227,5 +227,5 @@ Feature: External App Ingestion Pipeline
 | TRD | [TR-006](../../business/TRD.md#7-tr-006-pluggable-adapter-pattern) |
 | RTM | [RTM Row REQ-003](../RTM.md) |
 | User Stories | [US-016](../../business/user-stories.md) |
-| Agent Owner | [@IntegrationBot](../../../.github/agents/integration-bot.md) |
+| Agent Owner | [@backend](../../../.github/agents/backend.agent.md) |
 | Migration | `V6__ingestion_layer.sql` |

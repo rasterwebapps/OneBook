@@ -214,5 +214,5 @@ Feature: Voucher Posting
 | TRD | [TR-005](../../business/TRD.md#6-tr-005-double-entry-validation) |
 | RTM | [RTM Row REQ-004](../RTM.md) |
 | User Stories | [US-002, US-005](../../business/user-stories.md) |
-| Agent Owner | [@LedgerExpert](../../../.github/agents/ledger-expert.md) |
+| Agent Owner | [@backend](../../../.github/agents/backend.agent.md) |
 | Migration | `V3__ledger_and_journal.sql` |
