@@ -36,8 +36,8 @@ You are the **Security Review Team** in the traditional SDLC. You receive assign
 - Security sections of `application.yml`
 
 ### Domain Knowledge Consolidated From
-- @SecurityWarden — Encryption, blind indexes, audit trails, RLS
-- @AuditAgent — Security audit checks, production readiness
+- Encryption, blind indexes, audit trails, RLS (from legacy @SecurityWarden)
+- Security audit checks, production readiness (from legacy @AuditAgent)
 
 ### Key Services
 - `FieldEncryptionService.java` — AES-256-GCM encrypt/decrypt
@@ -47,6 +47,12 @@ You are the **Security Review Team** in the traditional SDLC. You receive assign
 - `EncryptedStringConverter.java` — JPA converter for transparent encryption
 - `SecurityAuditService.java` — 5 automated security checks
 - `AuditorPortalService.java` — Read-only auditor access
+- `DocumentVaultService.java` — Encrypted document storage
+
+### Controllers
+- `SecurityAuditController` — Security audit endpoints
+- `AuditorPortalController` — Read-only auditor portal
+- `DocumentVaultController` — Encrypted document management
 
 ---
 
@@ -110,8 +116,64 @@ You are the **Security Review Team** in the traditional SDLC. You receive assign
 
 ---
 
+## Domain Knowledge Reference
+
+### "Blind DBA" Security Model (Defense in Depth)
+Even a DBA with full PostgreSQL access cannot read sensitive data:
+1. **Application-layer encryption** — `FieldEncryptionService` (AES-256-GCM)
+2. **Database-layer isolation** — RLS policies per tenant
+3. **Tamper detection** — Hash-chained audit log
+
+### Key Management Hierarchy
+```
+Master Key (env variable ENCRYPTION_MASTER_KEY)
+    ↓ Encrypts
+Data Encryption Keys (DEKs) — stored encrypted in DB
+    ↓ Encrypts
+Sensitive Field Values
+```
+
+**Key Rotation Strategy:**
+1. Generate new DEK with incremented version
+2. Encrypt new data with new DEK
+3. Old data remains encrypted with old DEK (lazy re-encryption on write)
+4. Version byte in ciphertext determines which DEK to use for decryption
+
+### Encrypted Field Schema Pattern
+```sql
+-- Encrypted field: TEXT column stores Base64 ciphertext
+party_name_encrypted TEXT NOT NULL,
+-- Blind index: VARCHAR(64) stores HMAC-SHA256 hash for searching
+party_name_blind_index VARCHAR(64) NOT NULL,
+-- Unique constraint prevents duplicates without decryption
+CONSTRAINT uq_tenant_blind_index UNIQUE (tenant_id, party_name_blind_index)
+```
+
+**JPA Entity:**
+```java
+@Convert(converter = EncryptedStringConverter.class)
+@Column(name = "party_name_encrypted", columnDefinition = "TEXT")
+private String partyName;  // Transparent encrypt/decrypt
+
+@Column(name = "party_name_blind_index")
+private String partyNameBlindIndex;  // For searching
+```
+
+### Auditor Portal Security
+- Only `GET` endpoints — auditors CANNOT modify data (no POST/PUT/DELETE)
+- Log ALL auditor access for compliance
+- Verify auditor authorization on every request
+
+### 5 Automated Security Checks
+1. RLS enabled on all tenant-scoped tables
+2. Encrypted fields have corresponding blind indexes
+3. Audit chain hash verification passes
+4. No hardcoded secrets in configuration files
+5. CORS not set to `*` in production
+
+---
+
 ## References
 
 - Read `memory-bank/systempatterns.md` for Blind DBA model and encryption patterns
-- Consult legacy agent docs: `security-warden.md`, `audit-agent.md`
 - NIST SP 800-38D (AES-GCM), NIST SP 800-57 (Key Management)

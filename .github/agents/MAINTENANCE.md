@@ -41,27 +41,27 @@ flowchart TD
 
 | Service Type | Owner Agent | File |
 |-------------|-------------|------|
-| Core accounting (Journal, Ledger, TrialBalance, etc.) | @LedgerExpert | `ledger-expert.md` |
-| Financial reports (P&L, BalanceSheet, CashFlow) | @LedgerExpert | `ledger-expert.md` |
-| Fixed Asset Register | @LedgerExpert | `ledger-expert.md` |
-| Multi-currency, Export, Credit Management | @LedgerExpert | `ledger-expert.md` |
-| Cheque Management, Payments | @LedgerExpert | `ledger-expert.md` |
-| Encryption, Blind Index, KeyManagement, AuditLog | @SecurityWarden | `security-warden.md` |
-| Document Vault (encrypted storage) | @SecurityWarden | `security-warden.md` |
-| Warm Cache | @PerfEngineer | `perf-engineer.md` |
-| Ingestion adapters (HL7, ISO20022, DMS, Webhook) | @IntegrationBot | `integration-bot.md` |
-| OCR, 3-Way Matching, Corporate Card sync | @IntegrationBot | `integration-bot.md` |
-| Inventory (Stock, Batch, BOM, Reorder) | @IntegrationBot | `integration-bot.md` |
-| Payroll integration | @IntegrationBot | `integration-bot.md` |
-| Forecasting, MarkToMarket, CorporateAction | @AIEngineer | `ai-engineer.md` |
-| Scenario Modeling, MarketSentiment | @AIEngineer | `ai-engineer.md` |
-| Anomaly Detection, DigitalAsset | @AIEngineer | `ai-engineer.md` |
-| Compliance, TDS/TCS, FeatureEntitlement | @ComplianceAgent | `compliance-agent.md` |
-| BankReconciliation, Intercompany | @ComplianceAgent | `compliance-agent.md` |
-| TenantLocale | @ComplianceAgent | `compliance-agent.md` |
-| AuditorPortal, SecurityAudit, Observability | @AuditAgent | `audit-agent.md` |
-| DisasterRecovery | @AuditAgent | `audit-agent.md` |
-| WhatsApp notifications | @IntegrationBot | `integration-bot.md` |
+| Core accounting (Journal, Ledger, TrialBalance, etc.) | @backend | `backend.agent.md` |
+| Financial reports (P&L, BalanceSheet, CashFlow) | @backend | `backend.agent.md` |
+| Fixed Asset Register | @backend | `backend.agent.md` |
+| Multi-currency, Export, Credit Management | @backend | `backend.agent.md` |
+| Cheque Management, Payments | @backend | `backend.agent.md` |
+| Encryption, Blind Index, KeyManagement, AuditLog | @security | `security.agent.md` |
+| Document Vault (encrypted storage) | @security | `security.agent.md` |
+| Warm Cache | @infra | `infra.agent.md` |
+| Ingestion adapters (HL7, ISO20022, DMS, Webhook) | @backend | `backend.agent.md` |
+| OCR, 3-Way Matching, Corporate Card sync | @backend | `backend.agent.md` |
+| Inventory (Stock, Batch, BOM, Reorder) | @backend | `backend.agent.md` |
+| Payroll integration | @backend | `backend.agent.md` |
+| Forecasting, MarkToMarket, CorporateAction | @backend | `backend.agent.md` |
+| Scenario Modeling, MarketSentiment | @backend | `backend.agent.md` |
+| Anomaly Detection, DigitalAsset | @backend | `backend.agent.md` |
+| Compliance, TDS/TCS, FeatureEntitlement | @backend | `backend.agent.md` |
+| BankReconciliation, Intercompany | @backend | `backend.agent.md` |
+| TenantLocale | @backend | `backend.agent.md` |
+| AuditorPortal, SecurityAudit, Observability | @security | `security.agent.md` |
+| DisasterRecovery | @infra | `infra.agent.md` |
+| WhatsApp notifications | @backend | `backend.agent.md` |
 
 ### Backend Controllers (`backend/src/main/java/com/nexus/onebook/ledger/controller/`)
 
@@ -71,36 +71,36 @@ Controllers follow the same ownership as their corresponding services. Add the c
 
 | Module | Owner Agent | File |
 |--------|-------------|------|
-| `keyboard/` | @UXSpecialist | `ux-specialist.md` |
-| `i18n/` | @UXSpecialist | `ux-specialist.md` |
-| `accounting/` | @UXSpecialist (UI), @LedgerExpert (data contracts) | `ux-specialist.md` |
-| `banking/` | @UXSpecialist | `ux-specialist.md` |
-| `dashboard/` | @UXSpecialist | `ux-specialist.md` |
-| `gst/` | @UXSpecialist (UI), @ComplianceAgent (tax logic) | `ux-specialist.md` |
-| `inventory/` | @UXSpecialist | `ux-specialist.md` |
-| `master/` | @UXSpecialist | `ux-specialist.md` |
-| `reports/` | @UXSpecialist (UI), @LedgerExpert (report logic) | `ux-specialist.md` |
-| `receivable/` | @UXSpecialist (UI), @LedgerExpert (data contracts) | `ux-specialist.md` |
-| `market/` | @UXSpecialist (UI), @AIEngineer (data contracts) | Both files |
-| `ai/` | @UXSpecialist (UI), @AIEngineer (data contracts) | Both files |
-| `auditor/` | @UXSpecialist (UI), @AuditAgent (workflows) | Both files |
+| `keyboard/` | @frontend | `frontend.agent.md` |
+| `i18n/` | @frontend | `frontend.agent.md` |
+| `accounting/` | @frontend (UI), @backend (data contracts) | `frontend.agent.md` |
+| `banking/` | @frontend | `frontend.agent.md` |
+| `dashboard/` | @frontend | `frontend.agent.md` |
+| `gst/` | @frontend (UI), @backend (tax logic) | `frontend.agent.md` |
+| `inventory/` | @frontend | `frontend.agent.md` |
+| `master/` | @frontend | `frontend.agent.md` |
+| `reports/` | @frontend (UI), @backend (report logic) | `frontend.agent.md` |
+| `receivable/` | @frontend (UI), @backend (data contracts) | `frontend.agent.md` |
+| `market/` | @frontend (UI), @backend (data contracts) | Both files |
+| `ai/` | @frontend (UI), @backend (data contracts) | Both files |
+| `auditor/` | @frontend (UI), @security (workflows) | Both files |
 
-**Note**: Frontend modules are primarily owned by @UXSpecialist for UI patterns and component structure. Other agents own the data contracts and business logic.
+**Note**: Frontend modules are primarily owned by @frontend for UI patterns and component structure. @backend owns the data contracts and business logic.
 
 ### Database Migrations (`backend/src/main/resources/db/migration/`)
 
 | Migration | Owner Agent | File |
 |-----------|-------------|------|
-| V1__rls_infrastructure.sql | @SecurityWarden | `security-warden.md` |
-| V2__organizational_hierarchy.sql | @LedgerExpert | `ledger-expert.md` |
-| V3__ledger_and_journal.sql | @LedgerExpert | `ledger-expert.md` |
-| V4__seed_data.sql | @LedgerExpert | `ledger-expert.md` |
-| V5__blind_dba_infrastructure.sql | @SecurityWarden | `security-warden.md` |
-| V6__ingestion_layer.sql | @IntegrationBot | `integration-bot.md` |
-| V7__reporting_compliance_far.sql | @LedgerExpert + @ComplianceAgent | Both files |
-| V8__ai_intelligence_features.sql | @AIEngineer | `ai-engineer.md` |
-| V9__hardening_audit_production.sql | @AuditAgent | `audit-agent.md` |
-| V10__tally_features.sql | @LedgerExpert (primary) | `ledger-expert.md` |
+| V1__rls_infrastructure.sql | @security | `security.agent.md` |
+| V2__organizational_hierarchy.sql | @backend | `backend.agent.md` |
+| V3__ledger_and_journal.sql | @backend | `backend.agent.md` |
+| V4__seed_data.sql | @backend | `backend.agent.md` |
+| V5__blind_dba_infrastructure.sql | @security | `security.agent.md` |
+| V6__ingestion_layer.sql | @backend | `backend.agent.md` |
+| V7__reporting_compliance_far.sql | @backend + @backend | `backend.agent.md` |
+| V8__ai_intelligence_features.sql | @backend | `backend.agent.md` |
+| V9__hardening_audit_production.sql | @security | `security.agent.md` |
+| V10__tally_features.sql | @backend (primary) | `backend.agent.md` |
 
 ## How to Update Agent Files
 
@@ -122,12 +122,12 @@ Controllers follow the same ownership as their corresponding services. Add the c
 
 ### When Adding a New Frontend Module
 
-1. **UI ownership**: @UXSpecialist owns ALL frontend module UI and component structure
-2. **Data contracts**: The domain agent (e.g., @LedgerExpert, @AIEngineer) owns business logic
+1. **UI ownership**: @frontend owns ALL frontend module UI and component structure
+2. **Data contracts**: The backend agent (e.g., @backend) owns business logic
 3. **Update process**:
-   - Add module to `ux-specialist.md` under `#### Frontend - Business Modules`
-   - Add collaboration note: `(collaborates with @DomainAgent for data contracts)`
-   - If data contracts are complex, also add to the domain agent's `Frontend` section
+   - Add module to `frontend.agent.md` under the Scope section
+   - Add collaboration note: `(collaborates with @backend for data contracts)`
+   - If data contracts are complex, also add to `backend.agent.md`
 
 ### When Adding a New Database Migration
 
@@ -137,10 +137,10 @@ Controllers follow the same ownership as their corresponding services. Add the c
 
 ### When Adding New Documentation
 
-1. Technical documentation owned by @DocAgent
-2. API docs → @LedgerExpert (or relevant domain agent)
-3. Architecture docs → @Architect
-4. Security docs → @SecurityWarden
+1. Technical documentation owned by @docs
+2. API docs → @backend (or relevant domain agent)
+3. Architecture docs → @infra
+4. Security docs → @security
 
 ## Validation
 
@@ -194,9 +194,9 @@ When adding new code to OneBook, follow this checklist:
 **New file**: `backend/src/main/java/com/nexus/onebook/ledger/service/SentimentAnalysisService.java`
 
 **Steps:**
-1. Domain: AI/Intelligence → Owner: @AIEngineer
-2. Open `.github/agents/ai-engineer.md`
-3. Find `#### Backend - AI Services` section
+1. Domain: AI/Intelligence → Owner: @backend
+2. Open `.github/agents/backend.agent.md`
+3. Find the `### What You Own` section
 4. Add: `- SentimentAnalysisService.java - Social media sentiment analysis for market trends`
 5. Also add corresponding controller if created
 6. Run validation script
@@ -207,14 +207,14 @@ When adding new code to OneBook, follow this checklist:
 **New directory**: `frontend/src/app/procurement/`
 
 **Steps:**
-1. UI Domain: Frontend → Owner: @UXSpecialist
-2. Business Domain: Procurement → Likely @IntegrationBot (supply chain) or @LedgerExpert (accounts payable)
-3. Open `.github/agents/ux-specialist.md`
-4. Under `#### Frontend - Business Modules`, add:
+1. UI Domain: Frontend → Owner: @frontend
+2. Business Domain: Procurement → Likely @backend (supply chain or accounts payable)
+3. Open `.github/agents/frontend.agent.md`
+4. Under the Module Structure section, add:
    ```
-   - `frontend/src/app/procurement/` - Procurement and purchase order management (collaborates with @LedgerExpert for AP integration)
+   - `frontend/src/app/procurement/` - Procurement and purchase order management (collaborates with @backend for AP integration)
    ```
-5. If significant business logic, also add to @LedgerExpert or @IntegrationBot file
+5. If significant business logic, also add to `backend.agent.md`
 6. Run validation script
 7. Commit changes
 
@@ -224,8 +224,8 @@ When adding new code to OneBook, follow this checklist:
 
 **Steps:**
 1. Review migration content to identify domain (e.g., project costing → accounting)
-2. Owner: @LedgerExpert
-3. Open `.github/agents/ledger-expert.md`
+2. Owner: @backend
+3. Open `.github/agents/backend.agent.md`
 4. Under `#### Database Migrations`, add:
    ```
    - `backend/src/main/resources/db/migration/V11__project_costing.sql` - Project costing and job tracking tables
@@ -248,14 +248,13 @@ When adding new code to OneBook, follow this checklist:
 ### Not Sure Which Agent Owns New Code
 
 **Solution**:
-1. Review `sub-agents.md` for agent responsibilities
-2. Check `INDEX.md` for quick reference
-3. Look at similar existing code to see which agent owns it
-4. If still unclear, default to:
-   - Core accounting → @LedgerExpert
-   - External integrations → @IntegrationBot
-   - Frontend UI → @UXSpecialist
-   - Security/encryption → @SecurityWarden
+1. Review `INDEX.md` for quick reference
+2. Look at similar existing code to see which agent owns it
+3. If still unclear, default to:
+   - Core accounting → @backend
+   - External integrations → @backend
+   - Frontend UI → @frontend
+   - Security/encryption → @security
 
 ### Cross-Cutting Concerns
 
@@ -266,8 +265,8 @@ When adding new code to OneBook, follow this checklist:
 2. Document in primary owner's file with full details
 3. Add **collaboration notes** in other agents' files
 4. Example: Market valuation UI
-   - Primary: @AIEngineer (owns the valuation logic)
-   - Secondary: @UXSpecialist (owns the UI)
+   - Primary: @backend (owns the valuation logic)
+   - Secondary: @frontend (owns the UI)
    - Both files mention the module with collaboration notes
 
 ## Best Practices
@@ -286,12 +285,11 @@ Potential improvements to make ownership tracking even more automatic:
 1. **Pre-commit hook**: Run validation automatically before each commit
 2. **PR validation**: GitHub Action that comments on PRs with missing ownership
 3. **Auto-suggest ownership**: Script that analyzes new files and suggests which agent based on patterns
-4. **Ownership badges**: Add ownership comments in code files themselves (e.g., `@owner @LedgerExpert`)
+4. **Ownership badges**: Add ownership comments in code files themselves (e.g., `@owner @backend`)
 5. **Ownership dashboard**: Web UI showing ownership coverage and gaps
 
 ## Related Documentation
 
-- [Sub-Agent Architecture](../../sub-agents.md) - Overview of all 10 agents
 - [Agent Instructions README](./README.md) - How to use agent instructions
 - [Design Requirements Index](./INDEX.md) - Quick reference by category
 - [Validation Script](../scripts/validate-agent-ownership.sh) - Automated ownership checker
@@ -299,4 +297,4 @@ Potential improvements to make ownership tracking even more automatic:
 ---
 
 **Last Updated:** 2026-03-13  
-**Maintained By:** @DocAgent
+**Maintained By:** @docs
