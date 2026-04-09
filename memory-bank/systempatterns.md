@@ -124,6 +124,30 @@ After a milestone completes, summarize final state and clear subagent history.
 
 ---
 
+## Selective Documentation Update Protocol
+
+**Principle:** Documentation updates MUST be targeted and proportional to the change made. Update ONLY the docs affected by the current task — never blindly update all docs.
+
+### Key Rules
+1. **`activecontext.md` is ALWAYS updated** — the one universal constant on every task
+2. **Other docs are conditional** — update only when the change directly affects their content
+3. **Use the Impact Matrix** in `CLAUDE.md` to map change types → affected docs
+4. **Auto-generated docs** (`BRD.md`, `FRD.md`, `TRD.md`, `RTM.md`) — run only the specific generator for the affected doc, not `generate-all`
+
+### Decision Flow for @docs Agent
+```
+@partner completes phases → @docs receives change summary
+  → Identify change type (bug fix? new feature? schema change? UI change?)
+  → Consult Documentation Impact Matrix in CLAUDE.md
+  → Update ONLY docs in the "ALWAYS Update" + applicable "CONDITIONALLY Update" columns
+  → Skip everything in "NEVER Touch" column
+  → Run `npm run validate` in docs/automation/ to verify consistency
+```
+
+**Why:** Prevents unnecessary doc regeneration, reduces token usage, avoids introducing errors into unrelated docs, and speeds up the SDLC workflow.
+
+---
+
 ## Requirement Lifecycle Management
 
 ### @RequirementsAnalyzer Orchestration Protocol

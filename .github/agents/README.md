@@ -1,6 +1,6 @@
-# OneBook Sub-Agent Instructions
+# OneBook Agent System
 
-This directory contains instruction files for specialist sub-agents designed to manage context, enforce domain boundaries, and maintain engineering quality across the Nexus Universal platform.
+This directory contains two tiers of agent files for the OneBook SDLC automation system.
 
 ## Memory Bank Integration
 
@@ -13,34 +13,110 @@ It provides accumulated project intelligence, current state, and navigation to a
 3. `memory-bank/systempatterns.md` — if new patterns were established
 4. `memory-bank/troubleshooting.md` — if bugs were found and fixed
 
-## Purpose
+---
 
-Each agent instruction file provides:
-- **Scope**: Which files, modules, and milestones the agent owns
-- **Responsibilities**: What the agent is accountable for
-- **Design Patterns**: Architectural patterns, conventions, and standards to follow
-- **Best Practices**: Do's and don'ts specific to the agent's domain
-- **References**: Links to relevant documentation and examples
+## Tier 1: Invocable Copilot Agents (`.agent.md`)
 
-## Available Agents
+These are real GitHub Copilot agents that can be invoked via `@` in chat. Users should ONLY invoke `@partner`.
 
-| Agent | File | Domain | Milestones |
-|-------|------|--------|-----------|
-| 🎯 @RequirementsAnalyzer | `requirements-analyzer.md` | Requirement Orchestration | All (Master Coordinator) |
-| 🏗️ @Architect | `architect.md` | Foundation & Infrastructure | M1, M9 |
-| 📒 @LedgerExpert | `ledger-expert.md` | Accounting Engine | M2, M7, M10 |
-| 🔐 @SecurityWarden | `security-warden.md` | Zero-Knowledge Security | M3, M10 |
-| ⚡ @PerfEngineer | `perf-engineer.md` | Performance & Caching | M4 |
-| 🎹 @UXSpecialist | `ux-specialist.md` | Frontend & Keyboard Nav | M5, M7 |
-| 🔌 @IntegrationBot | `integration-bot.md` | Ingestion & Adapters | M6 |
-| 🧠 @AIEngineer | `ai-engineer.md` | Intelligence & Forecasting | M8 |
-| 📋 @ComplianceAgent | `compliance-agent.md` | Tax & Regulatory | M7, M10 |
-| 🛡️ @AuditAgent | `audit-agent.md` | Auditor Portal & Production | M10 |
-| 📝 @DocAgent | `doc-agent.md` | Documentation Management | M9, Cross-cutting |
+| Agent | File | Role | SDLC Mapping |
+|-------|------|------|-------------|
+| 🤝 **@partner** | `partner.agent.md` | **Head Orchestrator** — the ONLY agent users invoke | Business Analyst + Project Manager + Team Lead |
+| 📒 @backend | `backend.agent.md` | Backend development (Java/Spring Boot) | Backend Dev Team |
+| 🎹 @frontend | `frontend.agent.md` | Frontend development (Angular) | Frontend Dev Team |
+| 🗄️ @database | `database.agent.md` | Database design (PostgreSQL/Flyway) | DB Design Team |
+| 🔐 @security | `security.agent.md` | Security (encryption, RLS, audit) | Security Review Team |
+| 🏗️ @infra | `infra.agent.md` | Infrastructure (Docker, CI/CD, Redis) | DevOps Team |
+| 📝 @docs | `docs.agent.md` | Documentation & memory bank | BA Documentation Phase |
+| ✅ @quality | `quality.agent.md` | Testing & quality gates | Testing Team |
 
-## Master Coordinator: @RequirementsAnalyzer
+### SDLC Workflow (Agile with Feedback Loops)
 
-**@RequirementsAnalyzer** is the entry point for all new requirements. It receives, classifies, and orchestrates every requirement through the full A-Z lifecycle — from raw business request to production deployment.
+```
+User → @partner (analyzes requirement)
+  │
+  ├── Phase 1: @database (schema design)
+  ├── Phase 2: @backend (services, controllers, DTOs)
+  ├── Phase 3: @frontend (components, routes)
+  ├── Phase 4: @security (encryption, RLS, auth)
+  │
+  ├── FEEDBACK LOOP: @partner validates each phase output
+  │   └── Issues? → Route back to responsible agent → Fix → Re-validate
+  │
+  ├── Phase 5: @quality (testing, quality gates)
+  │   └── Failures? → Route back to responsible agent → Fix → Re-test
+  │
+  └── Phase 6: @docs (documentation, memory bank update)
+      └── Final status report to user
+```
+
+### Global Instructions
+
+`.github/copilot-instructions.md` — Cross-cutting rules injected into ALL Copilot interactions.
+
+---
+
+## Tier 2: Knowledge Base (Legacy `.md`)
+
+These are detailed domain knowledge files that Tier 1 agents reference for patterns and conventions. They are NOT directly invocable as Copilot agents.
+
+| Knowledge Source | File | Referenced By |
+|-----------------|------|---------------|
+| 🎯 Requirements Orchestration | `requirements-analyzer.md` | @partner |
+| 🏗️ Architecture Patterns | `architect.md` | @infra |
+| 📒 Accounting Engine | `ledger-expert.md` | @backend |
+| 🔐 Security Patterns | `security-warden.md` | @security |
+| ⚡ Performance Patterns | `perf-engineer.md` | @infra, @backend |
+| 🎹 UX Patterns | `ux-specialist.md` | @frontend |
+| 🔌 Integration Patterns | `integration-bot.md` | @backend |
+| 🧠 AI Patterns | `ai-engineer.md` | @backend |
+| 📋 Compliance Patterns | `compliance-agent.md` | @backend |
+| 🛡️ Audit Patterns | `audit-agent.md` | @security |
+| 📝 Doc Patterns | `doc-agent.md` | @docs |
+
+---
+
+## How It Works: SDLC with Agile Feedback Loops
+
+### Traditional SDLC → Agent Mapping
+
+| Step | Traditional Role | Agent |
+|------|-----------------|-------|
+| 1 | Client explains requirement | User types `@partner` |
+| 2 | BA studies project, creates document | @partner reads memory bank, creates REQ doc |
+| 3 | PM discusses with Team Lead | @partner plans phases and agent assignments |
+| 4.1 | DB team designs schema | @partner delegates to @database |
+| 4.2 | Backend team implements | @partner delegates to @backend |
+| 4.3 | Frontend team implements | @partner delegates to @frontend |
+| 5 | Team updates PM | Each agent reports completion to @partner |
+| 6 | BA documents status | @partner tracks in requirement document |
+| 7 | Testing team tests + reports | @partner invokes @quality → feedback loop |
+| 8 | Business team gets delivery | @partner presents final status report |
+
+### Feedback Loop Protocol (Agile Sprint)
+
+```
+Agent completes phase
+  → @partner reviews output
+  → Issues found? 
+    → YES: @partner sends specific feedback → Agent fixes → @partner re-reviews
+    → NO: Phase approved → Next phase begins
+  → After all phases: @quality runs full test suite
+  → Test failures? → Route back to responsible agent → Fix → Re-test
+  → All green: @docs updates documentation → Delivery
+```
+
+### Inter-Agent Communication
+
+Agents communicate through:
+1. **@partner orchestration** — @partner delegates and collects results
+2. **Shared memory bank** — All agents read/write `memory-bank/` files
+3. **CLAUDE.md** — Common project knowledge base read by all agents
+4. **copilot-instructions.md** — Global rules injected into every interaction
+
+## Master Coordinator: @partner
+
+**@partner** is the entry point for ALL work on OneBook. It receives, classifies, and orchestrates every requirement through the complete SDLC lifecycle.
 
 **How it works with other agents:**
 1. @RequirementsAnalyzer **classifies** each requirement using the Domain Classification Matrix

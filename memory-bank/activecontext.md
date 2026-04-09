@@ -7,33 +7,29 @@
 
 ## Current Status
 
-**Date:** 2026-04-04  
-**Phase:** Quality Gate Automation  
+**Date:** 2026-04-09  
+**Phase:** SDLC Agent System Implementation  
 **Milestones:** ✅ M1–M10 Complete | 🔄 M11 In Progress | 📝 M12 Draft
 
 ---
 
 ## Recent Changes (Latest Session)
 
-### Automated Quality Gate Enforcement (2026-04-04)
-- **NEW: `.github/scripts/validate-quality-gates.sh`** — 8-gate CI validation that catches ALL commonly skipped steps:
-  1. Memory bank freshness (stale test counts, missing modules, migration lists)
-  2. RLS policy coverage (regression detection against baseline)
-  3. DTO enforcement (no JPA entities in controller returns — regression detection)
-  4. Backend test coverage (every new Service must have a Test file)
-  5. Flyway migration conventions (naming, TIMESTAMPTZ)
-  6. Frontend test coverage (every new component must have a .spec.ts)
-  7. i18n enforcement (no new hardcoded strings in templates)
-  8. BigDecimal enforcement (no double/float for monetary fields)
-- **NEW: `.github/scripts/sync-memory-bank.sh`** — Auto-detects and fixes stale values in memory bank files. `--check` mode for validation, `--fix` mode for auto-correction.
-- **NEW: `.github/scripts/quality-gate-baselines.conf`** — Tracks pre-existing violation counts (125 DTO, 5 RLS, 3 missing tests, 8 missing specs, 1 i18n). Only NEW violations fail CI.
-- **CI updated:** `ci.yml` now has 5 jobs: validate-ownership, validate-quality-gates, sync-memory-bank (auto-commit on main), backend build, frontend build.
-- **Memory bank fixed:** techcontext.md test count 405→489, module count 11→15, added auth/master/payable/reports modules, systempatterns.md baseline updated.
-- **CLAUDE.md updated:** Added automation references, quality gate table, updated file map.
+### Selective Documentation Update Strategy Implementation (2026-04-09)
+- **UPDATED: `CLAUDE.md`** — Added full "Selective Documentation Update Protocol" section with:
+  - Documentation Impact Matrix (11 change types → which docs to update/skip)
+  - Decision flow for @docs agent (how to determine what needs updating)
+  - Auto-generated docs guidance (run specific generators, not `generate-all`)
+  - Three concrete examples (bug fix, new feature, keyboard shortcut)
+- **UPDATED: `.github/copilot-instructions.md`** — Added "Selective Documentation Update Rule" to global Agent System section. All agents now see the rule that @docs updates ONLY affected docs.
+- **UPDATED: `memory-bank/systempatterns.md`** — Added "Selective Documentation Update Protocol" pattern with decision flow, key rules, and rationale.
+- **UPDATED: `memory-bank/activecontext.md`** — This file, recording the session changes.
 
-### Previous Session: Requirements & Milestones Restructuring (2026-04-04)
-- Added M11/M12 milestone definitions to docs/milestones.md
-- Auto-generated docs regenerated (14 requirements, 0 errors)
+**Strategy summary:** When @partner delegates to @docs in Phase 6, the @docs agent consults the Documentation Impact Matrix to determine which files to update. `activecontext.md` is always updated. All other docs are only touched if the current change directly affects their content. This prevents unnecessary doc regeneration, reduces errors, and speeds up the SDLC workflow.
+
+### Previous Session: Automated Quality Gate Enforcement (2026-04-04)
+- Added validate-quality-gates.sh (8 gates), sync-memory-bank.sh, quality-gate-baselines.conf
+- CI updated with 5 jobs: validate-ownership, validate-quality-gates, sync-memory-bank, backend, frontend
 
 ---
 
