@@ -80,23 +80,36 @@ docker compose up -d
 
 ---
 
-## Sub-Agent Directory
+## Agent System — SDLC with Agile Feedback Loops
 
-10 specialist agents defined in `.github/agents/`:
+### Tier 1: Invocable Copilot Agents (`.agent.md`)
 
-| Agent | File | Domain |
-|-------|------|--------|
-| 🏗️ @Architect | `architect.md` | Foundation, infra, CI/CD |
-| 📒 @LedgerExpert | `ledger-expert.md` | Accounting engine, reports |
-| 🔐 @SecurityWarden | `security-warden.md` | Encryption, RLS, audit |
-| ⚡ @PerfEngineer | `perf-engineer.md` | Redis cache, performance |
-| 🎹 @UXSpecialist | `ux-specialist.md` | Angular Signals, keyboard nav |
-| 🔌 @IntegrationBot | `integration-bot.md` | Adapters, ingestion pipeline |
-| 🧠 @AIEngineer | `ai-engineer.md` | Forecasting, MTM, anomaly |
-| 📋 @ComplianceAgent | `compliance-agent.md` | Tax, GST, reconciliation |
-| 🛡️ @AuditAgent | `audit-agent.md` | Auditor portal, production |
-| 📝 @DocAgent | `doc-agent.md` | Documentation maintenance |
+Users invoke ONLY `@partner`. It orchestrates all other agents.
 
+| Agent | File | SDLC Role |
+|-------|------|-----------|
+| 🤝 **@partner** | `partner.agent.md` | Head Orchestrator (BA + PM + Team Lead) |
+| 📒 @backend | `backend.agent.md` | Backend Dev Team |
+| 🎹 @frontend | `frontend.agent.md` | Frontend Dev Team |
+| 🗄️ @database | `database.agent.md` | DB Design Team |
+| 🔐 @security | `security.agent.md` | Security Review Team |
+| 🏗️ @infra | `infra.agent.md` | DevOps Team |
+| 📝 @docs | `docs.agent.md` | BA Documentation Phase |
+| ✅ @quality | `quality.agent.md` | Testing Team |
+
+**Global rules:** `.github/copilot-instructions.md` (injected into ALL Copilot interactions)
+
+### Tier 2: Knowledge Base (Legacy `.md`)
+
+11 detailed domain knowledge files referenced by Tier 1 agents. Not directly invocable.
+
+### Workflow
+```
+User → @partner → @database → @backend → @frontend → @security → @quality → @docs → done
+                  ↑___ feedback loops: @partner validates each phase, routes issues back ___↓
+```
+
+→ See `.github/agents/README.md` for full SDLC workflow details.
 → See `.github/agents/INDEX.md` for design requirements by category.
 
 ---
@@ -129,10 +142,20 @@ OneBook/
 ├── CONTRIBUTING.md                    ← Branching, PR, coding standards
 ├── docker-compose.yml                 ← Full-stack orchestration (7 services)
 ├── .github/
-│   ├── agents/                        ← Agent instruction files (10 agents)
+│   ├── copilot-instructions.md        ← Global rules for ALL Copilot interactions
+│   ├── agents/                        ← SDLC agent system
+│   │   ├── partner.agent.md           ← 🤝 @partner — Head orchestrator (ONLY user-facing agent)
+│   │   ├── backend.agent.md           ← 📒 @backend — Backend dev (Java/Spring Boot)
+│   │   ├── frontend.agent.md          ← 🎹 @frontend — Frontend dev (Angular)
+│   │   ├── database.agent.md          ← 🗄️ @database — DB design (PostgreSQL/Flyway)
+│   │   ├── security.agent.md          ← 🔐 @security — Security (encryption, RLS)
+│   │   ├── infra.agent.md             ← 🏗️ @infra — Infrastructure (Docker, CI/CD)
+│   │   ├── docs.agent.md              ← 📝 @docs — Documentation & memory bank
+│   │   ├── quality.agent.md           ← ✅ @quality — Testing & quality gates
 │   │   ├── INDEX.md                   ← Design requirements quick index
 │   │   ├── MAINTENANCE.md             ← Agent ownership maintenance guide
-│   │   └── *.md                       ← Individual agent files
+│   │   ├── README.md                  ← Agent system architecture & SDLC workflow
+│   │   └── *.md                       ← Legacy knowledge base files (11 domain experts)
 │   ├── scripts/
 │   │   ├── validate-agent-ownership.sh    ← Agent ownership validation
 │   │   ├── validate-quality-gates.sh      ← RLS, DTO, BigDecimal, test coverage, memory bank freshness

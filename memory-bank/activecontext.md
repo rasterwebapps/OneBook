@@ -7,33 +7,42 @@
 
 ## Current Status
 
-**Date:** 2026-04-04  
-**Phase:** Quality Gate Automation  
+**Date:** 2026-04-09  
+**Phase:** SDLC Agent System Implementation  
 **Milestones:** ✅ M1–M10 Complete | 🔄 M11 In Progress | 📝 M12 Draft
 
 ---
 
 ## Recent Changes (Latest Session)
 
-### Automated Quality Gate Enforcement (2026-04-04)
-- **NEW: `.github/scripts/validate-quality-gates.sh`** — 8-gate CI validation that catches ALL commonly skipped steps:
-  1. Memory bank freshness (stale test counts, missing modules, migration lists)
-  2. RLS policy coverage (regression detection against baseline)
-  3. DTO enforcement (no JPA entities in controller returns — regression detection)
-  4. Backend test coverage (every new Service must have a Test file)
-  5. Flyway migration conventions (naming, TIMESTAMPTZ)
-  6. Frontend test coverage (every new component must have a .spec.ts)
-  7. i18n enforcement (no new hardcoded strings in templates)
-  8. BigDecimal enforcement (no double/float for monetary fields)
-- **NEW: `.github/scripts/sync-memory-bank.sh`** — Auto-detects and fixes stale values in memory bank files. `--check` mode for validation, `--fix` mode for auto-correction.
-- **NEW: `.github/scripts/quality-gate-baselines.conf`** — Tracks pre-existing violation counts (125 DTO, 5 RLS, 3 missing tests, 8 missing specs, 1 i18n). Only NEW violations fail CI.
-- **CI updated:** `ci.yml` now has 5 jobs: validate-ownership, validate-quality-gates, sync-memory-bank (auto-commit on main), backend build, frontend build.
-- **Memory bank fixed:** techcontext.md test count 405→489, module count 11→15, added auth/master/payable/reports modules, systempatterns.md baseline updated.
-- **CLAUDE.md updated:** Added automation references, quality gate table, updated file map.
+### SDLC Agent System with @partner Orchestrator (2026-04-09)
+- **NEW: `.github/copilot-instructions.md`** — Global cross-cutting rules injected into ALL Copilot interactions (BigDecimal, tenantId, DTOs, naming conventions, build commands)
+- **NEW: `.github/agents/partner.agent.md`** — Head orchestrator agent (`@partner`). The ONLY agent users invoke. Combines BA + PM + Team Lead roles. Implements full SDLC workflow with Agile feedback loops.
+- **NEW: `.github/agents/backend.agent.md`** — Backend dev agent (`@backend`). Consolidates @LedgerExpert, @IntegrationBot, @AIEngineer, @ComplianceAgent, @PerfEngineer knowledge. Sub-task decomposition: Model → Repository → Service → Controller → Tests.
+- **NEW: `.github/agents/frontend.agent.md`** — Frontend dev agent (`@frontend`). Consolidates @UXSpecialist knowledge. Standalone Angular components, Signals, OnPush, i18n, keyboard navigation.
+- **NEW: `.github/agents/database.agent.md`** — DB design agent (`@database`). Schema design, RLS policies, Flyway migrations, NUMERIC(19,4), TIMESTAMPTZ conventions.
+- **NEW: `.github/agents/security.agent.md`** — Security agent (`@security`). AES-256-GCM, blind indexes, RLS, audit trails, Blind DBA model.
+- **NEW: `.github/agents/infra.agent.md`** — Infrastructure agent (`@infra`). Docker, CI/CD, Redis, Spring config.
+- **NEW: `.github/agents/docs.agent.md`** — Documentation agent (`@docs`). API docs, schema docs, memory bank, diagrams.
+- **NEW: `.github/agents/quality.agent.md`** — QA agent (`@quality`). 7-check testing protocol, regression detection, quality gates.
+- **UPDATED: `.github/agents/README.md`** — Rewritten with Tier 1 (invocable agents) and Tier 2 (knowledge base) architecture, SDLC mapping, feedback loop protocol.
+- **UPDATED: `.github/agents/INDEX.md`** — Added SDLC Agent System section with all 8 invocable agents.
+- **UPDATED: `CLAUDE.md`** — Agent System section updated with new Tier 1/Tier 2 architecture, file map updated with all new files.
+- **Existing `.md` files preserved** — All 11 legacy agent docs remain as knowledge base, referenced by Tier 1 agents.
 
-### Previous Session: Requirements & Milestones Restructuring (2026-04-04)
-- Added M11/M12 milestone definitions to docs/milestones.md
-- Auto-generated docs regenerated (14 requirements, 0 errors)
+### SDLC Workflow Implemented
+The agent system maps to a real-world SDLC with Agile feedback loops:
+1. User → @partner (requirement intake)
+2. @partner analyzes, classifies, plans phases
+3. @partner delegates to @database → @backend → @frontend → @security
+4. @partner validates each phase output (feedback loop)
+5. @quality runs full test suite (feedback loop on failures)
+6. @docs updates all documentation and memory bank
+7. @partner delivers final status report
+
+### Previous Session: Automated Quality Gate Enforcement (2026-04-04)
+- Added validate-quality-gates.sh (8 gates), sync-memory-bank.sh, quality-gate-baselines.conf
+- CI updated with 5 jobs: validate-ownership, validate-quality-gates, sync-memory-bank, backend, frontend
 
 ---
 

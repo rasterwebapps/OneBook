@@ -4,11 +4,39 @@ This index provides quick access to design requirements, patterns, and conventio
 
 ---
 
-## Requirement Orchestration
+## SDLC Agent System (Copilot Agents)
 
-**Owner:** @RequirementsAnalyzer (`requirements-analyzer.md`)
+**Head Orchestrator:** `@partner` (`partner.agent.md`)
 
-- Domain Classification Matrix (10 domains mapped to primary agents)
+Users invoke ONLY `@partner`. It orchestrates the full SDLC lifecycle with Agile feedback loops.
+
+| Invocable Agent | File | SDLC Role |
+|----------------|------|-----------|
+| 🤝 @partner | `partner.agent.md` | BA + PM + Team Lead (orchestrator) |
+| 📒 @backend | `backend.agent.md` | Backend Dev Team |
+| 🎹 @frontend | `frontend.agent.md` | Frontend Dev Team |
+| 🗄️ @database | `database.agent.md` | DB Design Team |
+| 🔐 @security | `security.agent.md` | Security Review Team |
+| 🏗️ @infra | `infra.agent.md` | DevOps Team |
+| 📝 @docs | `docs.agent.md` | BA Documentation Phase |
+| ✅ @quality | `quality.agent.md` | Testing Team |
+
+**Global Rules:** `.github/copilot-instructions.md` (injected into ALL Copilot interactions)
+
+**Workflow:** User → @partner → domain agents → @partner validates → @quality tests → @docs documents → done.
+
+**Feedback Loops:**
+- After every agent phase: @partner reviews → issues route back → fix → re-review
+- After all phases: @quality tests → failures route back → fix → re-test
+- Cross-agent validation: API contracts, schema alignment, security coverage
+
+---
+
+## Requirement Orchestration (Legacy Knowledge Base)
+
+**Knowledge Source:** `requirements-analyzer.md` (referenced by @partner)
+
+- Domain Classification Matrix (7 domains mapped to specialist agents)
 - Complexity Assessment Framework (LOW / MEDIUM / HIGH / CRITICAL)
 - Orchestration workflow patterns (Sequential, Parallel, Iterative)
 - Quality gate checkpoints (6 gates from classification through deployment)
@@ -18,8 +46,8 @@ This index provides quick access to design requirements, patterns, and conventio
 **Critical Rules:**
 - ALWAYS classify a requirement before assigning agents
 - ALWAYS define measurable acceptance criteria before implementation begins
-- ALWAYS include @DocAgent for every HIGH/CRITICAL requirement
-- ALWAYS include @AuditAgent for final sign-off on HIGH/CRITICAL requirements
+- ALWAYS include @docs for every HIGH/CRITICAL requirement
+- ALWAYS include @security for final sign-off on HIGH/CRITICAL requirements
 - NEVER skip quality gates to meet speed targets
 - NEVER approve CRITICAL requirements without mandatory human review
 - NEVER allow implementation before Gate 1 (Classification Approved) is complete
@@ -27,7 +55,8 @@ This index provides quick access to design requirements, patterns, and conventio
 **Templates:** `.github/templates/requirement-analysis-template.md`
 
 **References:**
-- [`requirements-analyzer.md`](requirements-analyzer.md)
+- [`requirements-analyzer.md`](requirements-analyzer.md) (legacy knowledge base)
+- [`partner.agent.md`](partner.agent.md) (invocable orchestrator)
 - [`.github/templates/requirement-analysis-template.md`](../../.github/templates/requirement-analysis-template.md)
 
 ---
