@@ -149,3 +149,4 @@ All agents share context through the memory bank at `memory-bank/`:
 - [CLAUDE.md](../CLAUDE.md) — AI memory bank entry point
 - [Memory Bank](../memory-bank/) — Persistent project intelligence
 - [Agent Directory](.github/agents/) — All specialist agents
+- [UI/UX Guidelines](../docs/technical/ui-ux-guidelines.md) — Comprehensive UI/UX agent guidelines (design system, components, patterns, accessibility, do's/don'ts)

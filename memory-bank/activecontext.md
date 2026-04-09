@@ -15,7 +15,15 @@
 
 ## Recent Changes (Latest Session)
 
-### Copilot Skills & Environment Setup (2026-04-09)
+### UI/UX Agent Guidelines & Skill Enhancement (2026-04-09)
+- **CREATED: `docs/technical/ui-ux-guidelines.md`** — Comprehensive, single-source-of-truth UI/UX guidelines document with 14 sections covering: design system overview, component library reference, page structure patterns, accounting-specific UI patterns, keyboard-first UX, navigation & layout, responsive breakpoints, dark mode, animation guidelines, i18n, print styles, CSS custom properties reference, accessibility, and do's/don'ts. This consolidates previously fragmented knowledge from `styles.scss`, shared components, keyboard services, and tribal knowledge.
+- **UPDATED: `.github/skills/create-angular-component/SKILL.md`** — Enhanced the @frontend Copilot Skill with: UI/UX guidelines reference, page template patterns (list, dashboard, form), shared component usage table, accounting-specific patterns section, dark mode checklist, accessibility checklist, breadcrumb registration, and expanded i18n translation structure.
+- **UPDATED: `.github/copilot-instructions.md`** — Added UI/UX guidelines reference to the global References section so all agents can discover the document.
+- **Identified 6 missing shared components**: `nx-page-header`, `nx-search-input`, `nx-loading-spinner`, `nx-confirm-dialog`, `nx-status-badge`, `nx-toast` — documented in guidelines for future implementation.
+
+**Summary:** OneBook now has a unified UI/UX guidelines document that exceeds the RasterOneLab equivalent. It covers 14 sections (vs 10), documents 60+ CSS tokens (vs 14), includes keyboard-first UX, dark mode, and i18n that RasterOneLab lacks, and identifies 6 component gaps for future work.
+
+### Previous Session: Copilot Skills & Environment Setup (2026-04-09)
 - **CREATED: `.github/copilot-setup-steps.yml`** — Configures Copilot cloud agent environment with PostgreSQL 17, Redis 7, Java 21, and Node.js so agents can build, test, and run the full stack.
 - **CREATED: `.github/skills/` (8 skills)** — Added Copilot Skills for all 8 agents:
   - `analyze-requirement` — @partner: classify, plan, track requirements through SDLC
