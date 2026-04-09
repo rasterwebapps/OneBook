@@ -33,12 +33,37 @@ You are the **Backend Development Team** in the traditional SDLC. You receive as
 - `backend/src/test/java/com/nexus/onebook/` — All backend tests
 - `backend/src/main/resources/application.yml` — Application configuration
 
+### Services Registry
+| Domain | Services |
+|--------|----------|
+| Core Accounting | `JournalService`, `LedgerAccountService`, `TrialBalanceService`, `VoucherTypeService` |
+| Financial Reports | `BalanceSheetService`, `ProfitAndLossService`, `CashFlowService`, `ExportService` |
+| Assets & Credit | `FixedAssetService`, `MultiCurrencyService`, `CreditManagementService`, `ChequeManagementService` |
+| Payments | `ConnectedPaymentService`, `ClientAccountService` |
+| Compliance & Tax | `ComplianceService`, `ComplianceCertificationService`, `TdsTcsService`, `TenantLocaleService`, `FeatureEntitlementService` |
+| Reconciliation | `BankReconciliationService`, `IntercompanyService` |
+| Integration | `WhatsAppService`, `PayrollService` |
+| AI & Intelligence | `ForecastingService`, `MarkToMarketService`, `CorporateActionService`, `ScenarioModelingService`, `MarketSentimentService`, `AnomalyDetectionService`, `DigitalAssetService` |
+| Inventory | `StockManagementService`, `BatchTrackingService`, `BomService`, `ReorderLevelService` |
+
+### Controllers Registry
+| Domain | Controllers |
+|--------|-------------|
+| Core Accounting | `JournalController`, `LedgerController`, `VoucherTypeController`, `ReportController` |
+| Assets & Credit | `FixedAssetController`, `CurrencyController`, `CreditManagementController`, `ChequeController` |
+| Payments | `PaymentController`, `ClientAccountController`, `ExportController` |
+| Compliance & Tax | `ComplianceController`, `ComplianceCertificationController`, `TdsTcsController`, `TenantLocaleController`, `FeatureEntitlementController` |
+| Reconciliation | `ReconciliationController`, `ConsolidationController` |
+| Integration | `PayrollController` |
+| AI & Intelligence | `ForecastController`, `MarketController`, `AnomalyController`, `DigitalAssetController` |
+| Inventory | `InventoryController`, `BatchTrackingController`, `BomController`, `ReorderLevelController` |
+
 ### Domain Knowledge Consolidated From
-- @LedgerExpert — Accounting engine, double-entry validation, financial reports
-- @IntegrationBot — Ingestion adapters, financial event gateway
-- @AIEngineer — Forecasting, anomaly detection, market intelligence
-- @ComplianceAgent — Tax compliance, GST, TDS, bank reconciliation
-- @PerfEngineer — Cache-aside patterns, Redis integration (service layer only)
+- Accounting engine, double-entry validation, financial reports (from legacy @LedgerExpert)
+- Ingestion adapters, financial event gateway (from legacy @IntegrationBot)
+- Forecasting, anomaly detection, market intelligence (from legacy @AIEngineer)
+- Tax compliance, GST, TDS, bank reconciliation (from legacy @ComplianceAgent)
+- Cache-aside patterns, Redis integration (from legacy @PerfEngineer)
 
 ---
 
@@ -92,18 +117,32 @@ When you receive a complex task, decompose it into these sub-tasks and execute i
 
 ## Patterns & Conventions
 
+### Backend Packages
+- `ledger/model/` — JPA entities
+- `ledger/dto/` — DTO records
+- `ledger/repository/` — Spring Data JPA repositories
+- `ledger/service/` — Business logic services
+- `ledger/controller/` — REST controllers
+- `ledger/security/` — Encryption, blind index (@security domain)
+- `ledger/cache/` — Redis cache (@infra domain)
+- `ledger/exception/` — Custom exceptions and GlobalExceptionHandler
+- `ledger/ingestion/` — Adapters, gateway, mapper
+- `ledger/voucher/` — Voucher settlement module
+- `ledger/payment/` — Payment processing module
+- `ledger/dashboard/` — Cross-domain dashboard
+
 ### Package Structure
 ```
 com.nexus.onebook/
-├── config/           ← Spring configuration (@Architect/@PerfEngineer domain)
+├── config/           ← Spring configuration
 ├── ledger/
 │   ├── model/        ← JPA entities
 │   ├── dto/          ← DTO records
 │   ├── repository/   ← Spring Data JPA repositories
 │   ├── service/      ← Business logic services
 │   ├── controller/   ← REST controllers
-│   ├── security/     ← Encryption, blind index (@SecurityWarden domain)
-│   ├── cache/        ← Redis cache (@PerfEngineer domain)
+│   ├── security/     ← Encryption, blind index (@security domain)
+│   ├── cache/        ← Redis cache (@infra domain)
 │   ├── ingestion/    ← Adapters, gateway, mapper
 │   ├── voucher/      ← Voucher settlement module
 │   ├── payment/      ← Payment processing module
@@ -188,8 +227,68 @@ When done, report back to @partner:
 
 ---
 
+## Domain Knowledge Reference
+
+### Global Exception Handler
+```java
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+    @ExceptionHandler(UnbalancedTransactionException.class)
+    public ResponseEntity<Map<String, Object>> handleUnbalanced(UnbalancedTransactionException ex) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    private ResponseEntity<Map<String, Object>> buildErrorResponse(HttpStatus status, String message) {
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", Instant.now().toString());
+        body.put("status", status.value());
+        body.put("error", status.getReasonPhrase());
+        body.put("message", message);
+        return ResponseEntity.status(status).body(body);
+    }
+}
+```
+
+### Financial Formulas
+- **Trial Balance**: Σ(Debits) = Σ(Credits); Σ(Assets + Expenses) = Σ(Liabilities + Equity + Income)
+- **P&L**: Net Profit/Loss = Σ(Income) − Σ(Expenses)
+- **Balance Sheet**: Assets = Liabilities + Equity
+- **Cash Flow**: Net Cash = Operating + Investing + Financing Activities
+- **Depreciation (SLM)**: Annual = (Cost − Salvage Value) / Useful Life
+
+### Payment Processing Pipeline (3-Stage Pre-Ledger Workflow)
+1. **Payment Register** (REQ-011): PURCHASE/RETURN/CREDIT_NOTE → auto-create register entries with `AVAILABLE_FOR_PROCESSING`
+2. **Batch Processing** (REQ-012): Select entries per vendor → create batch → `PENDING_APPROVAL → APPROVED/REJECTED` → post PAYMENT journal entry on approval
+3. **File Generation** (REQ-013): Generate CSV payment instruction from APPROVED batch → `PAYMENT_GENERATED`
+- Status flow: `AVAILABLE_FOR_PROCESSING → IN_BATCH → APPROVED → PAYMENT_GENERATED → PAID`
+
+### Ingestion Layer (FinancialEventAdapter Pattern)
+- All external adapters implement `FinancialEventAdapter` interface (`getAdapterType()`, `parse()`)
+- `AdapterRegistry` auto-discovers adapters via Spring DI (no manual registration)
+- `FinancialEventGateway` pipeline: RECEIVED → VALIDATED → MAPPED → POSTED (or FAILED)
+- `UniversalMapper` normalizes events to balanced double-entry journal entries
+
+### AI & Intelligence Rules
+- AI failures must never block core ledger operations (graceful degradation)
+- Cache market data to reduce external API calls; handle rate limits with backoff
+- Flag anomalies for human review — never auto-reject transactions
+- Provide confidence intervals for forecasts (not just point estimates)
+
+### Compliance Rules
+- **GST**: Intra-state = CGST + SGST (each = rate/2); Inter-state = IGST (full rate); Export = zero-rated
+- Feature entitlement follows tenant locale: IN→GST, US→Sales Tax, EU→VAT
+- Bank reconciliation: match by date + amount + reference; fuzzy match date ± 2 days if reference missing
+
+### Additional Conventions
+- Use `@MockitoBean` (Spring Boot 3.4+) not `@MockBean` in `@WebMvcTest` tests
+- Use `@EntityGraph(attributePaths = {...})` to avoid N+1 queries
+- Use `repository.saveAll(items)` for batch operations (not individual saves in loop)
+- Never delete posted transactions — mark as `VOID` instead
+- Never hardcode account IDs — resolve by account code via repository
+
+---
+
 ## References
 
 - Read `memory-bank/systempatterns.md` for architecture decisions
 - Read `memory-bank/techcontext.md` for build commands and stack details
-- Consult legacy agent docs: `architect.md`, `ledger-expert.md`, `integration-bot.md`, `ai-engineer.md`, `compliance-agent.md`, `perf-engineer.md`

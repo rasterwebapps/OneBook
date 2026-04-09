@@ -99,10 +99,6 @@ Users invoke ONLY `@partner`. It orchestrates all other agents.
 
 **Global rules:** `.github/copilot-instructions.md` (injected into ALL Copilot interactions)
 
-### Tier 2: Knowledge Base (Legacy `.md`)
-
-11 detailed domain knowledge files referenced by Tier 1 agents. Not directly invocable.
-
 ### Workflow
 ```
 User → @partner → @database → @backend → @frontend → @security → @quality → @docs → done
@@ -154,8 +150,7 @@ OneBook/
 │   │   ├── quality.agent.md           ← ✅ @quality — Testing & quality gates
 │   │   ├── INDEX.md                   ← Design requirements quick index
 │   │   ├── MAINTENANCE.md             ← Agent ownership maintenance guide
-│   │   ├── README.md                  ← Agent system architecture & SDLC workflow
-│   │   └── *.md                       ← Legacy knowledge base files (11 domain experts)
+│   │   └── README.md                  ← Agent system architecture & SDLC workflow
 │   ├── scripts/
 │   │   ├── validate-agent-ownership.sh    ← Agent ownership validation
 │   │   ├── validate-quality-gates.sh      ← RLS, DTO, BigDecimal, test coverage, memory bank freshness

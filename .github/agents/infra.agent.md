@@ -42,9 +42,13 @@ You are the **DevOps / Infrastructure Team** in the traditional SDLC. You manage
 - `backend/src/main/java/com/nexus/onebook/config/` — Spring config classes
 - `backend/src/main/java/com/nexus/onebook/HealthController.java`
 
+### Operational Services
+- `DisasterRecoveryService` / `DisasterRecoveryController` — Backup and recovery
+- `ObservabilityService` / `ObservabilityController` — Monitoring and health
+
 ### Domain Knowledge Consolidated From
-- @Architect — Docker, CI/CD, Spring configuration, Virtual Threads
-- @PerfEngineer — Redis configuration, cache infrastructure
+- Docker, CI/CD, Spring configuration, Virtual Threads (from legacy @Architect)
+- Redis configuration, cache infrastructure (from legacy @PerfEngineer)
 
 ---
 
@@ -97,6 +101,51 @@ services:
 
 ---
 
+## Domain Knowledge Reference
+
+### Critical Spring Boot Settings
+- `spring.jpa.open-in-view: false` — Prevent N+1 query antipattern from lazy loading
+- `spring.jpa.hibernate.ddl-auto: validate` — Never `create` or `update` in production
+- `spring.threads.virtual.enabled: true` — Project Loom for massive concurrency (Java 21+)
+- Use specific action versions in CI (not `@latest`); use official Docker images with version tags (not `latest`)
+
+### Failure-Safe Pattern for Redis (NOT Circuit Breaker)
+Redis is an **optional performance enhancer**, not a required dependency:
+- Always wrap Redis operations in try-catch
+- On failure: log warning + fall back to database
+- Never fail user requests because of Redis unavailability
+- **Why not Circuit Breaker**: CB would fail requests when open — unacceptable for optional services
+
+### Cache Strategy by Data Type
+
+| Data Type | TTL | Strategy | Reason |
+|-----------|-----|----------|--------|
+| Chart of Accounts | 30 min | Cache-Aside | Rarely changes, frequently read |
+| Voucher Types | 120 min | Cache-Aside | Static master data |
+| Cost Centers | 60 min | Cache-Aside | Infrequent updates |
+| Trial Balance | 10 min | Cache-Aside | Recompute when ledger changes |
+| Individual Journal Entries | No cache | Direct DB | Too many, low reuse |
+
+**What NOT to cache**: individual journal transactions, audit logs, one-time reports
+
+### Structured Logging with MDC
+- Include `traceId` and `spanId` in MDC for every request via a logging filter
+- Use structured JSON log output: `{"timestamp", "level", "traceId", "method", "path", "status", "duration"}`
+- Log levels: ERROR (immediate attention), WARN (degraded, e.g., Redis down), INFO (milestones), DEBUG (diagnostics)
+
+### Health Check Pattern
+- Check all dependencies: database (`connection.isValid(5)`), Redis (`redis-cli ping`)
+- Return 200 if all healthy, 503 if any down
+- Docker health checks: `pg_isready` for Postgres, `redis-cli ping` for Redis
+
+### Performance Targets
+- API response time: < 100ms (cached), < 500ms (uncached)
+- Cache hit rate: > 80% for active sessions
+- Virtual Threads: Support 10,000+ concurrent requests
+- Error rate: < 1%
+
+---
+
 ## Completion Report Format
 
 ```
@@ -116,7 +165,6 @@ services:
 
 ## References
 
-- Consult legacy agent docs: `architect.md`, `perf-engineer.md`
 - `infrastructure/README.md` for infrastructure documentation
 - `docs/technical/developer-guide.md` for setup instructions
 - `docs/technical/operational-runbook.md` for deployment procedures

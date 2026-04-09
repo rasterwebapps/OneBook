@@ -328,10 +328,40 @@ When delegating to agents, always use this structure:
 
 ---
 
+## Complexity Assessment Framework
+
+| Level | Criteria | Agents | Testing | Approval |
+|-------|----------|--------|---------|----------|
+| **LOW** | Single domain, no external deps, < 1 week | 1 | Unit tests only | Agent self-approval |
+| **MEDIUM** | 2–3 domains, internal deps, 1–2 weeks | 2–3 | Unit + Integration | Lead agent + @partner |
+| **HIGH** | 4+ domains, external deps, 3+ weeks | 4+ | Full suite + UAT | Multi-agent + human review |
+| **CRITICAL** | System-wide impact, security, data migration | All | Full + Security + Perf | Full consensus + human |
+
+---
+
+## Requirement Lifecycle States
+
+```
+INTAKE → CLASSIFICATION → ASSIGNMENT → IMPLEMENTATION → TESTING → DOCUMENTATION → DEPLOYED → VALIDATED → CLOSED
+```
+
+| State | Description |
+|-------|-------------|
+| INTAKE | Receive raw requirement, assign REQ-ID |
+| CLASSIFICATION | Analyze domains, complexity, risks |
+| ASSIGNMENT | Assign primary + collaborating agents, choose orchestration pattern |
+| IMPLEMENTATION | Agents execute phases per the plan |
+| TESTING | Unit → Integration → UAT → Security (per complexity level) |
+| DOCUMENTATION | API docs, schema docs, architecture updates |
+| DEPLOYED | Release to production / staging |
+| VALIDATED | Acceptance criteria verified by stakeholders |
+| CLOSED | Requirement archived in memory bank |
+
+---
+
 ## References
 
 - [CLAUDE.md](../../CLAUDE.md) — Memory bank entry point
 - [Memory Bank](../../memory-bank/) — Project intelligence files
-- [Existing Agent Docs](./) — Legacy agent knowledge base
 - [Quality Gates](../scripts/validate-quality-gates.sh) — Automated validation
 - [Requirement Template](../templates/requirement-analysis-template.md) — Standard template

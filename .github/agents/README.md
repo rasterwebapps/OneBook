@@ -56,26 +56,6 @@ User → @partner (analyzes requirement)
 
 ---
 
-## Tier 2: Knowledge Base (Legacy `.md`)
-
-These are detailed domain knowledge files that Tier 1 agents reference for patterns and conventions. They are NOT directly invocable as Copilot agents.
-
-| Knowledge Source | File | Referenced By |
-|-----------------|------|---------------|
-| 🎯 Requirements Orchestration | `requirements-analyzer.md` | @partner |
-| 🏗️ Architecture Patterns | `architect.md` | @infra |
-| 📒 Accounting Engine | `ledger-expert.md` | @backend |
-| 🔐 Security Patterns | `security-warden.md` | @security |
-| ⚡ Performance Patterns | `perf-engineer.md` | @infra, @backend |
-| 🎹 UX Patterns | `ux-specialist.md` | @frontend |
-| 🔌 Integration Patterns | `integration-bot.md` | @backend |
-| 🧠 AI Patterns | `ai-engineer.md` | @backend |
-| 📋 Compliance Patterns | `compliance-agent.md` | @backend |
-| 🛡️ Audit Patterns | `audit-agent.md` | @security |
-| 📝 Doc Patterns | `doc-agent.md` | @docs |
-
----
-
 ## How It Works: SDLC with Agile Feedback Loops
 
 ### Traditional SDLC → Agent Mapping
@@ -119,11 +99,11 @@ Agents communicate through:
 **@partner** is the entry point for ALL work on OneBook. It receives, classifies, and orchestrates every requirement through the complete SDLC lifecycle.
 
 **How it works with other agents:**
-1. @RequirementsAnalyzer **classifies** each requirement using the Domain Classification Matrix
+1. @partner **classifies** each requirement using the Domain Classification Matrix
 2. It **assigns** a Primary Agent and Collaborating Agents based on the classification
 3. It **orchestrates** the implementation phases (sequential, parallel, or iterative)
 4. It **validates** quality gates before advancing to the next phase
-5. It **coordinates** @AuditAgent sign-off before production for HIGH/CRITICAL requirements
+5. It **coordinates** @security sign-off before production for HIGH/CRITICAL requirements
 6. It **closes** the requirement after acceptance criteria are validated
 
 For any new requirement, start by creating a requirement document using `.github/templates/requirement-analysis-template.md`.
@@ -138,7 +118,7 @@ When working on the OneBook codebase:
 3. Review the relevant agent instruction file
 4. Follow the patterns, conventions, and standards defined
 5. If working across multiple domains, consult the Sub-Agent Interaction Matrix in `sub-agents.md`
-6. **For new requirements** — use @RequirementsAnalyzer to classify and orchestrate
+6. **For new requirements** — use @partner to classify and orchestrate
 7. **Update memory bank** at end of session — keep context alive for next session
 
 ## Updates

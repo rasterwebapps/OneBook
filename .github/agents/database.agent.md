@@ -36,9 +36,9 @@ You are the **Database Design Team** in the traditional SDLC. You receive assign
 - Seed data migrations
 
 ### Domain Knowledge Consolidated From
-- @LedgerExpert — Accounting table design, financial schema
-- @SecurityWarden — RLS policies, audit tables, encryption columns
-- @Architect — Migration conventions, infrastructure
+- Accounting table design, financial schema (from legacy @LedgerExpert)
+- RLS policies, audit tables, encryption columns (from legacy @SecurityWarden)
+- Migration conventions, infrastructure (from legacy @Architect)
 
 ---
 
@@ -172,9 +172,41 @@ When done, report back to @partner:
 
 ---
 
+## Domain Knowledge Reference
+
+### Database Trigger Patterns
+```sql
+-- Auto-update updated_at timestamp
+CREATE OR REPLACE FUNCTION update_updated_at()
+RETURNS TRIGGER AS $$ BEGIN NEW.updated_at = CURRENT_TIMESTAMP; RETURN NEW; END; $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_{table}_updated_at BEFORE UPDATE ON {table} FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+```
+
+**Trigger naming**: `trg_<table>_<operation>_<purpose>`
+
+### Encrypted Field Schema Pattern
+```sql
+-- Encrypted field: TEXT (Base64 ciphertext)
+party_name_encrypted TEXT NOT NULL,
+-- Blind index: VARCHAR(64) (HMAC-SHA256 hash) for searching
+party_name_blind_index VARCHAR(64) NOT NULL,
+CONSTRAINT uq_tenant_blind_index UNIQUE (tenant_id, party_name_blind_index)
+```
+
+### Balance Check Trigger (Accounting Integrity)
+```sql
+-- Trigger fires when journal transaction status changes to POSTED
+CREATE TRIGGER trg_journal_transaction_balance_check
+    BEFORE UPDATE ON journal_transactions
+    FOR EACH ROW WHEN (OLD.status != 'POSTED' AND NEW.status = 'POSTED')
+    EXECUTE FUNCTION check_balanced_transaction();
+```
+
+---
+
 ## References
 
 - Read `memory-bank/systempatterns.md` for RLS and encryption patterns
 - Read `memory-bank/troubleshooting.md` for V12 gap documentation
 - Consult `docs/technical/sql-schema.md` for existing schema documentation
-- Consult legacy agent docs: `ledger-expert.md`, `security-warden.md` for domain patterns

@@ -34,8 +34,25 @@ You are the **Frontend Development Team** in the traditional SDLC. You receive a
 - `frontend/src/styles.scss` — Global styles
 - `frontend/src/app/i18n/` — Translation files
 
+### Frontend Modules
+- `frontend/src/app/accounting/` — Ledger, voucher entry
+- `frontend/src/app/ai/` — AI features
+- `frontend/src/app/auditor/` — Auditor portal
+- `frontend/src/app/auth/` — Authentication (OIDC, guards)
+- `frontend/src/app/banking/` — Banking module
+- `frontend/src/app/client-accounts/` — Client account management
+- `frontend/src/app/dashboard/` — Dashboard components
+- `frontend/src/app/gst/` — GST compliance
+- `frontend/src/app/inventory/` — Inventory management
+- `frontend/src/app/keyboard/` — Keyboard navigation system
+- `frontend/src/app/market/` — Market valuation
+- `frontend/src/app/master/` — Master data management
+- `frontend/src/app/payable/` — Accounts payable
+- `frontend/src/app/receivable/` — Accounts receivable
+- `frontend/src/app/reports/` — Financial reports
+
 ### Domain Knowledge Consolidated From
-- @UXSpecialist — Component architecture, keyboard navigation, Signals, i18n
+- Component architecture, keyboard navigation, Signals, i18n (from legacy @UXSpecialist)
 
 ---
 
@@ -163,10 +180,73 @@ When done, report back to @partner:
 
 ---
 
+## Domain Knowledge Reference
+
+### Tally Keyboard Shortcuts (17 Legacy Keys)
+
+| Key | Command | Key | Command |
+|-----|---------|-----|---------|
+| F4 | Contra Voucher | Alt+C | Create |
+| F5 | Payment | Alt+A | Alter |
+| F6 | Receipt | Alt+D | Delete |
+| F7 | Journal | Ctrl+A | Save |
+| F8 | Sales | Esc | Cancel |
+| F9 | Purchase | Ctrl+K / Cmd+K | Command Palette |
+| Alt+F1 | Profit & Loss | Alt+F3 | Balance Sheet |
+| Ctrl+F1 | Trial Balance | Ctrl+Q | Quit/Logout |
+
+### Component Test Pattern (Signals)
+```typescript
+describe('ExampleComponent', () => {
+  let component: ExampleComponent;
+  let fixture: ComponentFixture<ExampleComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [ExampleComponent]  // Standalone component
+    }).compileComponents();
+    fixture = TestBed.createComponent(ExampleComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => expect(component).toBeTruthy());
+
+  it('computed signal should update', () => {
+    component.lines.set([{ amount: 1000 }, { amount: 2000 }]);
+    expect(component.totalAmount()).toBe(3000);
+  });
+});
+```
+
+### Service Test Pattern (HTTP Mocking)
+```typescript
+describe('AccountService', () => {
+  let service: AccountService;
+  let httpMock: HttpTestingController;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({ imports: [provideHttpClientTesting()] });
+    service = TestBed.inject(AccountService);
+    httpMock = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => httpMock.verify());
+
+  it('should fetch accounts', () => {
+    service.getAccounts('t1').subscribe(a => expect(a.length).toBe(1));
+    const req = httpMock.expectOne('/api/ledger/accounts?tenantId=t1');
+    expect(req.request.method).toBe('GET');
+    req.flush([{ id: 1, accountCode: '1000' }]);
+  });
+});
+```
+
+---
+
 ## References
 
 - Read `memory-bank/systempatterns.md` for architecture decisions
-- Consult legacy agent doc: `ux-specialist.md` for detailed UX patterns
 - [Angular Signals Documentation](https://angular.dev/)
 - `frontend/src/styles.scss` for design tokens
 - `docs/technical/key-binding-registry.md` for keyboard navigation

@@ -44,17 +44,17 @@ The OneBook sub-agent architecture requires clear ownership boundaries. When age
 
 | What You Added | Which Agent Owns It | File to Update |
 |----------------|---------------------|----------------|
-| Core accounting service | @LedgerExpert | `ledger-expert.md` |
-| Financial report | @LedgerExpert | `ledger-expert.md` |
-| Security/encryption service | @SecurityWarden | `security-warden.md` |
-| Cache-related service | @PerfEngineer | `perf-engineer.md` |
-| Integration adapter | @IntegrationBot | `integration-bot.md` |
-| Inventory/payroll service | @IntegrationBot | `integration-bot.md` |
-| AI/forecasting service | @AIEngineer | `ai-engineer.md` |
-| Tax/compliance service | @ComplianceAgent | `compliance-agent.md` |
-| Audit/observability service | @AuditAgent | `audit-agent.md` |
-| Frontend module (UI) | @UXSpecialist | `ux-specialist.md` |
-| Database migration | Domain-specific agent | Various |
+| Core accounting service | @backend | `backend.agent.md` |
+| Financial report | @backend | `backend.agent.md` |
+| Security/encryption service | @security | `security.agent.md` |
+| Cache-related service | @infra | `infra.agent.md` |
+| Integration adapter | @backend | `backend.agent.md` |
+| Inventory/payroll service | @backend | `backend.agent.md` |
+| AI/forecasting service | @backend | `backend.agent.md` |
+| Tax/compliance service | @backend | `backend.agent.md` |
+| Audit/observability service | @security | `security.agent.md` |
+| Frontend module (UI) | @frontend | `frontend.agent.md` |
+| Database migration | @database | `database.agent.md` |
 
 ## Detailed Guide
 

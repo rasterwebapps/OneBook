@@ -284,7 +284,7 @@ Feature: Multi-Tenant Ledger Isolation
 | TRD | [TR-001](../../business/TRD.md#2-tr-001-multi-tenant-rls) |
 | RTM | [RTM Row REQ-001](../RTM.md) |
 | User Stories | [US-001, US-003, US-004](../../business/user-stories.md) |
-| Agent Owner | [@LedgerExpert](../../../.github/agents/ledger-expert.md) |
+| Agent Owner | [@backend](../../../.github/agents/backend.agent.md) |
 | Migration | `V1__rls_infrastructure.sql`, `V2__organizational_hierarchy.sql`, `V3__ledger_and_journal.sql` |
 
 ---

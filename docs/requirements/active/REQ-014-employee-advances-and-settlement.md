@@ -836,7 +836,7 @@ Feature: Reports
 | Related: Encryption | [REQ-002](REQ-002-zero-knowledge-encryption.md) — AES-256-GCM field encryption, audit log |
 | Related: Cost Center / Org | [REQ-006](REQ-006-cost-center-management.md) — Department hierarchy and HOD mapping |
 | User Stories | [US-025, US-026, US-027, US-028](../../business/user-stories.md) |
-| Agent Owner | [@LedgerExpert](../../../.github/agents/ledger-expert.md) |
+| Agent Owner | [@backend](../../../.github/agents/backend.agent.md) |
 | DB Migration | `backend/src/main/resources/db/migration/V15__employee_advances_settlement.sql` |
 
 ---

@@ -147,5 +147,5 @@ Feature: Cost Center Management
 | TRD | [TR-001](../../business/TRD.md#2-tr-001-multi-tenant-rls) |
 | RTM | [RTM Row REQ-006](../RTM.md) |
 | User Stories | [US-004, US-018](../../business/user-stories.md) |
-| Agent Owner | [@LedgerExpert](../../../.github/agents/ledger-expert.md) |
+| Agent Owner | [@backend](../../../.github/agents/backend.agent.md) |
 | Migration | `V2__organizational_hierarchy.sql` |

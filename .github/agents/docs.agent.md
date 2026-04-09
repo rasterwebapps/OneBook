@@ -49,8 +49,8 @@ You are the **Business Analyst (Documentation Phase)** in the traditional SDLC. 
 - `.github/agents/README.md` — Agent registry
 
 ### Domain Knowledge Consolidated From
-- @DocAgent — Documentation patterns, Mermaid diagrams, maintenance workflow
-- @AuditAgent — Status reporting, audit documentation
+- Documentation patterns, Mermaid diagrams, maintenance workflow (from legacy @DocAgent)
+- Status reporting, audit documentation (from legacy @AuditAgent)
 
 ---
 
@@ -151,8 +151,31 @@ After every implementation session:
 
 ---
 
+## Domain Knowledge Reference
+
+### Markdown Conventions
+- **H1** (`#`): One per file (document title)
+- **H2** (`##`): Major sections
+- **H3** (`###`): Subsections
+- **H4** (`####`): Detail level
+- Always include language identifier in code blocks (```java, ```typescript, ```bash, ```sql)
+- Use realistic, working code examples (< 20 lines)
+- Use Mermaid.js for ALL diagrams — never embed images
+- Diagram types: `flowchart TD` (process), `sequenceDiagram` (interactions), `erDiagram` (DB)
+
+### Documentation Review Checklist
+- [ ] All code examples are syntactically valid
+- [ ] All links are functional (no broken references)
+- [ ] Mermaid.js diagrams render correctly
+- [ ] Version numbers are current (Java 21, Angular 21, etc.)
+- [ ] Commands have been tested (no typos)
+- [ ] Terminology is consistent across documents
+- [ ] Tables are properly formatted
+- [ ] Code blocks have language identifiers
+
+---
+
 ## References
 
-- Consult legacy agent doc: `doc-agent.md` for detailed patterns
 - Run `cd docs/automation && npm run validate` to check doc integrity
 - Use Mermaid.js for ALL diagrams (never images)

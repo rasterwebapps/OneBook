@@ -159,5 +159,5 @@ Feature: Maker-Checker-Approver Workflow
 | TRD | [TR-007](../../business/TRD.md#8-tr-007-hash-chained-audit-trail) |
 | RTM | [RTM Row REQ-010](../RTM.md) |
 | User Stories | [US-010, US-019](../../business/user-stories.md) |
-| Agent Owner | [@AuditAgent](../../../.github/agents/audit-agent.md) |
+| Agent Owner | [@security](../../../.github/agents/security.agent.md) |
 | Migration | `V9__hardening_audit_production.sql` |
