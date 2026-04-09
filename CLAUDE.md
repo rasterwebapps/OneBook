@@ -99,6 +99,25 @@ Users invoke ONLY `@partner`. It orchestrates all other agents.
 
 **Global rules:** `.github/copilot-instructions.md` (injected into ALL Copilot interactions)
 
+### Copilot Skills (`.github/skills/`)
+
+Each agent has a paired **Copilot Skill** — a reusable, step-by-step task procedure. Agents define WHO (persona + rules); Skills define HOW (task recipes + templates).
+
+| Agent | Skill | Purpose |
+|-------|-------|---------|
+| @partner | `analyze-requirement` | Classify, plan, and track requirements through SDLC |
+| @backend | `add-rest-endpoint` | Scaffold DTO → Repository → Service → Controller → Test |
+| @frontend | `create-angular-component` | Create standalone component with Signals, i18n, routing |
+| @database | `create-flyway-migration` | Create migration with RLS, tenant isolation, proper types |
+| @security | `security-review` | Review for RLS, encryption, secrets, OWASP compliance |
+| @infra | `setup-dev-environment` | Set up/manage Docker Compose dev environment |
+| @docs | `update-documentation` | Update docs using Selective Documentation Update Protocol |
+| @quality | `run-quality-gates` | Execute full quality validation pipeline (8 gates) |
+
+### Environment Setup
+
+`.github/copilot-setup-steps.yml` — Configures the Copilot cloud agent environment with PostgreSQL 17, Redis 7, Java 21, and Node.js so agents can build, test, and run the full stack.
+
 ### Workflow
 ```
 User → @partner → @database → @backend → @frontend → @security → @quality → @docs → done
@@ -139,6 +158,7 @@ OneBook/
 ├── docker-compose.yml                 ← Full-stack orchestration (7 services)
 ├── .github/
 │   ├── copilot-instructions.md        ← Global rules for ALL Copilot interactions
+│   ├── copilot-setup-steps.yml        ← Copilot cloud agent environment setup (PostgreSQL, Redis, Java, Node)
 │   ├── agents/                        ← SDLC agent system
 │   │   ├── partner.agent.md           ← 🤝 @partner — Head orchestrator (ONLY user-facing agent)
 │   │   ├── backend.agent.md           ← 📒 @backend — Backend dev (Java/Spring Boot)
@@ -151,6 +171,15 @@ OneBook/
 │   │   ├── INDEX.md                   ← Design requirements quick index
 │   │   ├── MAINTENANCE.md             ← Agent ownership maintenance guide
 │   │   └── README.md                  ← Agent system architecture & SDLC workflow
+│   ├── skills/                        ← Copilot Skills (reusable task procedures)
+│   │   ├── analyze-requirement/       ← @partner skill — requirement classification & planning
+│   │   ├── add-rest-endpoint/         ← @backend skill — scaffold REST API endpoints
+│   │   ├── create-angular-component/  ← @frontend skill — standalone Angular components
+│   │   ├── create-flyway-migration/   ← @database skill — Flyway migrations with RLS
+│   │   ├── security-review/           ← @security skill — security audit checklist
+│   │   ├── setup-dev-environment/     ← @infra skill — Docker Compose dev setup
+│   │   ├── update-documentation/      ← @docs skill — selective doc updates
+│   │   └── run-quality-gates/         ← @quality skill — full quality validation pipeline
 │   ├── scripts/
 │   │   ├── validate-agent-ownership.sh    ← Agent ownership validation
 │   │   ├── validate-quality-gates.sh      ← RLS, DTO, BigDecimal, test coverage, memory bank freshness

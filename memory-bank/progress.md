@@ -211,6 +211,19 @@
 - [x] `memory-bank/systempatterns.md` updated with requirement lifecycle management patterns
 - [x] `.github/scripts/validate-agent-ownership.sh` updated with @RequirementsAnalyzer and template validation
 
+### Copilot Skills & Environment Setup ✅
+- [x] `.github/copilot-setup-steps.yml` — Copilot cloud agent environment (PostgreSQL 17, Redis 7, Java 21, Node.js)
+- [x] `.github/skills/analyze-requirement/SKILL.md` — @partner skill
+- [x] `.github/skills/add-rest-endpoint/SKILL.md` — @backend skill
+- [x] `.github/skills/create-angular-component/SKILL.md` — @frontend skill
+- [x] `.github/skills/create-flyway-migration/SKILL.md` — @database skill
+- [x] `.github/skills/security-review/SKILL.md` — @security skill
+- [x] `.github/skills/setup-dev-environment/SKILL.md` — @infra skill
+- [x] `.github/skills/update-documentation/SKILL.md` — @docs skill
+- [x] `.github/skills/run-quality-gates/SKILL.md` — @quality skill
+- [x] All 8 agent `.agent.md` files updated with `skills:` frontmatter and Skills section
+- [x] `copilot-instructions.md`, `INDEX.md`, `README.md`, `CLAUDE.md` updated with skills documentation
+
 ### Voucher-Receipt-Advance Settlement System ✅
 - [x] Foundation entities: Department, SubDepartment, Payer/Payee + bank accounts, Application, Advance, PaymentApprovalLimit
 - [x] BankAccountType enum (SAVINGS, CURRENT, OVERDRAFT, CASH_CREDIT, NRE, NRO)
@@ -280,6 +293,8 @@
 | `.github/agents/MAINTENANCE.md` | Ownership maintenance | ✅ Current |
 | `.github/AGENT_OWNERSHIP.md` | Quick ownership reference | ✅ Current |
 | `.github/scripts/README.md` | Validation script docs | ✅ Current |
+| `.github/copilot-setup-steps.yml` | Copilot cloud agent environment setup | ✅ Current |
+| `.github/skills/*/SKILL.md` | 8 Copilot Skills (one per agent) | ✅ Current |
 
 ---
 
