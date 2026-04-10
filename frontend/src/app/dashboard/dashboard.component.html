@@ -1,4 +1,4 @@
-<div class="omni-dashboard">
+<div class="fintech-dashboard">
   <!-- Page Header -->
   <nx-page-header title="Dashboard" subtitle="Real-time financial overview and quick actions">
     <button class="nx-btn nx-btn--emerald" routerLink="/voucher/payment">
@@ -6,262 +6,195 @@
     </button>
   </nx-page-header>
 
-  <!-- KPI Row — using shared stat card components -->
+  <!-- ═══════════════════════════════════════════════════════════════
+       TOP ROW: 4 KPI Metric Cards — Fintech Style (Mercury/Stripe Inspired)
+       Cash, Bank, Pending Validations, Failed PANs
+       ═══════════════════════════════════════════════════════════════ -->
   <div class="kpi-row">
-    <nx-stat-card
-      icon="💰"
-      label="Cash Balance"
-      [value]="'₹' + (cashFlowSummary().currentBalance | number:'1.0-0')"
-      [trend]="(cashFlowSummary().trend === 'up' ? '▲' : '▼') + ' MTD'"
-      [trendDirection]="cashFlowSummary().trend"
-      color="emerald"
-    />
-    <nx-stat-card
-      icon="📈"
-      label="Revenue MTD"
-      [value]="'₹' + (cashFlowSummary().inflow30d | number:'1.0-0')"
-      trend="▲ This month"
-      trendDirection="up"
-      color="purple"
-    />
-    <nx-stat-card
-      icon="📉"
-      label="Expenses MTD"
-      [value]="'₹' + (cashFlowSummary().outflow30d | number:'1.0-0')"
-      trend="→ This month"
-      trendDirection="neutral"
-      color="amber"
-    />
-    <nx-stat-card
-      [icon]="cashFlowSummary().netChange >= 0 ? '✅' : '⚠️'"
-      label="Net Profit"
-      [value]="'₹' + ((cashFlowSummary().netChange < 0 ? -cashFlowSummary().netChange : cashFlowSummary().netChange) | number:'1.0-0')"
-      [trend]="(cashFlowSummary().trend === 'up' ? '▲' : '▼') + ' vs last month'"
-      [trendDirection]="cashFlowSummary().trend"
-      [color]="cashFlowSummary().netChange >= 0 ? 'emerald' : 'danger'"
-    />
+    <!-- Cash Balance Card -->
+    <div class="kpi-card">
+      <div class="kpi-header">
+        <span class="kpi-icon cash">💵</span>
+        <span class="kpi-label">Cash</span>
+      </div>
+      <div class="kpi-value">₹{{ cashFlowSummary().currentBalance | number:'1.0-0' }}</div>
+      <div class="kpi-trend" [class.up]="cashFlowSummary().trend === 'up'" [class.down]="cashFlowSummary().trend !== 'up'">
+        <span class="trend-arrow">{{ cashFlowSummary().trend === 'up' ? '↑' : '↓' }}</span>
+        <span class="trend-text">{{ cashFlowSummary().trend === 'up' ? '+12.5%' : '-3.2%' }} MTD</span>
+      </div>
+    </div>
+
+    <!-- Bank Balance Card -->
+    <div class="kpi-card">
+      <div class="kpi-header">
+        <span class="kpi-icon bank">🏦</span>
+        <span class="kpi-label">Bank</span>
+      </div>
+      <div class="kpi-value">₹{{ bankBalance() | number:'1.0-0' }}</div>
+      <div class="kpi-trend up">
+        <span class="trend-arrow">↑</span>
+        <span class="trend-text">+8.3% MTD</span>
+      </div>
+    </div>
+
+    <!-- Pending Validations Card -->
+    <div class="kpi-card">
+      <div class="kpi-header">
+        <span class="kpi-icon pending">⏳</span>
+        <span class="kpi-label">Pending Validations</span>
+      </div>
+      <div class="kpi-value">{{ pendingValidations() }}</div>
+      <div class="kpi-trend neutral">
+        <span class="trend-arrow">→</span>
+        <span class="trend-text">{{ pendingValidations() > 0 ? 'Needs review' : 'All clear' }}</span>
+      </div>
+    </div>
+
+    <!-- Failed PANs Card -->
+    <div class="kpi-card" [class.alert]="failedPANs() > 0">
+      <div class="kpi-header">
+        <span class="kpi-icon failed">⚠️</span>
+        <span class="kpi-label">Failed PANs</span>
+      </div>
+      <div class="kpi-value">{{ failedPANs() }}</div>
+      <div class="kpi-trend" [class.down]="failedPANs() > 0" [class.up]="failedPANs() === 0">
+        <span class="trend-arrow">{{ failedPANs() > 0 ? '!' : '✓' }}</span>
+        <span class="trend-text">{{ failedPANs() > 0 ? 'Action needed' : 'All verified' }}</span>
+      </div>
+    </div>
   </div>
 
-  <!-- Floating Command Palette Hint -->
-  <div class="cmd-palette-hint nx-glass">
-    <span class="cmd-icon">⌘</span>
-    <span class="cmd-text">Press <kbd>Ctrl+K</kbd> to open Command Palette — Search anything, navigate anywhere</span>
-  </div>
-
-  <!-- Main Grid -->
-  <div class="bento-grid">
-    <!-- ✨ AI Cash Flow Summary — using nx-card -->
-    <div class="bento-tile tile-cashflow">
-      <nx-card>
-        <div card-header>
-          <div class="tile-title">
-            <span class="tile-icon">✨</span>
-            <h4>AI Cash Flow Summary</h4>
-          </div>
-          <span class="tile-badge badge-emerald">Live</span>
+  <!-- ═══════════════════════════════════════════════════════════════
+       MIDDLE SECTION: 2-Column Grid
+       Left: Cashflow Chart Placeholder | Right: Recent Activity List
+       ═══════════════════════════════════════════════════════════════ -->
+  <div class="dashboard-grid">
+    <!-- Left Column: Cashflow Chart Placeholder -->
+    <div class="chart-placeholder">
+      <div class="chart-header">
+        <div class="chart-title">
+          <span class="chart-icon">📊</span>
+          <h3>Cashflow Overview</h3>
         </div>
-        <div card-body>
-          <div class="cashflow-balance">
-            <span class="balance-label">Current Balance</span>
-            <span class="balance-value nx-number">₹{{ cashFlowSummary().currentBalance | number:'1.2-2' }}</span>
-          </div>
-
-          <div class="sparkline-container">
-            <svg class="sparkline" viewBox="0 0 120 50" preserveAspectRatio="none">
-              <defs>
-                <linearGradient id="sparkline-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stop-color="var(--nx-emerald)" stop-opacity="0.4"/>
-                  <stop offset="100%" stop-color="var(--nx-emerald)" stop-opacity="0"/>
-                </linearGradient>
-                <linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stop-color="var(--nx-emerald)" stop-opacity="0.5"/>
-                  <stop offset="50%" stop-color="var(--nx-emerald)"/>
-                  <stop offset="100%" stop-color="var(--nx-emerald)" stop-opacity="0.5"/>
-                </linearGradient>
-              </defs>
-              <path [attr.d]="'M 0 50 ' + getSparklinePath() + ' L 120 50 Z'" fill="url(#sparkline-gradient)" />
-              <path [attr.d]="'M ' + getSparklinePath()" fill="none" stroke="url(#line-gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-              @for (point of cashFlowSummary().sparkline; track $index) {
-                <circle [attr.cx]="$index * (120 / (cashFlowSummary().sparkline.length - 1))" [attr.cy]="50 - (point / 100) * 45" r="3" fill="var(--nx-bg-card)" stroke="var(--nx-emerald)" stroke-width="2" class="sparkline-dot" opacity="0" />
-              }
-            </svg>
-          </div>
-
-          <div class="cashflow-metrics">
-            <div class="metric">
-              <span class="metric-label">30d Inflow</span>
-              <span class="metric-value positive nx-number">+₹{{ cashFlowSummary().inflow30d | number:'1.0-0' }}</span>
-            </div>
-            <div class="metric">
-              <span class="metric-label">30d Outflow</span>
-              <span class="metric-value negative nx-number">-₹{{ cashFlowSummary().outflow30d | number:'1.0-0' }}</span>
-            </div>
-            <div class="metric">
-              <span class="metric-label">Net Change</span>
-              <span class="metric-value positive nx-number">+₹{{ cashFlowSummary().netChange | number:'1.0-0' }}</span>
-            </div>
-          </div>
-        </div>
-      </nx-card>
-    </div>
-
-    <!-- 🔒 Audit Log Chain -->
-    <div class="bento-tile tile-audit">
-      <div class="tile-header">
-        <div class="tile-title">
-          <span class="tile-icon">🔒</span>
-          <h3>Audit Log Chain</h3>
-        </div>
-        <span class="tile-badge badge-purple">Hash-Linked</span>
+        <span class="chart-badge">Last 30 Days</span>
       </div>
-
-      <div class="audit-chain">
-        @for (entry of auditEntries(); track entry.hash) {
-          <div class="audit-entry">
-            <div class="chain-link">
-              <span class="chain-dot"></span>
-              @if (!$last) {
-                <span class="chain-line"></span>
-              }
-            </div>
-            <div class="entry-content">
-              <div class="entry-header">
-                <code class="entry-hash">{{ entry.hash }}</code>
-                @if (entry.verified) {
-                  <span class="verified-badge">✓ Verified</span>
-                }
-              </div>
-              <p class="entry-action">{{ entry.action }}</p>
-              <span class="entry-time">{{ entry.timestamp }}</span>
-            </div>
+      <div class="chart-area">
+        <!-- Placeholder visualization -->
+        <svg class="placeholder-chart" viewBox="0 0 400 200" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#26a69a" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#26a69a" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M 0 160 Q 50 140 100 120 T 200 100 T 300 80 T 400 60 L 400 200 L 0 200 Z" fill="url(#areaGradient)" />
+          <path d="M 0 160 Q 50 140 100 120 T 200 100 T 300 80 T 400 60" fill="none" stroke="#26a69a" stroke-width="2" stroke-linecap="round"/>
+          <!-- Data points -->
+          <circle cx="100" cy="120" r="4" fill="#fff" stroke="#26a69a" stroke-width="2"/>
+          <circle cx="200" cy="100" r="4" fill="#fff" stroke="#26a69a" stroke-width="2"/>
+          <circle cx="300" cy="80" r="4" fill="#fff" stroke="#26a69a" stroke-width="2"/>
+          <circle cx="400" cy="60" r="4" fill="#fff" stroke="#26a69a" stroke-width="2"/>
+        </svg>
+        <div class="chart-metrics">
+          <div class="chart-metric">
+            <span class="metric-label">Inflows</span>
+            <span class="metric-value positive">+₹{{ cashFlowSummary().inflow30d | number:'1.0-0' }}</span>
           </div>
-        }
+          <div class="chart-metric">
+            <span class="metric-label">Outflows</span>
+            <span class="metric-value negative">-₹{{ cashFlowSummary().outflow30d | number:'1.0-0' }}</span>
+          </div>
+          <div class="chart-metric">
+            <span class="metric-label">Net</span>
+            <span class="metric-value" [class.positive]="cashFlowSummary().netChange >= 0" [class.negative]="cashFlowSummary().netChange < 0">
+              {{ cashFlowSummary().netChange >= 0 ? '+' : '' }}₹{{ cashFlowSummary().netChange | number:'1.0-0' }}
+            </span>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- 📈 Universal Ingestion Status -->
-    <div class="bento-tile tile-ingestion">
-      <div class="tile-header">
-        <div class="tile-title">
-          <span class="tile-icon">📈</span>
-          <h3>Universal Ingestion</h3>
-        </div>
-        <span class="tile-badge badge-emerald">All Connected</span>
-      </div>
-
-      <div class="ingestion-grid">
-        @for (source of ingestionSources(); track source.name) {
-          <div class="ingestion-source" [class.syncing]="source.status === 'syncing'">
-            <div class="source-icon">{{ source.icon }}</div>
-            <div class="source-info">
-              <span class="source-name">{{ source.name }}</span>
-              <span class="source-records nx-number">{{ source.records | number }} records</span>
-            </div>
-            <div class="source-status">
-              <span class="status-dot" [class.active]="source.status === 'active'" [class.syncing]="source.status === 'syncing'"></span>
-              <span class="source-sync">{{ source.lastSync }}</span>
-            </div>
-          </div>
-        }
-      </div>
-    </div>
-
-    <!-- ⚡ Quick Actions -->
-    <div class="bento-tile tile-shortcuts">
-      <div class="tile-header">
-        <div class="tile-title">
-          <span class="tile-icon">⚡</span>
-          <h3>Quick Actions</h3>
-        </div>
-      </div>
-
-      <div class="quick-action-grid">
-        <a [routerLink]="'/voucher/sales'" class="quick-action-btn emerald">
-          <span class="qa-icon">🧾</span>
-          <span class="qa-label">New Sale</span>
-          <kbd>F8</kbd>
-        </a>
-        <a [routerLink]="'/voucher/purchase'" class="quick-action-btn purple">
-          <span class="qa-icon">🛒</span>
-          <span class="qa-label">New Purchase</span>
-          <kbd>F9</kbd>
-        </a>
-        <a [routerLink]="'/voucher/payment'" class="quick-action-btn amber">
-          <span class="qa-icon">💸</span>
-          <span class="qa-label">New Payment</span>
-          <kbd>F5</kbd>
-        </a>
-        <a [routerLink]="'/voucher/receipt'" class="quick-action-btn info">
-          <span class="qa-icon">📥</span>
-          <span class="qa-label">New Receipt</span>
-          <kbd>F6</kbd>
-        </a>
-        <a [routerLink]="'/reports/profit-loss'" class="quick-action-btn neutral">
-          <span class="qa-icon">📊</span>
-          <span class="qa-label">View Reports</span>
-        </a>
-        <a [routerLink]="'/master'" class="quick-action-btn neutral">
-          <span class="qa-icon">🗂️</span>
-          <span class="qa-label">Masters</span>
-        </a>
-      </div>
-
-      <div class="shortcut-hint">
-        <kbd>Ctrl+K</kbd> Command Palette &nbsp;·&nbsp;
-        <kbd>Alt+C</kbd> Create Master &nbsp;·&nbsp;
-        <kbd>Ctrl+S</kbd> Save
-      </div>
-    </div>
-
-    <!-- 📋 Recent Activity -->
-    <div class="bento-tile tile-recent nx-bento-tile--span-2">
-      <div class="tile-header">
-        <div class="tile-title">
-          <span class="tile-icon">📋</span>
+    <!-- Right Column: Recent Activity — Compact list with last 5 vouchers -->
+    <div class="activity-card">
+      <div class="activity-header">
+        <div class="activity-title">
+          <span class="activity-icon">📋</span>
           <h3>Recent Activity</h3>
         </div>
+        <a routerLink="/voucher" class="view-all-link">View all →</a>
       </div>
-      <div class="recent-list">
-        <div class="recent-item">
-          <span class="recent-dot emerald"></span>
-          <div class="recent-info">
-            <span class="recent-title">Invoice #INV-2487 created</span>
-            <span class="recent-time">2 min ago</span>
+      <div class="activity-list">
+        @for (activity of recentVouchers(); track activity.id; let idx = $index) {
+          @if (idx < 5) {
+            <div class="activity-item">
+              <div class="activity-dot" [class]="activity.type"></div>
+              <div class="activity-info">
+                <span class="activity-desc">{{ activity.description }}</span>
+                <span class="activity-time">{{ activity.time }}</span>
+              </div>
+              <span class="activity-amount" [class.positive]="activity.amount > 0" [class.negative]="activity.amount < 0">
+                {{ activity.amount > 0 ? '+' : '' }}₹{{ (activity.amount < 0 ? -activity.amount : activity.amount) | number:'1.0-0' }}
+              </span>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECONDARY SECTION: Quick Actions + System Status
+       ═══════════════════════════════════════════════════════════════ -->
+  <div class="secondary-grid">
+    <!-- ⚡ Quick Actions -->
+    <div class="quick-actions-card">
+      <div class="section-header">
+        <span class="section-icon">⚡</span>
+        <h3>Quick Actions</h3>
+      </div>
+      <div class="action-buttons">
+        <a [routerLink]="'/voucher/sales'" class="action-btn emerald">
+          <span class="btn-icon">🧾</span>
+          <span class="btn-label">New Sale</span>
+          <kbd>F8</kbd>
+        </a>
+        <a [routerLink]="'/voucher/purchase'" class="action-btn purple">
+          <span class="btn-icon">🛒</span>
+          <span class="btn-label">New Purchase</span>
+          <kbd>F9</kbd>
+        </a>
+        <a [routerLink]="'/voucher/payment'" class="action-btn amber">
+          <span class="btn-icon">💸</span>
+          <span class="btn-label">Payment</span>
+          <kbd>F5</kbd>
+        </a>
+        <a [routerLink]="'/voucher/receipt'" class="action-btn info">
+          <span class="btn-icon">📥</span>
+          <span class="btn-label">Receipt</span>
+          <kbd>F6</kbd>
+        </a>
+      </div>
+      <div class="keyboard-hint">
+        <kbd>Ctrl+K</kbd> Command Palette
+      </div>
+    </div>
+
+    <!-- 🔗 System Status -->
+    <div class="status-card">
+      <div class="section-header">
+        <span class="section-icon">🔗</span>
+        <h3>Integrations</h3>
+      </div>
+      <div class="status-list">
+        @for (source of ingestionSources(); track source.name) {
+          <div class="status-item">
+            <span class="status-icon">{{ source.icon }}</span>
+            <span class="status-name">{{ source.name }}</span>
+            <span class="status-indicator" [class.active]="source.status === 'active'" [class.syncing]="source.status === 'syncing'">
+              {{ source.status === 'active' ? '●' : '◐' }}
+            </span>
           </div>
-          <span class="recent-amount positive nx-number">+₹45,000</span>
-        </div>
-        <div class="recent-item">
-          <span class="recent-dot purple"></span>
-          <div class="recent-info">
-            <span class="recent-title">Payment PMT-892 approved</span>
-            <span class="recent-time">8 min ago</span>
-          </div>
-          <span class="recent-amount negative nx-number">-₹12,500</span>
-        </div>
-        <div class="recent-item">
-          <span class="recent-dot amber"></span>
-          <div class="recent-info">
-            <span class="recent-title">Purchase PO-1024 received</span>
-            <span class="recent-time">15 min ago</span>
-          </div>
-          <span class="recent-amount negative nx-number">-₹78,200</span>
-        </div>
-        <div class="recent-item">
-          <span class="recent-dot emerald"></span>
-          <div class="recent-info">
-            <span class="recent-title">Receipt RCT-445 posted</span>
-            <span class="recent-time">22 min ago</span>
-          </div>
-          <span class="recent-amount positive nx-number">+₹32,000</span>
-        </div>
-        <div class="recent-item">
-          <span class="recent-dot info"></span>
-          <div class="recent-info">
-            <span class="recent-title">Journal JV-1024 posted</span>
-            <span class="recent-time">34 min ago</span>
-          </div>
-          <span class="recent-amount neutral nx-number">₹0</span>
-        </div>
+        }
       </div>
     </div>
   </div>
