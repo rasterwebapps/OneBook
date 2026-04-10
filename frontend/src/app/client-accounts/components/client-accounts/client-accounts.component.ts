@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy, signal, computed, HostListener } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
+import { NxPageHeaderComponent, NxSearchInputComponent, NxEmptyStateComponent } from '../../../shared/components';
 
 export type ClientType = 'CUSTOMER' | 'VENDOR' | 'EMPLOYEE' | 'INTERCOMPANY';
 export type ViewMode = 'list' | 'form';
@@ -40,7 +41,7 @@ const CLIENT_TYPE_ICONS: Record<ClientType, string> = {
 @Component({
   selector: 'app-client-accounts',
   standalone: true,
-  imports: [DecimalPipe],
+  imports: [DecimalPipe, NxPageHeaderComponent, NxSearchInputComponent, NxEmptyStateComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './client-accounts.component.html',
   styleUrl: './client-accounts.component.scss',

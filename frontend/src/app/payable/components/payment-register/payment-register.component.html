@@ -1,11 +1,7 @@
 <div class="pr-screen">
 
   <!-- Header -->
-  <div class="pr-header">
-    <div class="pr-title">
-      <span class="pr-icon">💳</span>
-      <h2>Payment Register</h2>
-    </div>
+  <nx-page-header title="Payment Register" subtitle="Accounts payable register and payment batch management">
     <div class="pr-summary">
       <div class="summary-item">
         <span class="summary-label">Total Outstanding</span>
@@ -16,7 +12,7 @@
         <span class="summary-value">{{ pendingBatchCount() }} batch{{ pendingBatchCount() !== 1 ? 'es' : '' }}</span>
       </div>
     </div>
-  </div>
+  </nx-page-header>
 
   <!-- Tabs -->
   <div class="pr-tabs">
@@ -36,9 +32,7 @@
 
     <!-- Search Bar -->
     <div class="pr-toolbar">
-      <input #searchInput type="text" class="search-input" placeholder="Search vendor..."
-             [value]="searchQuery()"
-             (input)="updateSearch(searchInput.value)" />
+      <nx-search-input placeholder="Search vendor..." [value]="searchQuery()" (searchChange)="updateSearch($event)" />
       <span class="toolbar-hint">Select items per vendor to create a payment batch</span>
     </div>
 
@@ -133,11 +127,7 @@
                       <td class="col-bank">{{ entry.bankName }}</td>
                       <td><code class="ifsc-code">{{ entry.bankIfscCode }}</code></td>
                       <td class="col-status">
-                        <span class="status-pill"
-                              [class.available]="entry.status === 'AVAILABLE_FOR_PROCESSING'"
-                              [class.in-batch]="entry.status === 'IN_BATCH'">
-                          {{ entry.status === 'AVAILABLE_FOR_PROCESSING' ? 'Available' : 'In Batch' }}
-                        </span>
+                        <nx-status-badge [status]="entry.status === 'AVAILABLE_FOR_PROCESSING' ? 'ACTIVE' : 'IN_PROGRESS'" [label]="entry.status === 'AVAILABLE_FOR_PROCESSING' ? 'Available' : 'In Batch'" />
                       </td>
                     </tr>
                   }
@@ -161,10 +151,7 @@
       }
 
       @if (filteredVendorGroups().length === 0) {
-        <div class="empty-state">
-          <span class="empty-icon">📭</span>
-          <p>No outstanding payables found.</p>
-        </div>
+        <nx-empty-state icon="📭" title="No outstanding payables" description="No outstanding payables found." />
       }
     </div>
   }
@@ -199,11 +186,7 @@
               <td class="bank-cell">{{ batch.bankAccountId }}</td>
               <td><span class="mode-badge">{{ batch.paymentMode }}</span></td>
               <td class="col-status">
-                <span class="status-pill batch-status"
-                      [style.color]="batchStatusColor(batch.status)"
-                      [style.border-color]="batchStatusColor(batch.status)">
-                  {{ batchStatusLabel(batch.status) }}
-                </span>
+                <nx-status-badge [status]="batch.status" />
               </td>
               <td class="col-actions">
                 <!-- Maker-Checker Payer Options -->
@@ -241,10 +224,7 @@
       </table>
 
       @if (paymentBatches().length === 0) {
-        <div class="empty-state">
-          <span class="empty-icon">📭</span>
-          <p>No payment batches yet. Select AP items and create a batch from the AP Register tab.</p>
-        </div>
+        <nx-empty-state icon="📭" title="No payment batches" description="Select AP items and create a batch from the AP Register tab." />
       }
     </div>
   }

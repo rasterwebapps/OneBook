@@ -1,11 +1,7 @@
 <div class="ca-screen">
 
   <!-- Header -->
-  <div class="ca-header">
-    <div class="ca-title">
-      <span class="ca-icon">👥</span>
-      <h2>Client Accounts</h2>
-    </div>
+  <nx-page-header title="Client Accounts" subtitle="Manage customers, vendors, employees, and intercompany accounts">
     <div class="ca-summary">
       <div class="summary-item">
         <span class="summary-label">Total Accounts</span>
@@ -20,15 +16,13 @@
         <span class="summary-value nx-number">₹{{ totalCreditExposure() | number:'1.0-0' }}</span>
       </div>
     </div>
-  </div>
+  </nx-page-header>
 
   @if (mode() === 'list') {
 
     <!-- Toolbar -->
     <div class="ca-toolbar">
-      <input type="text" class="search-input" placeholder="Search by name, contact, or email..."
-             [value]="searchQuery()"
-             (input)="updateSearch($any($event.target).value)" />
+      <nx-search-input placeholder="Search by name, contact, or email..." [value]="searchQuery()" (searchChange)="updateSearch($event)" />
 
       <div class="filter-chips">
         <button class="chip" [class.active]="filterType() === 'ALL'" (click)="setFilterType('ALL')">All</button>
@@ -98,11 +92,7 @@
           </div>
         </div>
       } @empty {
-        <div class="empty-state">
-          <span class="empty-icon">📋</span>
-          <p>No client accounts found.</p>
-          <button class="btn-create" (click)="startCreate()">+ Create First Client</button>
-        </div>
+        <nx-empty-state icon="📋" title="No client accounts found" actionLabel="+ Create First Client" (action)="startCreate()" />
       }
     </div>
 

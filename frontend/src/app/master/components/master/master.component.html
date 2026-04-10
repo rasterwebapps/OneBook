@@ -1,8 +1,6 @@
 <div class="master-shell">
   <!-- ─── Header ─── -->
-  <div class="master-header">
-    <span class="master-badge">⚙️</span>
-    <h2>Chart of Accounts</h2>
+  <nx-page-header title="Chart of Accounts" subtitle="Manage ledger accounts and account groups">
     <div class="header-tabs">
       <button class="tab" [class.active]="tab() === 'accounts'" (click)="tab.set('accounts')">Ledger Accounts</button>
       <button class="tab" [class.active]="tab() === 'groups'" (click)="tab.set('groups')">Account Groups</button>
@@ -19,7 +17,7 @@
         </button>
       }
     </div>
-  </div>
+  </nx-page-header>
 
   <!-- ═══════════ ACCOUNTS TAB ═══════════ -->
   @if (tab() === 'accounts') {
@@ -27,10 +25,7 @@
     <!-- ── LIST ── -->
     @if (mode() === 'list') {
       <div class="filter-bar">
-        <input #searchInput type="text" class="search-input"
-               placeholder="Search accounts…"
-               [value]="searchTerm()"
-               (input)="searchTerm.set(searchInput.value)" />
+        <nx-search-input placeholder="Search accounts…" [value]="searchTerm()" (searchChange)="searchTerm.set($event)" />
         <select #groupFilter class="filter-select"
                 [value]="filterGroupId()"
                 (change)="filterGroupId.set(+groupFilter.value)">
@@ -84,9 +79,7 @@
         </table>
 
         @if (filteredAccounts().length === 0) {
-          <div class="empty-state">
-            <p>No accounts match your search.</p>
-          </div>
+          <nx-empty-state icon="📋" title="No accounts found" description="No accounts match your search criteria." />
         }
       </div>
     }

@@ -5,14 +5,14 @@
     <span>View Only — Auditor Access. No edits permitted in this portal.</span>
   </div>
 
-  <h2>External Auditor Portal</h2>
+  <nx-page-header title="External Auditor Portal" subtitle="Read-only audit view with hash-chain verification" />
 
   @if (error()) {
     <div class="error-banner">{{ error() }}</div>
   }
 
   @if (loading()) {
-    <p class="loading">Loading audit data...</p>
+    <nx-loading-spinner label="Loading audit data..." />
   }
 
   <div class="dashboard-grid">

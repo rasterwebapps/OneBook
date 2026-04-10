@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy, signal, computed } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
+import { NxPageHeaderComponent, NxSearchInputComponent, NxStatusBadgeComponent } from '../../../shared/components';
 
 export interface ReceivableRecord {
   id: string;
@@ -22,7 +23,7 @@ export interface ReceivableRecord {
 @Component({
   selector: 'app-accounts-receivable',
   standalone: true,
-  imports: [DecimalPipe],
+  imports: [DecimalPipe, NxPageHeaderComponent, NxSearchInputComponent, NxStatusBadgeComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './accounts-receivable.component.html',
   styleUrl: './accounts-receivable.component.scss',
