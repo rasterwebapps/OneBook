@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { AuditorService } from '../../services/auditor.service';
+import { NxPageHeaderComponent, NxLoadingSpinnerComponent } from '../../../shared/components';
 import {
   AuditSampleRequest,
   AuditComment,
@@ -10,7 +11,7 @@ import {
 @Component({
   selector: 'app-auditor-dashboard',
   standalone: true,
-  imports: [],
+  imports: [NxPageHeaderComponent, NxLoadingSpinnerComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './auditor-dashboard.component.html',
   styleUrl: './auditor-dashboard.component.scss'

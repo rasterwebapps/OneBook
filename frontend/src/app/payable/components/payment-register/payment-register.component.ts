@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy, signal, computed } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
+import { NxPageHeaderComponent, NxSearchInputComponent, NxStatusBadgeComponent, NxEmptyStateComponent } from '../../../shared/components';
 
 export type PaymentMode = 'NEFT' | 'RTGS' | 'IMPS' | 'Cheque' | 'Cash';
 export type BatchStatus = 'PENDING_APPROVAL' | 'APPROVED' | 'REJECTED' | 'PAYMENT_GENERATED' | 'COMPLETED';
@@ -57,7 +58,7 @@ export interface PaymentBatch {
 @Component({
   selector: 'app-payment-register',
   standalone: true,
-  imports: [DecimalPipe],
+  imports: [DecimalPipe, NxPageHeaderComponent, NxSearchInputComponent, NxStatusBadgeComponent, NxEmptyStateComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './payment-register.component.html',
   styleUrl: './payment-register.component.scss',
