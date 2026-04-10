@@ -270,7 +270,7 @@ Feature: Zero-Knowledge Field Encryption
 | TRD | [TR-002, TR-007](../../business/TRD.md#3-tr-002-field-level-encryption-aes-256-gcm) |
 | RTM | [RTM Row REQ-002](../RTM.md) |
 | User Stories | [US-006, US-007](../../business/user-stories.md) |
-| Agent Owner | [@SecurityWarden](../../../.github/agents/security-warden.md) |
+| Agent Owner | [@security](../../../.github/agents/security.agent.md) |
 | Migration | `V5__blind_dba_infrastructure.sql` |
 
 ---

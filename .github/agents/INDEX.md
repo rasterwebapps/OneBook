@@ -4,22 +4,62 @@ This index provides quick access to design requirements, patterns, and conventio
 
 ---
 
+## SDLC Agent System (Copilot Agents)
+
+**Head Orchestrator:** `@partner` (`partner.agent.md`)
+
+Users invoke ONLY `@partner`. It orchestrates the full SDLC lifecycle with Agile feedback loops.
+
+| Invocable Agent | File | SDLC Role |
+|----------------|------|-----------|
+| 🤝 @partner | `partner.agent.md` | BA + PM + Team Lead (orchestrator) |
+| 📒 @backend | `backend.agent.md` | Backend Dev Team |
+| 🎹 @frontend | `frontend.agent.md` | Frontend Dev Team |
+| 🗄️ @database | `database.agent.md` | DB Design Team |
+| 🔐 @security | `security.agent.md` | Security Review Team |
+| 🏗️ @infra | `infra.agent.md` | DevOps Team |
+| 📝 @docs | `docs.agent.md` | BA Documentation Phase |
+| ✅ @quality | `quality.agent.md` | Testing Team |
+
+**Global Rules:** `.github/copilot-instructions.md` (injected into ALL Copilot interactions)
+
+**Workflow:** User → @partner → domain agents → @partner validates → @quality tests → @docs documents → done.
+
+**Copilot Skills:** Each agent has an associated skill in `.github/skills/` providing reusable task procedures:
+
+| Agent | Skill | Location |
+|-------|-------|----------|
+| @partner | `analyze-requirement` | `.github/skills/analyze-requirement/SKILL.md` |
+| @backend | `add-rest-endpoint` | `.github/skills/add-rest-endpoint/SKILL.md` |
+| @frontend | `create-angular-component` | `.github/skills/create-angular-component/SKILL.md` |
+| @database | `create-flyway-migration` | `.github/skills/create-flyway-migration/SKILL.md` |
+| @security | `security-review` | `.github/skills/security-review/SKILL.md` |
+| @infra | `setup-dev-environment` | `.github/skills/setup-dev-environment/SKILL.md` |
+| @docs | `update-documentation` | `.github/skills/update-documentation/SKILL.md` |
+| @quality | `run-quality-gates` | `.github/skills/run-quality-gates/SKILL.md` |
+
+**Feedback Loops:**
+- After every agent phase: @partner reviews → issues route back → fix → re-review
+- After all phases: @quality tests → failures route back → fix → re-test
+- Cross-agent validation: API contracts, schema alignment, security coverage
+
+---
+
 ## Requirement Orchestration
 
-**Owner:** @RequirementsAnalyzer (`requirements-analyzer.md`)
+**Agent:** @partner (`partner.agent.md`)
 
-- Domain Classification Matrix (10 domains mapped to primary agents)
+- Domain Classification Matrix (7 domains mapped to specialist agents)
 - Complexity Assessment Framework (LOW / MEDIUM / HIGH / CRITICAL)
 - Orchestration workflow patterns (Sequential, Parallel, Iterative)
 - Quality gate checkpoints (6 gates from classification through deployment)
-- Agent communication protocols (assignment, completion, escalation)
 - Requirement lifecycle tracking (INTAKE → CLOSED)
 
 **Critical Rules:**
 - ALWAYS classify a requirement before assigning agents
 - ALWAYS define measurable acceptance criteria before implementation begins
-- ALWAYS include @DocAgent for every HIGH/CRITICAL requirement
-- ALWAYS include @AuditAgent for final sign-off on HIGH/CRITICAL requirements
+- ALWAYS include @docs for every HIGH/CRITICAL requirement
+- ALWAYS include @security for final sign-off on HIGH/CRITICAL requirements
 - NEVER skip quality gates to meet speed targets
 - NEVER approve CRITICAL requirements without mandatory human review
 - NEVER allow implementation before Gate 1 (Classification Approved) is complete
@@ -27,14 +67,14 @@ This index provides quick access to design requirements, patterns, and conventio
 **Templates:** `.github/templates/requirement-analysis-template.md`
 
 **References:**
-- [`requirements-analyzer.md`](requirements-analyzer.md)
+- [`partner.agent.md`](partner.agent.md) (invocable orchestrator)
 - [`.github/templates/requirement-analysis-template.md`](../../.github/templates/requirement-analysis-template.md)
 
 ---
 
 ## Architecture & Infrastructure
 
-**Owner:** @Architect (`architect.md`)
+**Agent:** @infra (`infra.agent.md`)
 
 - Docker Compose service definitions (PostgreSQL 17, Redis 7)
 - Spring Boot configuration patterns
@@ -42,17 +82,20 @@ This index provides quick access to design requirements, patterns, and conventio
 - Virtual Threads configuration
 - CORS and API gateway setup
 - Health check patterns
+- Failure-safe Redis pattern (NOT circuit breaker)
+- Cache strategy by data type (TTL table)
+- Structured logging with MDC
 
 **References:**
-- [`architecture.md`](../../architecture.md)
-- [`docs/architecture-diagram.md`](../../docs/architecture-diagram.md)
-- [`docs/developer-guide.md`](../../docs/developer-guide.md)
+- [`docs/architecture.md`](../../docs/architecture.md)
+- [`docs/technical/architecture-diagram.md`](../../docs/technical/architecture-diagram.md)
+- [`docs/technical/developer-guide.md`](../../docs/technical/developer-guide.md)
 
 ---
 
 ## Accounting & Ledger
 
-**Owner:** @LedgerExpert (`ledger-expert.md`)
+**Agent:** @backend (`backend.agent.md`)
 
 - Double-entry validation (3-level validation: service → trigger → exception)
 - Layered architecture (Controller → Service → Repository → Database)
@@ -61,6 +104,8 @@ This index provides quick access to design requirements, patterns, and conventio
 - Financial reporting formulas (Trial Balance, P&L, Balance Sheet, Cash Flow)
 - Fixed Asset Register and depreciation calculations
 - Global exception handler pattern
+- Payment Processing Pipeline (3-stage pre-ledger workflow)
+- Ingestion adapter pattern (FinancialEventAdapter interface)
 
 **Critical Rules:**
 - ALWAYS validate transaction balance before posting
@@ -77,7 +122,7 @@ This index provides quick access to design requirements, patterns, and conventio
 
 ## Security & Encryption
 
-**Owner:** @SecurityWarden (`security-warden.md`)
+**Agent:** @security (`security.agent.md`)
 
 - AES-256-GCM field-level encryption pattern
 - Blind index (HMAC-SHA256) for searchable encryption
@@ -105,7 +150,7 @@ This index provides quick access to design requirements, patterns, and conventio
 
 ## Performance & Caching
 
-**Owner:** @PerfEngineer (`perf-engineer.md`)
+**Agent:** @infra (`infra.agent.md`) + @backend (`backend.agent.md`)
 
 - Cache-aside read pattern (check cache → fallback to DB)
 - Write-through pattern (write DB → invalidate cache)
@@ -136,7 +181,7 @@ This index provides quick access to design requirements, patterns, and conventio
 
 ## Frontend & UX
 
-**Owner:** @UXSpecialist (`ux-specialist.md`)
+**Agent:** @frontend (`frontend.agent.md`)
 
 - Angular Signals for reactive state (not RxJS Subjects)
 - Standalone components (no NgModules)
@@ -171,7 +216,7 @@ This index provides quick access to design requirements, patterns, and conventio
 
 ## Ingestion & Adapters
 
-**Owner:** @IntegrationBot (`integration-bot.md`)
+**Agent:** @backend (`backend.agent.md`)
 
 - Pluggable adapter pattern (`FinancialEventAdapter` interface)
 - Adapter auto-discovery via Spring DI
@@ -198,7 +243,7 @@ This index provides quick access to design requirements, patterns, and conventio
 
 ## AI & Intelligence
 
-**Owner:** @AIEngineer (`ai-engineer.md`)
+**Agent:** @backend (`backend.agent.md`)
 
 - Predictive cash flow forecasting (30/60/90-day horizons)
 - Scenario modeling ("What-If" analysis)
@@ -225,7 +270,7 @@ This index provides quick access to design requirements, patterns, and conventio
 
 ## Compliance & Tax
 
-**Owner:** @ComplianceAgent (`compliance-agent.md`)
+**Agent:** @backend (`backend.agent.md`)
 
 - e-Invoice generation (India GST, EU VAT, US Sales Tax)
 - e-Way Bill generation
@@ -254,7 +299,7 @@ This index provides quick access to design requirements, patterns, and conventio
 
 ## Production & Auditing
 
-**Owner:** @AuditAgent (`audit-agent.md`)
+**Agent:** @security (`security.agent.md`) + @infra (`infra.agent.md`)
 
 - Read-only auditor portal (CPAs cannot modify data)
 - 5 automated security checks (RLS, encryption, audit chain, secrets, CORS)
@@ -284,7 +329,7 @@ This index provides quick access to design requirements, patterns, and conventio
 
 ## Documentation Management
 
-**Owner:** @DocAgent (`doc-agent.md`)
+**Agent:** @docs (`docs.agent.md`)
 
 - API documentation patterns (endpoint, request, response, errors)
 - Mermaid.js diagram conventions (flowchart, sequence, ER)
@@ -359,39 +404,39 @@ This index provides quick access to design requirements, patterns, and conventio
 ## Quick Reference by Task Type
 
 ### Analyzing a New Requirement
-1. **Agent**: @RequirementsAnalyzer
+1. **Agent**: @partner
 2. **Steps**: Receive → Classify (domain + complexity) → Assign agents → Define phases → Track progress
 3. **Template**: `.github/templates/requirement-analysis-template.md`
 
 ### Adding a New REST Endpoint
-1. **Agent**: @LedgerExpert or @IntegrationBot
+1. **Agent**: @backend
 2. **Steps**: DTO → Service → Controller → Tests → API docs
-3. **Pattern**: See `ledger-expert.md` → Controller Response Pattern
+3. **Pattern**: See `backend.agent.md` → Domain Knowledge Reference
 
 ### Adding a New Ingestion Adapter
-1. **Agent**: @IntegrationBot
+1. **Agent**: @backend
 2. **Steps**: Implement interface → `@Component` → Tests
-3. **Pattern**: See `integration-bot.md` → Adapter Implementation Pattern
+3. **Pattern**: See `backend.agent.md` → Ingestion Layer
 
 ### Adding Encrypted Field
-1. **Agents**: @SecurityWarden + @LedgerExpert + @PerfEngineer
+1. **Agents**: @security + @backend + @infra
 2. **Steps**: Add encrypted column + blind index → JPA converter → Cache invalidation
-3. **Pattern**: See `security-warden.md` → JPA Converter Pattern
+3. **Pattern**: See `security.agent.md` → Encrypted Field Schema Pattern
 
 ### Adding Keyboard Shortcut
-1. **Agents**: @UXSpecialist + @DocAgent
+1. **Agents**: @frontend + @docs
 2. **Steps**: Register in KeyBindingRegistry → Register command → Update docs
-3. **Pattern**: See `ux-specialist.md` → Keyboard Shortcut Registration
+3. **Pattern**: See `frontend.agent.md` → Keyboard Shortcut Registration
 
 ### Adding Financial Report
-1. **Agents**: @LedgerExpert + @UXSpecialist
+1. **Agents**: @backend + @frontend
 2. **Steps**: Service logic → Controller endpoint → Frontend component
-3. **Pattern**: See `ledger-expert.md` → Financial Formulas
+3. **Pattern**: See `backend.agent.md` → Financial Formulas
 
 ### Adding Flyway Migration
-1. **Agents**: @LedgerExpert + @SecurityWarden + @DocAgent
+1. **Agents**: @database + @security + @docs
 2. **Steps**: Create V#__description.sql → Enable RLS → Update schema docs
-3. **Pattern**: See `ledger-expert.md` → Database Conventions
+3. **Pattern**: See `database.agent.md` → Standard Table Template
 
 ---
 
@@ -399,14 +444,14 @@ This index provides quick access to design requirements, patterns, and conventio
 
 | Pitfall | Agent | Solution Reference |
 |---------|-------|-------------------|
-| Unbalanced transaction | @LedgerExpert | `ledger-expert.md` → Double-Entry Validation Pattern |
-| IV reuse in encryption | @SecurityWarden | `security-warden.md` → AES-256-GCM Pattern |
-| Cache failure crashes app | @PerfEngineer | `perf-engineer.md` → Failure-Safe Pattern |
-| N+1 query problem | @LedgerExpert, @PerfEngineer | `ledger-expert.md` → Best Practices |
-| Missing RLS policy | @SecurityWarden | `security-warden.md` → RLS Pattern |
-| Keyboard shortcut conflict | @UXSpecialist | `ux-specialist.md` → Keyboard Shortcuts |
-| Hardcoded tax rates | @ComplianceAgent | `compliance-agent.md` → Tax Rate Configuration |
-| Incomplete documentation | @DocAgent | `doc-agent.md` → Documentation Maintenance |
+| Unbalanced transaction | @backend | `backend.agent.md` → Double-Entry Validation |
+| IV reuse in encryption | @security | `security.agent.md` → Critical Security Rules |
+| Cache failure crashes app | @infra | `infra.agent.md` → Failure-Safe Pattern |
+| N+1 query problem | @backend | `backend.agent.md` → Additional Conventions |
+| Missing RLS policy | @security, @database | `database.agent.md` → RLS Policies |
+| Keyboard shortcut conflict | @frontend | `frontend.agent.md` → Tally Keyboard Shortcuts |
+| Hardcoded tax rates | @backend | `backend.agent.md` → Compliance Rules |
+| Incomplete documentation | @docs | `docs.agent.md` → Documentation Review Checklist |
 
 ---
 
@@ -482,37 +527,32 @@ Quick reference for which agents work together on common tasks:
 
 | Task | Primary Agent | Collaborating Agents |
 |------|--------------|---------------------|
-| **New Requirement Analysis** | @RequirementsAnalyzer | All relevant domain agents |
-| New Journal Entry Flow | @LedgerExpert | @SecurityWarden, @PerfEngineer, @UXSpecialist |
-| New Industry Adapter | @IntegrationBot | @LedgerExpert, @ComplianceAgent |
-| Add Encrypted Field | @SecurityWarden | @LedgerExpert, @PerfEngineer |
-| New Financial Report | @LedgerExpert | @UXSpecialist, @ComplianceAgent |
-| New Keyboard Shortcut | @UXSpecialist | @DocAgent |
-| AI Feature Addition | @AIEngineer | @LedgerExpert, @UXSpecialist |
-| Flyway Migration | @LedgerExpert | @SecurityWarden, @Architect |
-| API Endpoint Change | @LedgerExpert/@IntegrationBot | @DocAgent, @UXSpecialist |
-| Performance Issue | @PerfEngineer | @SecurityWarden, @LedgerExpert |
-| Compliance Update | @ComplianceAgent | @LedgerExpert, @IntegrationBot |
-| Production Incident | @AuditAgent | @PerfEngineer, @SecurityWarden |
-| **Multi-domain Feature** | @RequirementsAnalyzer | Assigned per classification |
-
-**Detailed matrix:** See `sub-agents.md` → Sub-Agent Interaction Matrix
+| **New Requirement Analysis** | @partner | All relevant domain agents |
+| New Journal Entry Flow | @backend | @security, @infra, @frontend |
+| New Industry Adapter | @backend | @backend, @backend |
+| Add Encrypted Field | @security | @backend, @infra |
+| New Financial Report | @backend | @frontend, @backend |
+| New Keyboard Shortcut | @frontend | @docs |
+| AI Feature Addition | @backend | @backend, @frontend |
+| Flyway Migration | @database | @security, @infra |
+| API Endpoint Change | @backend | @docs, @frontend |
+| Performance Issue | @infra | @security, @backend |
+| Compliance Update | @backend | @backend, @backend |
+| Production Incident | @security | @infra, @security |
+| **Multi-domain Feature** | @partner | Assigned per classification |
 
 ---
 
 ## Quick Navigation
 
-- **New requirement?** → Read [`requirements-analyzer.md`](requirements-analyzer.md)
-- **Foundation work?** → Read [`architect.md`](architect.md)
-- **Accounting logic?** → Read [`ledger-expert.md`](ledger-expert.md)
-- **Security/encryption?** → Read [`security-warden.md`](security-warden.md)
-- **Performance issue?** → Read [`perf-engineer.md`](perf-engineer.md)
-- **Frontend/UI work?** → Read [`ux-specialist.md`](ux-specialist.md)
-- **External integration?** → Read [`integration-bot.md`](integration-bot.md)
-- **AI features?** → Read [`ai-engineer.md`](ai-engineer.md)
-- **Tax/compliance?** → Read [`compliance-agent.md`](compliance-agent.md)
-- **Production deployment?** → Read [`audit-agent.md`](audit-agent.md)
-- **Documentation update?** → Read [`doc-agent.md`](doc-agent.md)
+- **New requirement?** → Read [`partner.agent.md`](partner.agent.md)
+- **Accounting logic / Backend?** → Read [`backend.agent.md`](backend.agent.md)
+- **Security/encryption?** → Read [`security.agent.md`](security.agent.md)
+- **Infrastructure/performance?** → Read [`infra.agent.md`](infra.agent.md)
+- **Frontend/UI work?** → Read [`frontend.agent.md`](frontend.agent.md)
+- **Database/migrations?** → Read [`database.agent.md`](database.agent.md)
+- **Testing/quality?** → Read [`quality.agent.md`](quality.agent.md)
+- **Documentation update?** → Read [`docs.agent.md`](docs.agent.md)
 
 ---
 
@@ -529,5 +569,5 @@ See **[MAINTENANCE.md](MAINTENANCE.md)** for detailed guidance, ownership rules,
 
 ---
 
-**Last Updated:** 2026-03-18  
-**Maintained By:** @DocAgent
+**Last Updated:** 2026-04-09  
+**Maintained By:** @docs

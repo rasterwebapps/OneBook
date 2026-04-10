@@ -560,6 +560,125 @@ kbd {
   .col-actions { white-space: nowrap; text-align: right; }
 }
 
+/* ─── Danger Button ─── */
+.nx-btn--danger {
+  background: var(--nx-danger);
+  border-color: var(--nx-danger);
+  color: #ffffff;
+
+  &:hover:not(:disabled) {
+    background: #e53935;
+    border-color: #e53935;
+  }
+}
+
+/* ─── Ghost / Outline Buttons ─── */
+.nx-btn--ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--nx-text-secondary);
+
+  &:hover:not(:disabled) {
+    background: rgba(0, 0, 0, 0.04);
+    color: var(--nx-text-primary);
+  }
+}
+
+.nx-btn--outline {
+  background: transparent;
+  border-color: var(--nx-border);
+  color: var(--nx-text-primary);
+
+  &:hover:not(:disabled) {
+    background: var(--nx-bg-card-hover);
+    border-color: var(--nx-border-glow);
+  }
+}
+
+/* ─── Form Controls ─── */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--nx-space-4);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-1);
+
+  label {
+    font-size: var(--nx-text-sm);
+    font-weight: var(--nx-font-weight-medium);
+    color: var(--nx-text-secondary);
+  }
+}
+
+.form-control {
+  padding: 7px 12px;
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-sm);
+  font-family: var(--nx-font-primary);
+  font-size: var(--nx-text-sm);
+  color: var(--nx-text-primary);
+  background: var(--nx-bg-card);
+  transition: border-color var(--nx-transition-fast), box-shadow var(--nx-transition-fast);
+  outline: none;
+
+  &:focus {
+    border-color: var(--nx-emerald);
+    box-shadow: 0 0 0 3px var(--nx-emerald-glow);
+  }
+
+  &::placeholder {
+    color: var(--nx-text-muted);
+  }
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    background: var(--nx-bg-surface);
+  }
+}
+
+select.form-control {
+  cursor: pointer;
+}
+
+textarea.form-control {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* ─── Screen Reader Only ─── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ─── Reduced Motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ─── Page Container ─── */
+.page-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
 /* ─── Print Utility ─── */
 @media print {
   .no-print { display: none !important; }

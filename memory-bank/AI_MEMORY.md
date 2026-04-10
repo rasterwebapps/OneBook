@@ -193,7 +193,7 @@ export const environment = {
 
 - `memory-bank/systempatterns.md` — Core architectural patterns
 - `docs/technical/operational-runbook.md` — Deployment procedures
-- `.github/agents/security-warden.md` — Security agent ownership
+- `.github/agents/security.agent.md` — Security agent ownership
 
 ---
 

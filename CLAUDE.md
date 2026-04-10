@@ -80,23 +80,51 @@ docker compose up -d
 
 ---
 
-## Sub-Agent Directory
+## Agent System — SDLC with Agile Feedback Loops
 
-10 specialist agents defined in `.github/agents/`:
+### Tier 1: Invocable Copilot Agents (`.agent.md`)
 
-| Agent | File | Domain |
-|-------|------|--------|
-| 🏗️ @Architect | `architect.md` | Foundation, infra, CI/CD |
-| 📒 @LedgerExpert | `ledger-expert.md` | Accounting engine, reports |
-| 🔐 @SecurityWarden | `security-warden.md` | Encryption, RLS, audit |
-| ⚡ @PerfEngineer | `perf-engineer.md` | Redis cache, performance |
-| 🎹 @UXSpecialist | `ux-specialist.md` | Angular Signals, keyboard nav |
-| 🔌 @IntegrationBot | `integration-bot.md` | Adapters, ingestion pipeline |
-| 🧠 @AIEngineer | `ai-engineer.md` | Forecasting, MTM, anomaly |
-| 📋 @ComplianceAgent | `compliance-agent.md` | Tax, GST, reconciliation |
-| 🛡️ @AuditAgent | `audit-agent.md` | Auditor portal, production |
-| 📝 @DocAgent | `doc-agent.md` | Documentation maintenance |
+Users invoke ONLY `@partner`. It orchestrates all other agents.
 
+| Agent | File | SDLC Role |
+|-------|------|-----------|
+| 🤝 **@partner** | `partner.agent.md` | Head Orchestrator (BA + PM + Team Lead) |
+| 📒 @backend | `backend.agent.md` | Backend Dev Team |
+| 🎹 @frontend | `frontend.agent.md` | Frontend Dev Team |
+| 🗄️ @database | `database.agent.md` | DB Design Team |
+| 🔐 @security | `security.agent.md` | Security Review Team |
+| 🏗️ @infra | `infra.agent.md` | DevOps Team |
+| 📝 @docs | `docs.agent.md` | BA Documentation Phase |
+| ✅ @quality | `quality.agent.md` | Testing Team |
+
+**Global rules:** `.github/copilot-instructions.md` (injected into ALL Copilot interactions)
+
+### Copilot Skills (`.github/skills/`)
+
+Each agent has a paired **Copilot Skill** — a reusable, step-by-step task procedure. Agents define WHO (persona + rules); Skills define HOW (task recipes + templates).
+
+| Agent | Skill | Purpose |
+|-------|-------|---------|
+| @partner | `analyze-requirement` | Classify, plan, and track requirements through SDLC |
+| @backend | `add-rest-endpoint` | Scaffold DTO → Repository → Service → Controller → Test |
+| @frontend | `create-angular-component` | Create standalone component with Signals, i18n, routing |
+| @database | `create-flyway-migration` | Create migration with RLS, tenant isolation, proper types |
+| @security | `security-review` | Review for RLS, encryption, secrets, OWASP compliance |
+| @infra | `setup-dev-environment` | Set up/manage Docker Compose dev environment |
+| @docs | `update-documentation` | Update docs using Selective Documentation Update Protocol |
+| @quality | `run-quality-gates` | Execute full quality validation pipeline (8 gates) |
+
+### Environment Setup
+
+`.github/copilot-setup-steps.yml` — Configures the Copilot cloud agent environment with PostgreSQL 17, Redis 7, Java 21, and Node.js so agents can build, test, and run the full stack.
+
+### Workflow
+```
+User → @partner → @database → @backend → @frontend → @security → @quality → @docs → done
+                  ↑___ feedback loops: @partner validates each phase, routes issues back ___↓
+```
+
+→ See `.github/agents/README.md` for full SDLC workflow details.
 → See `.github/agents/INDEX.md` for design requirements by category.
 
 ---
@@ -129,10 +157,29 @@ OneBook/
 ├── CONTRIBUTING.md                    ← Branching, PR, coding standards
 ├── docker-compose.yml                 ← Full-stack orchestration (7 services)
 ├── .github/
-│   ├── agents/                        ← Agent instruction files (10 agents)
+│   ├── copilot-instructions.md        ← Global rules for ALL Copilot interactions
+│   ├── copilot-setup-steps.yml        ← Copilot cloud agent environment setup (PostgreSQL, Redis, Java, Node)
+│   ├── agents/                        ← SDLC agent system
+│   │   ├── partner.agent.md           ← 🤝 @partner — Head orchestrator (ONLY user-facing agent)
+│   │   ├── backend.agent.md           ← 📒 @backend — Backend dev (Java/Spring Boot)
+│   │   ├── frontend.agent.md          ← 🎹 @frontend — Frontend dev (Angular)
+│   │   ├── database.agent.md          ← 🗄️ @database — DB design (PostgreSQL/Flyway)
+│   │   ├── security.agent.md          ← 🔐 @security — Security (encryption, RLS)
+│   │   ├── infra.agent.md             ← 🏗️ @infra — Infrastructure (Docker, CI/CD)
+│   │   ├── docs.agent.md              ← 📝 @docs — Documentation & memory bank
+│   │   ├── quality.agent.md           ← ✅ @quality — Testing & quality gates
 │   │   ├── INDEX.md                   ← Design requirements quick index
 │   │   ├── MAINTENANCE.md             ← Agent ownership maintenance guide
-│   │   └── *.md                       ← Individual agent files
+│   │   └── README.md                  ← Agent system architecture & SDLC workflow
+│   ├── skills/                        ← Copilot Skills (reusable task procedures)
+│   │   ├── analyze-requirement/       ← @partner skill — requirement classification & planning
+│   │   ├── add-rest-endpoint/         ← @backend skill — scaffold REST API endpoints
+│   │   ├── create-angular-component/  ← @frontend skill — standalone Angular components
+│   │   ├── create-flyway-migration/   ← @database skill — Flyway migrations with RLS
+│   │   ├── security-review/           ← @security skill — security audit checklist
+│   │   ├── setup-dev-environment/     ← @infra skill — Docker Compose dev setup
+│   │   ├── update-documentation/      ← @docs skill — selective doc updates
+│   │   └── run-quality-gates/         ← @quality skill — full quality validation pipeline
 │   ├── scripts/
 │   │   ├── validate-agent-ownership.sh    ← Agent ownership validation
 │   │   ├── validate-quality-gates.sh      ← RLS, DTO, BigDecimal, test coverage, memory bank freshness
@@ -189,6 +236,70 @@ At the end of each task, the active AI agent MUST:
 8. **Run memory bank sync** — `./.github/scripts/sync-memory-bank.sh --check` to detect stale context. Use `--fix` to auto-correct.
 
 This keeps the memory bank accurate and reduces token usage in future sessions by providing compressed, high-signal context.
+
+---
+
+## Selective Documentation Update Protocol
+
+**⚡ CRITICAL: Update ONLY the docs affected by the current change — NOT all docs on every input.**
+
+Documentation updates must be **targeted and proportional** to the change made. Use the Documentation Impact Matrix below to determine which files need updating for a given change type.
+
+### Documentation Impact Matrix
+
+| Change Type | ALWAYS Update | CONDITIONALLY Update | NEVER Touch |
+|---|---|---|---|
+| **Bug fix** (no API/schema change) | `activecontext.md`, `troubleshooting.md` | — | User manual, feature catalog, API docs, schema docs |
+| **New API endpoint** | `activecontext.md`, `progress.md` | `api-documentation.md`, `api-contracts.md`, `feature-catalog.md` | Keyboard shortcuts, architecture diagrams (unless new module) |
+| **New DB table/migration** | `activecontext.md`, `progress.md` | `sql-schema.md`, `data-dictionary.md` | User manual, keyboard shortcuts, architecture diagrams |
+| **New UI screen/component** | `activecontext.md`, `progress.md` | `user-manual.md`, `feature-catalog.md` | SQL schema, API docs (unless new endpoints too) |
+| **New keyboard shortcut** | `activecontext.md` | `keyboard-shortcuts.md`, `key-binding-registry.md`, `user-manual.md` | SQL schema, API docs, architecture diagrams |
+| **New module/package** | `activecontext.md`, `progress.md` | Agent ownership files, `architecture-diagram.md`, `developer-guide.md` | User manual (unless user-facing), keyboard shortcuts |
+| **Security change** | `activecontext.md`, `systempatterns.md` | `operational-runbook.md` | User manual, feature catalog |
+| **Infrastructure change** | `activecontext.md` | `operational-runbook.md`, `developer-guide.md`, `docker-compose.yml` docs | User manual, feature catalog, API docs |
+| **Full new feature** (DB + API + UI) | `activecontext.md`, `progress.md` | All docs in the feature's scope (see below) | Docs for unrelated features |
+| **Documentation-only change** | `activecontext.md` | The specific doc being improved | All other docs |
+| **Refactor** (no behavior change) | `activecontext.md` | `developer-guide.md` (if patterns changed) | User manual, feature catalog, API docs |
+
+### How @docs Determines What to Update
+
+When `@partner` delegates to `@docs` in Phase 6, the `@docs` agent MUST:
+
+1. **Identify the change scope** — What domains were touched? (DB, Backend, Frontend, Security, Infra)
+2. **Consult the Impact Matrix** — Map the change type to the affected doc categories
+3. **Update ONLY affected docs** — Do not regenerate or rewrite docs that are unrelated to the change
+4. **Always update `activecontext.md`** — This is the one file that is updated on every task, regardless of scope
+
+### Auto-Generated Docs
+
+For docs that can be auto-generated (`BRD.md`, `FRD.md`, `TRD.md`, `RTM.md`, `data-dictionary.md`), use the automation scripts in `docs/automation/` — but ONLY run the specific generator for the affected doc:
+
+```bash
+# DON'T: Regenerate everything
+# npm run generate-all    ← Only when explicitly needed
+
+# DO: Run only the specific generator
+npm run generate-brd       # Only if business requirements changed
+npm run generate-frd       # Only if functional requirements changed
+npm run generate-trd       # Only if technical requirements changed
+npm run generate-rtm       # Only if requirement traceability changed
+npm run generate-data-dict # Only if data model changed
+npm run validate           # Always run to check consistency
+```
+
+### Examples
+
+**Example 1: "Fix trial balance calculation bug"**
+- ✅ Update: `activecontext.md`, `troubleshooting.md`
+- ❌ Skip: User manual, feature catalog, API docs, schema docs, keyboard shortcuts
+
+**Example 2: "Add vendor master with CRUD + list screen"**
+- ✅ Update: `activecontext.md`, `progress.md`, `user-manual.md`, `feature-catalog.md`, `api-documentation.md`, `api-contracts.md`, `sql-schema.md`, `data-dictionary.md`
+- ❌ Skip: Keyboard shortcuts, architecture diagrams, operational runbook
+
+**Example 3: "Add keyboard shortcut Alt+V for voucher entry"**
+- ✅ Update: `activecontext.md`, `keyboard-shortcuts.md`, `key-binding-registry.md`, `user-manual.md` (shortcuts section only)
+- ❌ Skip: API docs, SQL schema, feature catalog, architecture diagrams
 
 ---
 

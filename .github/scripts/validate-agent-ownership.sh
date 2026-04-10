@@ -26,9 +26,8 @@ check_ownership() {
     # Remove leading ./
     path=${path#./}
     
-    # Search in agent instruction files (must contain hyphen: architect.md, ledger-expert.md, etc.)
-    # This excludes README.md, INDEX.md, MAINTENANCE.md, IMPLEMENTATION_SUMMARY.md
-    for agent_file in "$AGENTS_DIR"/*-*.md; do
+    # Search in agent instruction files (.agent.md files)
+    for agent_file in "$AGENTS_DIR"/*.agent.md; do
         if [ -f "$agent_file" ]; then
             if grep -q "$path" "$agent_file" 2>/dev/null; then
                 found=1
@@ -67,7 +66,7 @@ for file in *Service.java; do
         service_name="${file%.java}"
         found=0
         # Check if service name is mentioned in agent instruction files
-        for agent_file in "$AGENTS_DIR"/*-*.md; do
+        for agent_file in "$AGENTS_DIR"/*.agent.md; do
             if [ -f "$agent_file" ]; then
                 if grep -q "$service_name" "$agent_file" 2>/dev/null; then
                     found=1
@@ -93,7 +92,7 @@ for file in *Controller.java; do
         controller_name="${file%.java}"
         found=0
         # Check if controller name is mentioned in agent instruction files
-        for agent_file in "$AGENTS_DIR"/*-*.md; do
+        for agent_file in "$AGENTS_DIR"/*.agent.md; do
             if [ -f "$agent_file" ]; then
                 if grep -q "$controller_name" "$agent_file" 2>/dev/null; then
                     found=1
@@ -136,15 +135,15 @@ for file in V*.sql; do
 done
 
 echo ""
-echo "🎯 Checking RequirementsAnalyzer & Orchestration..."
+echo "🎯 Checking Orchestrator & Orchestration..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-# Check that the @RequirementsAnalyzer agent file exists
-if [ ! -f "$AGENTS_DIR/requirements-analyzer.md" ]; then
-    echo -e "${RED}✗${NC} Missing: @RequirementsAnalyzer agent file - .github/agents/requirements-analyzer.md"
+# Check that the @partner agent file exists
+if [ ! -f "$AGENTS_DIR/partner.agent.md" ]; then
+    echo -e "${RED}✗${NC} Missing: @partner agent file - .github/agents/partner.agent.md"
     EXIT_CODE=1
 else
-    echo -e "${GREEN}✓${NC} @RequirementsAnalyzer agent file exists"
+    echo -e "${GREEN}✓${NC} @partner agent file exists"
 fi
 
 # Check that the requirement analysis template exists
@@ -155,9 +154,9 @@ else
     echo -e "${GREEN}✓${NC} Requirement analysis template exists"
 fi
 
-# Check that requirements-analyzer.md references the domain classification matrix (orchestration responsibilities)
-if ! grep -q "Domain Classification Matrix" "$AGENTS_DIR/requirements-analyzer.md" 2>/dev/null; then
-    echo -e "${RED}✗${NC} Missing: Domain Classification Matrix in requirements-analyzer.md"
+# Check that partner.agent.md references the domain classification matrix (orchestration responsibilities)
+if ! grep -q "Domain Classification Matrix" "$AGENTS_DIR/partner.agent.md" 2>/dev/null; then
+    echo -e "${RED}✗${NC} Missing: Domain Classification Matrix in partner.agent.md"
     EXIT_CODE=1
 else
     echo -e "${GREEN}✓${NC} Orchestration responsibilities documented (Domain Classification Matrix present)"
