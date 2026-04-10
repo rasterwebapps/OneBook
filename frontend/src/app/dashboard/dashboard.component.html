@@ -1,32 +1,45 @@
 <div class="omni-dashboard">
-  <!-- KPI Row -->
+  <!-- Page Header -->
+  <nx-page-header title="Dashboard" subtitle="Real-time financial overview and quick actions">
+    <button class="nx-btn nx-btn--emerald" routerLink="/voucher/payment">
+      + New Voucher <kbd>F5</kbd>
+    </button>
+  </nx-page-header>
+
+  <!-- KPI Row — using shared stat card components -->
   <div class="kpi-row">
-    <div class="nx-stat-card emerald">
-      <div class="stat-icon">💰</div>
-      <div class="stat-label">Cash Balance</div>
-      <div class="stat-value nx-number">₹{{ cashFlowSummary().currentBalance | number:'1.0-0' }}</div>
-      <div class="stat-trend" [class]="cashFlowSummary().trend">
-        {{ cashFlowSummary().trend === 'up' ? '▲' : '▼' }} MTD
-      </div>
-    </div>
-    <div class="nx-stat-card purple">
-      <div class="stat-icon">📈</div>
-      <div class="stat-label">Revenue MTD</div>
-      <div class="stat-value nx-number">₹{{ cashFlowSummary().inflow30d | number:'1.0-0' }}</div>
-      <div class="stat-trend up">▲ This month</div>
-    </div>
-    <div class="nx-stat-card amber">
-      <div class="stat-icon">📉</div>
-      <div class="stat-label">Expenses MTD</div>
-      <div class="stat-value nx-number">₹{{ cashFlowSummary().outflow30d | number:'1.0-0' }}</div>
-      <div class="stat-trend neutral">→ This month</div>
-    </div>
-    <div class="nx-stat-card" [class.emerald]="cashFlowSummary().netChange >= 0" [class.danger]="cashFlowSummary().netChange < 0">
-      <div class="stat-icon">{{ cashFlowSummary().netChange >= 0 ? '✅' : '⚠️' }}</div>
-      <div class="stat-label">Net Profit</div>
-      <div class="stat-value nx-number">₹{{ (cashFlowSummary().netChange < 0 ? -cashFlowSummary().netChange : cashFlowSummary().netChange) | number:'1.0-0' }}</div>
-      <div class="stat-trend" [class]="cashFlowSummary().trend">{{ cashFlowSummary().trend === 'up' ? '▲' : '▼' }} vs last month</div>
-    </div>
+    <nx-stat-card
+      icon="💰"
+      label="Cash Balance"
+      [value]="'₹' + (cashFlowSummary().currentBalance | number:'1.0-0')"
+      [trend]="(cashFlowSummary().trend === 'up' ? '▲' : '▼') + ' MTD'"
+      [trendDirection]="cashFlowSummary().trend"
+      color="emerald"
+    />
+    <nx-stat-card
+      icon="📈"
+      label="Revenue MTD"
+      [value]="'₹' + (cashFlowSummary().inflow30d | number:'1.0-0')"
+      trend="▲ This month"
+      trendDirection="up"
+      color="purple"
+    />
+    <nx-stat-card
+      icon="📉"
+      label="Expenses MTD"
+      [value]="'₹' + (cashFlowSummary().outflow30d | number:'1.0-0')"
+      trend="→ This month"
+      trendDirection="neutral"
+      color="amber"
+    />
+    <nx-stat-card
+      [icon]="cashFlowSummary().netChange >= 0 ? '✅' : '⚠️'"
+      label="Net Profit"
+      [value]="'₹' + ((cashFlowSummary().netChange < 0 ? -cashFlowSummary().netChange : cashFlowSummary().netChange) | number:'1.0-0')"
+      [trend]="(cashFlowSummary().trend === 'up' ? '▲' : '▼') + ' vs last month'"
+      [trendDirection]="cashFlowSummary().trend"
+      [color]="cashFlowSummary().netChange >= 0 ? 'emerald' : 'danger'"
+    />
   </div>
 
   <!-- Floating Command Palette Hint -->
@@ -37,79 +50,59 @@
 
   <!-- Main Grid -->
   <div class="bento-grid">
-    <!-- ✨ AI Cash Flow Summary -->
+    <!-- ✨ AI Cash Flow Summary — using nx-card -->
     <div class="bento-tile tile-cashflow">
-      <div class="tile-header">
-        <div class="tile-title">
-          <span class="tile-icon">✨</span>
-          <h3>AI Cash Flow Summary</h3>
+      <nx-card>
+        <div card-header>
+          <div class="tile-title">
+            <span class="tile-icon">✨</span>
+            <h4>AI Cash Flow Summary</h4>
+          </div>
+          <span class="tile-badge badge-emerald">Live</span>
         </div>
-        <span class="tile-badge badge-emerald">Live</span>
-      </div>
+        <div card-body>
+          <div class="cashflow-balance">
+            <span class="balance-label">Current Balance</span>
+            <span class="balance-value nx-number">₹{{ cashFlowSummary().currentBalance | number:'1.2-2' }}</span>
+          </div>
 
-      <div class="cashflow-balance">
-        <span class="balance-label">Current Balance</span>
-        <span class="balance-value nx-number">₹{{ cashFlowSummary().currentBalance | number:'1.2-2' }}</span>
-      </div>
+          <div class="sparkline-container">
+            <svg class="sparkline" viewBox="0 0 120 50" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="sparkline-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="var(--nx-emerald)" stop-opacity="0.4"/>
+                  <stop offset="100%" stop-color="var(--nx-emerald)" stop-opacity="0"/>
+                </linearGradient>
+                <linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="var(--nx-emerald)" stop-opacity="0.5"/>
+                  <stop offset="50%" stop-color="var(--nx-emerald)"/>
+                  <stop offset="100%" stop-color="var(--nx-emerald)" stop-opacity="0.5"/>
+                </linearGradient>
+              </defs>
+              <path [attr.d]="'M 0 50 ' + getSparklinePath() + ' L 120 50 Z'" fill="url(#sparkline-gradient)" />
+              <path [attr.d]="'M ' + getSparklinePath()" fill="none" stroke="url(#line-gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              @for (point of cashFlowSummary().sparkline; track $index) {
+                <circle [attr.cx]="$index * (120 / (cashFlowSummary().sparkline.length - 1))" [attr.cy]="50 - (point / 100) * 45" r="3" fill="var(--nx-bg-card)" stroke="var(--nx-emerald)" stroke-width="2" class="sparkline-dot" opacity="0" />
+              }
+            </svg>
+          </div>
 
-      <div class="sparkline-container">
-        <svg class="sparkline" viewBox="0 0 120 50" preserveAspectRatio="none">
-          <!-- Gradient Definition -->
-          <defs>
-            <linearGradient id="sparkline-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stop-color="var(--nx-emerald)" stop-opacity="0.4"/>
-              <stop offset="100%" stop-color="var(--nx-emerald)" stop-opacity="0"/>
-            </linearGradient>
-            <linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="var(--nx-emerald)" stop-opacity="0.5"/>
-              <stop offset="50%" stop-color="var(--nx-emerald)"/>
-              <stop offset="100%" stop-color="var(--nx-emerald)" stop-opacity="0.5"/>
-            </linearGradient>
-          </defs>
-
-          <!-- Area Fill -->
-          <path
-            [attr.d]="'M 0 50 ' + getSparklinePath() + ' L 120 50 Z'"
-            fill="url(#sparkline-gradient)" />
-
-          <!-- Line -->
-          <path
-            [attr.d]="'M ' + getSparklinePath()"
-            fill="none"
-            stroke="url(#line-gradient)"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round" />
-
-          <!-- Data Points -->
-          @for (point of cashFlowSummary().sparkline; track $index) {
-            <circle
-              [attr.cx]="$index * (120 / (cashFlowSummary().sparkline.length - 1))"
-              [attr.cy]="50 - (point / 100) * 45"
-              r="3"
-              fill="var(--nx-bg-card)"
-              stroke="var(--nx-emerald)"
-              stroke-width="2"
-              class="sparkline-dot"
-              opacity="0" />
-          }
-        </svg>
-      </div>
-
-      <div class="cashflow-metrics">
-        <div class="metric">
-          <span class="metric-label">30d Inflow</span>
-          <span class="metric-value positive nx-number">+₹{{ cashFlowSummary().inflow30d | number:'1.0-0' }}</span>
+          <div class="cashflow-metrics">
+            <div class="metric">
+              <span class="metric-label">30d Inflow</span>
+              <span class="metric-value positive nx-number">+₹{{ cashFlowSummary().inflow30d | number:'1.0-0' }}</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">30d Outflow</span>
+              <span class="metric-value negative nx-number">-₹{{ cashFlowSummary().outflow30d | number:'1.0-0' }}</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Net Change</span>
+              <span class="metric-value positive nx-number">+₹{{ cashFlowSummary().netChange | number:'1.0-0' }}</span>
+            </div>
+          </div>
         </div>
-        <div class="metric">
-          <span class="metric-label">30d Outflow</span>
-          <span class="metric-value negative nx-number">-₹{{ cashFlowSummary().outflow30d | number:'1.0-0' }}</span>
-        </div>
-        <div class="metric">
-          <span class="metric-label">Net Change</span>
-          <span class="metric-value positive nx-number">+₹{{ cashFlowSummary().netChange | number:'1.0-0' }}</span>
-        </div>
-      </div>
+      </nx-card>
     </div>
 
     <!-- 🔒 Audit Log Chain -->
