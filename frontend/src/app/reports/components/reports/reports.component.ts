@@ -4,41 +4,41 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
 import { DecimalPipe } from '@angular/common';
 import { ReportsService } from '../../services/reports.service';
+import { NxPageHeaderComponent, NxLoadingSpinnerComponent, NxEmptyStateComponent } from '../../../shared/components';
 
 @Component({
   selector: 'app-reports',
   standalone: true,
-  imports: [DecimalPipe],
+  imports: [DecimalPipe, NxPageHeaderComponent, NxLoadingSpinnerComponent, NxEmptyStateComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="reports-shell">
-      <div class="reports-header">
-        <h1>{{ reportLabel() }}</h1>
-        <div class="header-actions">
-          @if (reportType() === 'trial-balance') {
-            <div class="date-filter">
-              <label>From: <input type="date" [value]="fromDate()" (change)="onFromDate($event)" class="date-input"></label>
-              <label>To: <input type="date" [value]="toDate()" (change)="onToDate($event)" class="date-input"></label>
-              <button class="btn btn-primary" (click)="applyDateFilter()">Apply</button>
-              <button class="btn btn-link" (click)="clearDateFilter()">Clear</button>
-              <button class="btn btn-export" (click)="svc.exportTrialBalance()" title="Export as JSON">⬇ Export</button>
-            </div>
-          }
-          <button class="btn btn-secondary" (click)="reload()">🔄 Refresh</button>
-        </div>
-      </div>
+      <nx-page-header [title]="reportLabel()" subtitle="Financial report for the current period">
+        @if (reportType() === 'trial-balance') {
+          <div class="date-filter">
+            <label>From: <input type="date" [value]="fromDate()" (change)="onFromDate($event)" class="date-input"></label>
+            <label>To: <input type="date" [value]="toDate()" (change)="onToDate($event)" class="date-input"></label>
+            <button class="nx-btn nx-btn--emerald" (click)="applyDateFilter()">Apply</button>
+            <button class="nx-btn nx-btn--ghost" (click)="clearDateFilter()">Clear</button>
+            <button class="nx-btn nx-btn--outline" (click)="svc.exportTrialBalance()" title="Export as JSON">⬇ Export</button>
+          </div>
+        }
+        <button class="nx-btn nx-btn--outline" (click)="reload()">🔄 Refresh</button>
+      </nx-page-header>
 
       @if (svc.loading()) {
-        <div class="loading">Loading report data…</div>
+        <nx-loading-spinner label="Loading report data…" />
       }
 
       <!-- ═══ TRIAL BALANCE ═══ -->
       @if (reportType() === 'trial-balance') {
         @if (svc.trialBalance(); as tb) {
           @if (tb.lines.length === 0) {
-            <div class="empty-state">
-              <p>No posted transactions found for the selected period.</p>
-            </div>
+            <nx-empty-state
+              icon="📊"
+              title="No transactions found"
+              description="No posted transactions found for the selected period."
+            />
           } @else {
             <table class="report-table">
               <thead>
@@ -66,9 +66,11 @@ import { ReportsService } from '../../services/reports.service';
             </table>
           }
         } @else if (!svc.loading()) {
-          <div class="empty-state">
-            <p>No trial balance data available. Post some transactions to view the report.</p>
-          </div>
+          <nx-empty-state
+            icon="📊"
+            title="No trial balance data"
+            description="Post some transactions to view the report."
+          />
         }
       }
 
@@ -194,9 +196,11 @@ import { ReportsService } from '../../services/reports.service';
       <!-- ═══ DAY BOOK ═══ -->
       @if (reportType() === 'daybook') {
         @if (svc.daybook().length === 0 && !svc.loading()) {
-          <div class="empty-state">
-            <p>No transactions recorded yet.</p>
-          </div>
+          <nx-empty-state
+            icon="📒"
+            title="No transactions recorded"
+            description="Start creating vouchers to see them in the Day Book."
+          />
         } @else {
           <table class="report-table">
             <thead>
@@ -227,28 +231,15 @@ import { ReportsService } from '../../services/reports.service';
   `,
   styles: [`
   .reports-shell { padding: 16px; }
-  .reports-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
-  .reports-header h1 { margin: 0; font-size: 1.5rem; }
-  .header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .date-filter { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-  .date-filter label { font-size: 0.82rem; display: flex; align-items: center; gap: 4px; color: var(--nx-text-secondary); }
-  .date-input { padding: 5px 10px; border: 1px solid var(--nx-border); border-radius: 4px; font-size: 0.82rem; background: var(--nx-bg-card); color: var(--nx-text-primary); }
-  .btn { padding: 6px 14px; border-radius: 4px; cursor: pointer; border: 1px solid var(--nx-border); background: var(--nx-bg-card); font-size: 0.82rem; color: var(--nx-text-primary); transition: background 0.15s; }
-  .btn-secondary:hover { background: var(--nx-bg-card-hover); }
-  .btn-primary { background: var(--nx-emerald, #26a69a); color: #fff; border-color: var(--nx-emerald, #26a69a); }
-  .btn-primary:hover { background: #1e8e83; }
-  .btn-export { background: rgba(255,152,0,0.08); color: var(--nx-warning, #ff9800); border-color: rgba(255,152,0,0.3); }
-  .btn-export:hover { background: rgba(255,152,0,0.15); }
-  .btn-link { background: transparent; border-color: transparent; color: var(--nx-emerald, #26a69a); padding: 6px 8px; }
-  .btn-link:hover { text-decoration: underline; }
-  .loading { padding: 24px; text-align: center; color: var(--nx-text-muted); }
-  .empty-state { padding: 48px; text-align: center; color: var(--nx-text-muted); }
+  .date-filter label { font-size: var(--nx-text-sm); display: flex; align-items: center; gap: 4px; color: var(--nx-text-secondary); }
+  .date-input { padding: 5px 10px; border: 1px solid var(--nx-border); border-radius: var(--nx-radius-sm); font-size: var(--nx-text-sm); background: var(--nx-bg-card); color: var(--nx-text-primary); }
 
   /* Report table */
   .report-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
   .report-table thead tr { position: sticky; top: 0; z-index: 10; }
   .report-table th { background: var(--nx-bg-surface); padding: 8px 12px; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--nx-text-muted); border-bottom: 2px solid var(--nx-border); text-align: left; }
-  .report-table td { padding: 8px 12px; border-bottom: 1px solid var(--nx-border); font-size: 0.82rem; color: var(--nx-text-primary); }
+  .report-table td { padding: 8px 12px; border-bottom: 1px solid var(--nx-border); font-size: var(--nx-text-sm); color: var(--nx-text-primary); }
   .report-table tbody tr:hover { background: var(--nx-bg-card-hover); }
   .report-table tbody tr:nth-child(even) { background: var(--nx-bg-surface); }
   .report-table tbody tr:nth-child(even):hover { background: var(--nx-bg-card-hover); }
@@ -265,7 +256,7 @@ import { ReportsService } from '../../services/reports.service';
   .net-income.loss { background: rgba(239,83,80,0.08); color: var(--nx-danger, #ef5350); border-color: rgba(239,83,80,0.3); }
 
   @media print {
-    .header-actions, .date-filter { display: none !important; }
+    .date-filter { display: none !important; }
     .pl-sections, .bs-sections, .cf-sections { flex-direction: column; }
     .report-table thead tr { position: static; }
   }

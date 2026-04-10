@@ -6,6 +6,7 @@ import { DecimalPipe, DatePipe } from '@angular/common';
 import { VoucherService } from '../../services/voucher.service';
 import { AccountMasterService } from '../../services/account-master.service';
 import { Voucher, VoucherCategory, VOUCHER_TYPE_CONFIG } from '../../models/voucher.models';
+import { NxPageHeaderComponent, NxStatusBadgeComponent } from '../../../shared/components';
 
 type ExplorerMode = 'explorer' | 'entry';
 type SortField = 'voucherNumber' | 'date' | 'amount' | 'none';
@@ -38,7 +39,7 @@ const CATEGORY_COLORS: Record<VoucherCategory, string> = {
 @Component({
   selector: 'app-voucher-explorer',
   standalone: true,
-  imports: [DecimalPipe, DatePipe],
+  imports: [DecimalPipe, DatePipe, NxPageHeaderComponent, NxStatusBadgeComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './voucher-explorer.component.html',
   styleUrl: './voucher-explorer.component.scss',
