@@ -6,14 +6,8 @@
   @if (mode() === 'explorer') {
 
     <!-- Header -->
-    <div class="explorer-header">
-      <div class="header-left">
-        <span class="explorer-icon">📒</span>
-        <h2 class="explorer-title">Voucher Explorer</h2>
-      </div>
-
-      <!-- Summary Cards -->
-      <div class="summary-cards">
+    <nx-page-header title="Voucher Explorer" subtitle="Manage all voucher types — create, edit, post, and search">
+      <div class="summary-cards no-print">
         <div class="summary-card">
           <span class="card-label">Total</span>
           <span class="card-value">{{ totalCount() }}</span>
@@ -31,7 +25,7 @@
           <span class="card-value nx-number">₹{{ totalAmount() | number:'1.2-2' }}</span>
         </div>
       </div>
-    </div>
+    </nx-page-header>
 
     <!-- Filter Toolbar -->
     <div class="filter-toolbar">
@@ -175,11 +169,7 @@
                 <td class="col-amount nx-number">{{ v.amount | number:'1.2-2' }}</td>
                 <td class="col-narration hide-md">{{ v.narration }}</td>
                 <td class="col-status">
-                  @if (v.posted) {
-                    <span class="status-pill posted">Posted</span>
-                  } @else {
-                    <span class="status-pill draft">Draft</span>
-                  }
+                  <nx-status-badge [status]="v.posted ? 'POSTED' : 'DRAFT'" />
                 </td>
                 <td class="col-actions">
                   @if (!v.posted) {

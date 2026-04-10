@@ -246,8 +246,11 @@
   </main>
 
   <app-command-palette />
+  <nx-toast />
+  <nx-confirm-dialog />
 </div>
 } @else {
   <!-- Public/Unauthenticated View - Just show router outlet for login/start pages -->
   <router-outlet />
+  <nx-toast />
 }

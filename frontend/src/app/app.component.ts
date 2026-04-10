@@ -6,6 +6,8 @@ import { KeyboardNavigationService } from './keyboard/services/keyboard-navigati
 import { CommandBootstrapService } from './keyboard/services/command-bootstrap.service';
 import { LanguageSwitcherComponent } from './i18n/components/language-switcher/language-switcher.component';
 import { AuthService } from './auth/services/auth.service';
+import { NxToastComponent } from './shared/components/nx-toast/nx-toast.component';
+import { NxConfirmDialogComponent } from './shared/components/nx-confirm-dialog/nx-confirm-dialog.component';
 import { filter } from 'rxjs/operators';
 
 interface HealthResponse {
@@ -58,7 +60,7 @@ const ROUTE_BREADCRUMBS: Record<string, Breadcrumb[]> = {
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommandPaletteComponent, LanguageSwitcherComponent],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommandPaletteComponent, LanguageSwitcherComponent, NxToastComponent, NxConfirmDialogComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

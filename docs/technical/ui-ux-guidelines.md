@@ -144,6 +144,12 @@ All shared components live in `frontend/src/app/shared/components/` and are expo
 | `NxSkeletonComponent` | `<nx-skeleton>` | Shimmer loading placeholder |
 | `NxEmptyStateComponent` | `<nx-empty-state>` | No-data illustration with optional CTA |
 | `NxDataTableComponent` | `<nx-data-table>` | Scrollable table wrapper with sticky headers |
+| `NxPageHeaderComponent` | `<nx-page-header>` | Page title + subtitle + projected action buttons |
+| `NxSearchInputComponent` | `<nx-search-input>` | Debounced search field with clear button |
+| `NxLoadingSpinnerComponent` | `<nx-loading-spinner>` | Full-area loading indicator with label |
+| `NxConfirmDialogComponent` | `<nx-confirm-dialog>` | Confirmation dialog (service-driven) |
+| `NxStatusBadgeComponent` | `<nx-status-badge>` | Pre-mapped accounting status colors |
+| `NxToastComponent` | `<nx-toast>` | Slide-in toast notifications (service-driven) |
 
 #### `<nx-card>` — Card Container
 
@@ -257,6 +263,9 @@ These are defined in `frontend/src/styles.scss` and available globally:
 | `.nx-btn--emerald` | Primary teal button |
 | `.nx-btn--purple` | Secondary indigo button |
 | `.nx-btn--amber` | Warning amber button |
+| `.nx-btn--danger` | Danger red button |
+| `.nx-btn--ghost` | Transparent background button |
+| `.nx-btn--outline` | Border-only button |
 | `.btn-icon` | Minimal icon-only button (table actions) |
 | `.nx-number` | Monospace tabular-nums for codes/IDs |
 | `.nx-amount` | Monospace for monetary values (with `.debit`/`.credit`) |
@@ -270,19 +279,97 @@ These are defined in `frontend/src/styles.scss` and available globally:
 | `.nx-locked` | One-shot glow animation (lock/save confirmation) |
 | `.col-actions` | Table actions column alignment |
 | `.no-print` | Hide element when printing |
+| `.sr-only` | Visually hidden, accessible to screen readers |
+| `.form-grid` | Responsive two-column form layout |
+| `.form-group` | Label + input group |
+| `.form-control` | Styled text input / select / textarea |
+| `.page-container` | Centered max-width content container |
 
-### Planned Components (Not Yet Implemented)
+### Components Added in Recent Update
 
-These components are identified as gaps and should be created in future PRs:
+The following components were previously listed as "Planned" and are now **implemented and available**:
 
-| Component | Purpose |
-|-----------|---------|
-| `<nx-page-header>` | Consistent page title + subtitle + action buttons bar |
-| `<nx-search-input>` | Reusable debounced search field for list pages |
-| `<nx-loading-spinner>` | Full-area loading indicator (distinct from skeleton placeholder) |
-| `<nx-confirm-dialog>` | Confirmation dialog service for destructive actions |
-| `<nx-status-badge>` | Pre-mapped accounting status colors (extends `nx-badge`) |
-| `<nx-toast>` | Slide-in toast notification for success/error/warning feedback |
+| Component | Selector | Purpose |
+|-----------|----------|---------|
+| `NxPageHeaderComponent` | `<nx-page-header>` | Consistent page title + subtitle + action buttons bar |
+| `NxSearchInputComponent` | `<nx-search-input>` | Reusable debounced search field for list pages |
+| `NxLoadingSpinnerComponent` | `<nx-loading-spinner>` | Full-area loading indicator (distinct from skeleton placeholder) |
+| `NxConfirmDialogComponent` | `<nx-confirm-dialog>` | Confirmation dialog service for destructive actions |
+| `NxStatusBadgeComponent` | `<nx-status-badge>` | Pre-mapped accounting status colors (extends `nx-badge`) |
+| `NxToastComponent` | `<nx-toast>` | Slide-in toast notification for success/error/warning feedback |
+
+#### `<nx-page-header>` — Page Header
+
+```html
+<nx-page-header title="Voucher Explorer" subtitle="Manage all voucher types">
+  <button class="nx-btn nx-btn--emerald" (click)="create()">+ Create</button>
+</nx-page-header>
+```
+
+Inputs: `title` (string), `subtitle` (string). Content projection for action buttons.
+
+#### `<nx-search-input>` — Debounced Search
+
+```html
+<nx-search-input
+  placeholder="Search vouchers…"
+  [value]="searchQuery()"
+  [debounceMs]="300"
+  (searchChange)="onSearch($event)"
+/>
+```
+
+Inputs: `placeholder`, `value`, `debounceMs` (default 300). Output: `searchChange` (debounced string).
+
+#### `<nx-loading-spinner>` — Loading Indicator
+
+```html
+<nx-loading-spinner label="Loading report data…" />
+```
+
+Inputs: `label` (optional text below spinner). Has `role="status"` and `.sr-only` fallback.
+
+#### `<nx-confirm-dialog>` — Confirmation Dialog
+
+Place once in the app shell. Use the service to trigger:
+
+```typescript
+import { NxConfirmDialogService } from '@app/shared/components';
+
+const confirmed = await this.confirmService.confirm({
+  title: 'Delete Voucher',
+  message: 'This action cannot be undone. Are you sure?',
+  confirmLabel: 'Yes, Delete',
+  cancelLabel: 'Cancel',
+  confirmVariant: 'danger',
+});
+if (confirmed) { /* proceed */ }
+```
+
+#### `<nx-status-badge>` — Accounting Status Badge
+
+```html
+<nx-status-badge status="POSTED" />
+<nx-status-badge status="PENDING" />
+<nx-status-badge status="DRAFT" />
+<nx-status-badge status="CANCELLED" />
+<nx-status-badge status="APPROVED" label="Custom Label" />
+```
+
+Auto-maps standard accounting statuses (POSTED, APPROVED, PENDING, DRAFT, CANCELLED, REJECTED, etc.) to color variants. Accepts optional custom `label`.
+
+#### `<nx-toast>` — Toast Notifications
+
+Place once in the app shell. Use the service to show:
+
+```typescript
+import { NxToastService } from '@app/shared/components';
+
+this.toastService.success('Voucher saved successfully');
+this.toastService.error('Failed to post transaction');
+this.toastService.warning('Unsaved changes will be lost');
+this.toastService.info('Report exported');
+```
 
 ---
 
