@@ -5,6 +5,7 @@ import {
 import { DecimalPipe } from '@angular/common';
 import { AccountMasterService } from '../../../accounting/services/account-master.service';
 import { LedgerAccount, AccountGroup, AccountType } from '../../../accounting/models/voucher.models';
+import { NxPageHeaderComponent, NxSearchInputComponent, NxEmptyStateComponent } from '../../../shared/components';
 
 type ViewMode = 'list' | 'form';
 type TabMode = 'accounts' | 'groups';
@@ -20,7 +21,7 @@ const NATURE_TO_TYPE: Record<string, AccountType> = {
 @Component({
   selector: 'app-master',
   standalone: true,
-  imports: [DecimalPipe],
+  imports: [DecimalPipe, NxPageHeaderComponent, NxSearchInputComponent, NxEmptyStateComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './master.component.html',
   styleUrl: './master.component.scss',

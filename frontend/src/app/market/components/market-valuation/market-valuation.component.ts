@@ -2,11 +2,12 @@ import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@ang
 import { CurrencyPipe, DecimalPipe } from '@angular/common';
 import { AiService } from '../../../ai/services/ai.service';
 import { MarketValuation, HoldingValuation, MarketSentiment } from '../../../ai/models/ai.models';
+import { NxPageHeaderComponent, NxLoadingSpinnerComponent } from '../../../shared/components';
 
 @Component({
   selector: 'app-market-valuation',
   standalone: true,
-  imports: [CurrencyPipe, DecimalPipe],
+  imports: [CurrencyPipe, DecimalPipe, NxPageHeaderComponent, NxLoadingSpinnerComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './market-valuation.component.html',
   styleUrl: './market-valuation.component.scss'

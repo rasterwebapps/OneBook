@@ -3,6 +3,7 @@ import { CurrencyPipe, DecimalPipe } from '@angular/common';
 import { AiService } from '../../services/ai.service';
 import { ForecastChartComponent } from '../forecast-chart/forecast-chart.component';
 import { AnomalyAlertComponent } from '../anomaly-alert/anomaly-alert.component';
+import { NxPageHeaderComponent, NxLoadingSpinnerComponent } from '../../../shared/components';
 import {
   CashFlowForecast,
   TransactionAnomaly,
@@ -13,7 +14,7 @@ import {
 @Component({
   selector: 'app-ai-dashboard',
   standalone: true,
-  imports: [CurrencyPipe, DecimalPipe, ForecastChartComponent, AnomalyAlertComponent],
+  imports: [CurrencyPipe, DecimalPipe, ForecastChartComponent, AnomalyAlertComponent, NxPageHeaderComponent, NxLoadingSpinnerComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './ai-dashboard.component.html',
   styleUrl: './ai-dashboard.component.scss'

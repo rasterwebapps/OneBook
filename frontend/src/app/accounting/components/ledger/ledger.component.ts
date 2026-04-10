@@ -6,6 +6,7 @@ import { DecimalPipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 import { AccountMasterService } from '../../services/account-master.service';
+import { NxPageHeaderComponent, NxSearchInputComponent, NxLoadingSpinnerComponent, NxEmptyStateComponent } from '../../../shared/components';
 
 const TENANT_ID = 'default-tenant';
 
@@ -21,21 +22,21 @@ interface LedgerEntry {
 @Component({
   selector: 'app-ledger',
   standalone: true,
-  imports: [DecimalPipe],
+  imports: [DecimalPipe, NxPageHeaderComponent, NxSearchInputComponent, NxLoadingSpinnerComponent, NxEmptyStateComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="ledger-shell">
-      <div class="ledger-header">
-        <h1>📖 Ledger</h1>
-      </div>
+      <nx-page-header title="Ledger" subtitle="View account-level transaction history">
+        @if (selectedAccountId()) {
+          <button class="nx-btn nx-btn--ghost no-print" (click)="clearSelection()">← Back to Accounts</button>
+        }
+      </nx-page-header>
 
       <!-- Account picker -->
       @if (!selectedAccountId()) {
         <div class="account-picker">
           <h3>Select a Ledger Account</h3>
-          <input #search type="text" class="input search-input"
-                 placeholder="Search accounts…"
-                 (input)="searchTerm.set(search.value)" />
+          <nx-search-input placeholder="Search accounts…" [value]="searchTerm()" (searchChange)="searchTerm.set($event)" />
           <div class="account-list">
             @for (a of filteredAccounts(); track a.id) {
               <div class="account-item" (click)="selectAccount(a.id, a.accountName)">
@@ -43,6 +44,8 @@ interface LedgerEntry {
                 <span class="account-name">{{ a.accountName }}</span>
                 <span class="account-type">{{ a.accountType }}</span>
               </div>
+            } @empty {
+              <nx-empty-state icon="📖" title="No accounts found" description="Try a different search term." />
             }
           </div>
         </div>
@@ -52,18 +55,15 @@ interface LedgerEntry {
       @if (selectedAccountId()) {
         <div class="ledger-view">
           <div class="ledger-title-bar">
-            <button class="btn btn-secondary no-print" (click)="clearSelection()">← Back to Accounts</button>
             <h2>{{ selectedAccountName() }}</h2>
           </div>
 
           @if (loading()) {
-            <div class="loading">Loading transactions…</div>
+            <nx-loading-spinner label="Loading transactions…" />
           }
 
           @if (!loading() && ledgerEntries().length === 0) {
-            <div class="empty-state">
-              <p>No transactions for this account.</p>
-            </div>
+            <nx-empty-state icon="📖" title="No transactions" description="No transactions found for this account." />
           }
 
           @if (ledgerEntries().length > 0) {

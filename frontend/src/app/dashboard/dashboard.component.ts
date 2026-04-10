@@ -2,12 +2,21 @@ import { Component, ChangeDetectionStrategy, OnInit, signal, inject, computed } 
 import { RouterLink } from '@angular/router';
 import { DecimalPipe } from '@angular/common';
 import { DashboardService } from './services/dashboard.service';
-import { NxStatCardComponent, NxCardComponent, NxPageHeaderComponent } from '../shared/components';
+import { NxPageHeaderComponent } from '../shared/components';
 
+/**
+ * Modern Fintech-Style Accounting Dashboard
+ *
+ * Features:
+ * - 4 KPI cards: Cash, Bank, Pending Validations, Failed PANs (shadow-sm, trend badges)
+ * - 2-column grid: Cashflow chart placeholder (bg-slate-50) + Recent Activity (5 vouchers)
+ * - Faint borders (border-slate-100), clean white background
+ * - Tabular-nums for amounts, right-aligned
+ */
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [RouterLink, DecimalPipe, NxStatCardComponent, NxCardComponent, NxPageHeaderComponent],
+  imports: [RouterLink, DecimalPipe, NxPageHeaderComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
@@ -20,7 +29,7 @@ export class DashboardComponent implements OnInit {
   readonly loading = this.dashboardService.loading;
   readonly error = this.dashboardService.error;
 
-  /* ── AI Cash Flow Summary (computed from API or fallback to zero) ── */
+  /* ── AI Cash Flow Summary (computed from API or fallback to demo data) ── */
   readonly cashFlowSummary = computed(() => {
     const s = this.summary();
     if (s) {
@@ -33,23 +42,40 @@ export class DashboardComponent implements OnInit {
         sparkline: [42, 55, 48, 62, 58, 71, 65, 78, 72, 85, 80, 92],
       };
     }
+    // Fallback demo data for UI development
     return {
-      currentBalance: 0,
-      inflow30d: 0,
-      outflow30d: 0,
-      netChange: 0,
+      currentBalance: 1247500,
+      inflow30d: 856000,
+      outflow30d: 423000,
+      netChange: 433000,
       trend: 'up' as const,
       sparkline: [42, 55, 48, 62, 58, 71, 65, 78, 72, 85, 80, 92],
     };
   });
 
-  /* ── Audit Log Chain ── */
-  readonly auditEntries = signal([
-    { hash: '0x8f2a...c4d1', action: 'Invoice #INV-2487 locked', timestamp: '2 min ago', verified: true },
-    { hash: '0x3b7e...a9f2', action: 'Journal JV-1024 posted', timestamp: '8 min ago', verified: true },
-    { hash: '0x1d4c...e8b3', action: 'Payment PMT-892 approved', timestamp: '15 min ago', verified: true },
-    { hash: '0xf9a1...7c6e', action: 'Receipt RCT-445 created', timestamp: '22 min ago', verified: true },
-    { hash: '0x6e8d...b2a5', action: 'Master account updated', timestamp: '34 min ago', verified: true },
+  /* ── KPI: Bank Balance ── */
+  readonly bankBalance = computed(() => {
+    const s = this.summary();
+    if (s) {
+      // Sum of bank-related cash (operating + financing)
+      return s.cashFlow.netCashFromOperating + s.cashFlow.netCashFromFinancing;
+    }
+    return 3584200; // Demo fallback
+  });
+
+  /* ── KPI: Pending Validations ── */
+  readonly pendingValidations = signal(7); // Would come from backend in production
+
+  /* ── KPI: Failed PANs (PAN verification failures) ── */
+  readonly failedPANs = signal(2); // Would come from compliance service in production
+
+  /* ── Recent Vouchers (last 5) ── */
+  readonly recentVouchers = signal([
+    { id: 'INV-2487', description: 'Invoice #INV-2487 created', time: '2 min ago', amount: 45000, type: 'sale' },
+    { id: 'PMT-892', description: 'Payment PMT-892 approved', time: '8 min ago', amount: -12500, type: 'payment' },
+    { id: 'PO-1024', description: 'Purchase PO-1024 received', time: '15 min ago', amount: -78200, type: 'purchase' },
+    { id: 'RCT-445', description: 'Receipt RCT-445 posted', time: '22 min ago', amount: 32000, type: 'receipt' },
+    { id: 'JV-1024', description: 'Journal JV-1024 posted', time: '34 min ago', amount: 0, type: 'journal' },
   ]);
 
   /* ── Universal Ingestion Status ── */
@@ -69,19 +95,6 @@ export class DashboardComponent implements OnInit {
     { key: 'F8', label: 'Sales', route: '/voucher/sales' },
     { key: 'F9', label: 'Purchase', route: '/voucher/purchase' },
   ];
-
-  /* ── Sparkline Path Generator for Premium Charts ── */
-  getSparklinePath(): string {
-    const data = this.cashFlowSummary().sparkline;
-    const width = 120;
-    const height = 45;
-
-    return data.map((val, i) => {
-      const x = i * (width / (data.length - 1));
-      const y = 50 - (val / 100) * height;
-      return `${i === 0 ? '' : 'L '}${x.toFixed(1)} ${y.toFixed(1)}`;
-    }).join(' ');
-  }
 
   ngOnInit(): void {
     this.dashboardService.loadSummary();

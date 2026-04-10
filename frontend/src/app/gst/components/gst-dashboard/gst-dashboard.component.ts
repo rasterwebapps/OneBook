@@ -1,13 +1,14 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { NxPageHeaderComponent, NxStatusBadgeComponent } from '../../../shared/components';
 
 @Component({
   selector: 'app-gst-dashboard',
   standalone: true,
-  imports: [],
+  imports: [NxPageHeaderComponent, NxStatusBadgeComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="gst-shell">
-      <h1 class="page-title">GST &amp; Tax Compliance</h1>
+      <nx-page-header title="GST & Tax Compliance" subtitle="Return filing status, tax computation, and compliance tracking" />
 
       <!-- Return Status Cards -->
       <div class="return-cards">
@@ -16,7 +17,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
           <div class="return-info">
             <div class="return-name">GSTR-1</div>
             <div class="return-period">Mar 2026</div>
-            <span class="nx-badge nx-badge--success">Filed</span>
+            <nx-status-badge status="COMPLETED" label="Filed" />
           </div>
           <div class="return-date">Filed: 10 Apr</div>
         </div>
@@ -25,7 +26,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
           <div class="return-info">
             <div class="return-name">GSTR-3B</div>
             <div class="return-period">Mar 2026</div>
-            <span class="nx-badge nx-badge--warning">Pending</span>
+            <nx-status-badge status="PENDING" />
           </div>
           <div class="return-date">Due: 20 Apr</div>
         </div>
@@ -34,7 +35,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
           <div class="return-info">
             <div class="return-name">GSTR-9</div>
             <div class="return-period">FY 2024-25</div>
-            <span class="nx-badge nx-badge--danger">Overdue</span>
+            <nx-status-badge status="OVERDUE" />
           </div>
           <div class="return-date">Due: 31 Dec</div>
         </div>
@@ -43,7 +44,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
           <div class="return-info">
             <div class="return-name">e-Way Bill</div>
             <div class="return-period">Active</div>
-            <span class="nx-badge nx-badge--success">Active</span>
+            <nx-status-badge status="ACTIVE" />
           </div>
           <div class="return-date">Valid: 30 days</div>
         </div>
@@ -72,14 +73,14 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
                 <td class="num">4,82,500.00</td><td class="num">43,425.00</td>
                 <td class="num">43,425.00</td><td class="num">0.00</td>
                 <td class="num">86,850.00</td>
-                <td><span class="nx-badge nx-badge--success">Filed</span></td>
+                <td><nx-status-badge status="COMPLETED" label="Filed" /></td>
               </tr>
               <tr>
                 <td>GSTR-3B</td><td>Mar 2026</td>
                 <td class="num">4,82,500.00</td><td class="num">43,425.00</td>
                 <td class="num">43,425.00</td><td class="num">0.00</td>
                 <td class="num">86,850.00</td>
-                <td><span class="nx-badge nx-badge--warning">Pending</span></td>
+                <td><nx-status-badge status="PENDING" /></td>
               </tr>
             </tbody>
           </table>
@@ -108,7 +109,6 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   `,
   styles: [`
     .gst-shell { padding: 16px; }
-    .page-title { margin: 0 0 20px; font-size: 1.5rem; }
     .return-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
     @media (max-width: 900px) { .return-cards { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 480px) { .return-cards { grid-template-columns: 1fr; } }
