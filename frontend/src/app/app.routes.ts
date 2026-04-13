@@ -120,6 +120,38 @@ export const routes: Routes = [
     // canActivate: [auditorGuard]
   },
 
+  // ═══════════════════════════════════════════════════════════════════════════
+  // M12 — Employee Advances & Settlement
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  // My Advances - Employee view of their own advances
+  {
+    path: 'advances',
+    loadComponent: () => import('./advances/components/my-advances/my-advances.component').then(m => m.MyAdvancesComponent),
+    // canActivate: [authGuard]
+  },
+
+  // Approval Queue - For HOD/CEO/MD to approve advances
+  {
+    path: 'advances/approvals',
+    loadComponent: () => import('./advances/components/approval-queue/approval-queue.component').then(m => m.ApprovalQueueComponent),
+    // canActivate: [authGuard]
+  },
+
+  // Expense Vouchers - Submit expenses and settle against advances
+  {
+    path: 'expense-vouchers',
+    loadComponent: () => import('./advances/components/expense-voucher/expense-voucher.component').then(m => m.ExpenseVoucherComponent),
+    // canActivate: [authGuard]
+  },
+
+  // Payment Advices - Reimbursement payment tracking
+  {
+    path: 'payment-advices',
+    loadComponent: () => import('./advances/components/payment-advice-list/payment-advice-list.component').then(m => m.PaymentAdviceListComponent),
+    // canActivate: [authGuard]
+  },
+
   // Role-Based Dashboard: Runtime Workspace Shell - Protected
   {
     path: 'dashboard',

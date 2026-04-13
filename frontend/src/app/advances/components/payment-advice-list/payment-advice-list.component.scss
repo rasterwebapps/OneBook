@@ -1,0 +1,202 @@
+.payment-advice-screen {
+  padding: var(--nx-space-md);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SUMMARY GRID
+// ═══════════════════════════════════════════════════════════════════════════
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--nx-space-md);
+  margin-bottom: var(--nx-space-lg);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════════════════════════════════════
+
+.advice-tabs {
+  display: flex;
+  gap: var(--nx-space-xs);
+  margin-bottom: var(--nx-space-md);
+  border-bottom: 1px solid var(--nx-border);
+  padding-bottom: var(--nx-space-xs);
+}
+
+.tab-btn {
+  padding: var(--nx-space-sm) var(--nx-space-md);
+  background: transparent;
+  border: none;
+  border-radius: var(--nx-radius) var(--nx-radius) 0 0;
+  color: var(--nx-text-muted);
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.15s ease;
+  position: relative;
+
+  &:hover {
+    color: var(--nx-text-primary);
+    background: var(--nx-surface-elevated);
+  }
+
+  &.active {
+    color: var(--nx-primary);
+    background: var(--nx-surface);
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--nx-primary);
+    }
+  }
+}
+
+.tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  margin-left: 6px;
+  background: var(--nx-warning);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 10px;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TOOLBAR
+// ═══════════════════════════════════════════════════════════════════════════
+
+.advice-toolbar {
+  margin-bottom: var(--nx-space-md);
+  max-width: 400px;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ADVICE LIST
+// ═══════════════════════════════════════════════════════════════════════════
+
+.advice-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-md);
+}
+
+.advice-card {
+  background: var(--nx-surface);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-lg);
+  padding: var(--nx-space-md);
+  transition: all 0.15s ease;
+
+  &:hover {
+    box-shadow: var(--nx-shadow-sm);
+  }
+
+  &.pending {
+    border-left: 4px solid var(--nx-warning);
+  }
+}
+
+.advice-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--nx-space-md);
+}
+
+.employee-info {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-sm);
+}
+
+.employee-avatar {
+  font-size: 2rem;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--nx-surface-elevated);
+  border-radius: 50%;
+}
+
+.employee-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.employee-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--nx-text-primary);
+}
+
+.employee-dept {
+  font-size: 0.85rem;
+  color: var(--nx-text-muted);
+}
+
+.amount-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.amount {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--nx-text-primary);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ADVICE META
+// ═══════════════════════════════════════════════════════════════════════════
+
+.advice-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nx-space-md);
+  font-size: 0.85rem;
+  color: var(--nx-text-muted);
+}
+
+.meta-item {
+  display: flex;
+  gap: var(--nx-space-xs);
+}
+
+.meta-label {
+  color: var(--nx-text-muted);
+}
+
+.meta-value {
+  color: var(--nx-text-primary);
+  font-weight: 500;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ADVICE ACTIONS
+// ═══════════════════════════════════════════════════════════════════════════
+
+.advice-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--nx-space-md);
+  padding-top: var(--nx-space-md);
+  border-top: 1px solid var(--nx-border);
+}
