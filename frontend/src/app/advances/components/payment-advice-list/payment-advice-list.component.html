@@ -1,0 +1,104 @@
+<div class="payment-advice-screen">
+
+  <!-- Header -->
+  <nx-page-header title="Payment Advices" subtitle="Employee reimbursement payments">
+  </nx-page-header>
+
+  <!-- Summary Cards -->
+  <div class="summary-grid">
+    <nx-stat-card
+      label="Pending Payments"
+      [value]="pendingCount() + ''"
+      icon="⏳"
+      variant="warning"
+    />
+    <nx-stat-card
+      label="Total Pending"
+      [value]="'₹' + (totalPending() | number:'1.0-0')"
+      icon="💰"
+      variant="info"
+    />
+  </div>
+
+  <!-- Tabs -->
+  <div class="advice-tabs">
+    <button class="tab-btn" [class.active]="activeTab() === 'pending'" (click)="setTab('pending')">
+      ⏳ Pending
+      @if (pendingCount() > 0) {
+        <span class="tab-badge">{{ pendingCount() }}</span>
+      }
+    </button>
+    <button class="tab-btn" [class.active]="activeTab() === 'paid'" (click)="setTab('paid')">
+      ✅ Paid
+    </button>
+  </div>
+
+  <!-- Search -->
+  <div class="advice-toolbar">
+    <nx-search-input
+      placeholder="Search by employee or department..."
+      [value]="searchQuery()"
+      (searchChange)="updateSearch($event)"
+    />
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <nx-loading-spinner label="Loading payment advices..." />
+  }
+
+  <!-- Payment Advices List -->
+  <div class="advice-list">
+    @for (advice of filteredAdvices(); track advice.id) {
+      <div class="advice-card" [class.pending]="advice.status === 'PENDING_PAYMENT'">
+        <div class="advice-header">
+          <div class="employee-info">
+            <span class="employee-avatar">👤</span>
+            <div class="employee-details">
+              <span class="employee-name">{{ advice.employeeName }}</span>
+              <span class="employee-dept">{{ advice.departmentName }}</span>
+            </div>
+          </div>
+          <div class="amount-section">
+            <span class="amount nx-number">₹{{ advice.amount | number:'1.0-0' }}</span>
+            <nx-status-badge [status]="advice.status" [label]="statusLabel(advice.status)" />
+          </div>
+        </div>
+
+        <div class="advice-meta">
+          <span class="meta-item">
+            <span class="meta-label">Expense Voucher:</span>
+            <span class="meta-value">#{{ advice.expenseVoucherId }}</span>
+          </span>
+          <span class="meta-item">
+            <span class="meta-label">Created:</span>
+            <span class="meta-value">{{ formatDate(advice.createdAt) }}</span>
+          </span>
+          @if (advice.status === 'PAID') {
+            <span class="meta-item">
+              <span class="meta-label">Paid:</span>
+              <span class="meta-value">{{ formatDate(advice.paidAt) }}</span>
+            </span>
+          }
+        </div>
+
+        @if (advice.status === 'PENDING_PAYMENT') {
+          <div class="advice-actions">
+            <button class="nx-btn nx-btn--emerald" (click)="markAsPaid(advice.id)">
+              💳 Mark as Paid
+            </button>
+          </div>
+        }
+      </div>
+    }
+
+    @if (filteredAdvices().length === 0 && !loading()) {
+      <nx-empty-state
+        [icon]="activeTab() === 'pending' ? '✅' : '📭'"
+        [title]="activeTab() === 'pending' ? 'No pending payments' : 'No paid advices'"
+        [description]="activeTab() === 'pending' ? 'All reimbursements have been processed.' : 'No payment advices have been processed yet.'"
+      />
+    }
+  </div>
+
+</div>

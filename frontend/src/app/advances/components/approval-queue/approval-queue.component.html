@@ -1,0 +1,230 @@
+<div class="approval-screen">
+
+  <!-- Header -->
+  <nx-page-header title="Approval Queue" subtitle="Review and approve employee advance requests">
+    <div class="role-badge">
+      🎭 Acting as: <strong>{{ currentUserRole() }}</strong>
+    </div>
+  </nx-page-header>
+
+  <!-- Summary Cards -->
+  <div class="summary-grid">
+    <nx-stat-card
+      label="Pending Requests"
+      [value]="pendingApprovals().length + ''"
+      icon="📋"
+      variant="warning"
+    />
+    <nx-stat-card
+      label="Total Amount"
+      [value]="'₹' + (totalPendingAmount() | number:'1.0-0')"
+      icon="💰"
+      variant="info"
+    />
+    <nx-stat-card
+      label="Urgent (≤3 days)"
+      [value]="urgentCount() + ''"
+      icon="⚠️"
+      variant="danger"
+    />
+  </div>
+
+  <!-- Search -->
+  <div class="approval-toolbar">
+    <nx-search-input
+      placeholder="Search by employee, purpose, or department..."
+      [value]="searchQuery()"
+      (searchChange)="updateSearch($event)"
+    />
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <nx-loading-spinner label="Loading approvals..." />
+  }
+
+  <!-- Approvals List -->
+  <div class="approvals-list">
+    @for (advance of filteredApprovals(); track advance.id) {
+      <div class="approval-card" [class.urgent]="isUrgent(advance)">
+        <div class="approval-header">
+          <div class="employee-info">
+            <span class="employee-avatar">👤</span>
+            <div class="employee-details">
+              <span class="employee-name">{{ advance.employeeName }}</span>
+              <span class="employee-dept">{{ advance.departmentName }}</span>
+            </div>
+          </div>
+          <div class="amount-section">
+            <span class="amount nx-number">₹{{ advance.amount | number:'1.0-0' }}</span>
+            <span class="tier-badge">{{ getApprovalTier(advance.amount) }}</span>
+          </div>
+        </div>
+
+        <div class="approval-body">
+          <div class="purpose">{{ advance.purpose }}</div>
+          <div class="meta-row">
+            <span class="meta-item">
+              <span class="meta-icon">📅</span>
+              <span class="meta-label">Requested:</span>
+              <span class="meta-value">{{ formatDate(advance.requestedDate) }}</span>
+            </span>
+            @if (advance.requiredBy) {
+              <span class="meta-item" [class.urgent]="isUrgent(advance)">
+                <span class="meta-icon">⏰</span>
+                <span class="meta-label">Required by:</span>
+                <span class="meta-value">{{ formatDate(advance.requiredBy) }}</span>
+                @if (isUrgent(advance)) {
+                  <span class="urgent-badge">{{ getDaysUntilDue(advance) }} days</span>
+                }
+              </span>
+            }
+          </div>
+        </div>
+
+        <!-- Approval Chain Progress -->
+        <div class="approval-progress">
+          <div class="progress-step" [class.current]="advance.status === 'PENDING_HOD'" [class.done]="advance.hodApprovedBy">
+            <span class="step-dot">{{ advance.hodApprovedBy ? '✓' : '1' }}</span>
+            <span class="step-label">HOD</span>
+          </div>
+          @if (advance.ceoApprovalRequired) {
+            <div class="progress-line" [class.done]="advance.hodApprovedBy"></div>
+            <div class="progress-step" [class.current]="advance.status === 'PENDING_CEO'" [class.done]="advance.ceoApprovedBy">
+              <span class="step-dot">{{ advance.ceoApprovedBy ? '✓' : '2' }}</span>
+              <span class="step-label">CEO</span>
+            </div>
+          }
+          @if (advance.mdApprovalRequired) {
+            <div class="progress-line" [class.done]="advance.ceoApprovedBy"></div>
+            <div class="progress-step" [class.current]="advance.status === 'PENDING_MD'" [class.done]="advance.mdApprovedBy">
+              <span class="step-dot">{{ advance.mdApprovedBy ? '✓' : '3' }}</span>
+              <span class="step-label">MD</span>
+            </div>
+          }
+        </div>
+
+        <div class="approval-actions">
+          <button class="nx-btn nx-btn--emerald" (click)="openApprovalModal(advance, 'APPROVE')">
+            ✔ Approve
+          </button>
+          <button class="nx-btn nx-btn--danger" (click)="openApprovalModal(advance, 'REJECT')">
+            ✖ Reject
+          </button>
+        </div>
+      </div>
+    }
+
+    @if (filteredApprovals().length === 0 && !loading()) {
+      <nx-empty-state
+        icon="✅"
+        title="No pending approvals"
+        description="All advance requests have been processed. Great job!"
+      />
+    }
+  </div>
+
+</div>
+
+<!-- Approval/Rejection Modal -->
+@if (showApprovalModal() && selectedAdvance()) {
+  <div class="modal-overlay" (click)="closeApprovalModal()">
+    <div class="modal-box nx-glass" (click)="$event.stopPropagation()">
+      <div class="modal-header" [class.approve]="approvalAction() === 'APPROVE'" [class.reject]="approvalAction() === 'REJECT'">
+        <h3>{{ approvalAction() === 'APPROVE' ? '✔ Approve Advance' : '✖ Reject Advance' }}</h3>
+        <button class="modal-close" (click)="closeApprovalModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <!-- Summary -->
+        <div class="modal-summary">
+          <div class="summary-row">
+            <span class="summary-label">Employee</span>
+            <span class="summary-value">{{ selectedAdvance()?.employeeName }}</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">Department</span>
+            <span class="summary-value">{{ selectedAdvance()?.departmentName }}</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">Amount</span>
+            <span class="summary-value amount nx-number">₹{{ selectedAdvance()?.amount | number:'1.0-0' }}</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">Purpose</span>
+            <span class="summary-value purpose">{{ selectedAdvance()?.purpose }}</span>
+          </div>
+        </div>
+
+        @if (approvalAction() === 'APPROVE') {
+          <div class="approve-section">
+            <p class="info-text">
+              ℹ️ Approving this request will move it to the next approval stage
+              @if (!selectedAdvance()?.ceoApprovalRequired || currentUserRole() !== 'HOD') {
+                or mark it ready for disbursement
+              }.
+            </p>
+
+            <!-- Override Option -->
+            <div class="override-section">
+              <label class="checkbox-label">
+                <input type="checkbox" [checked]="overrideFlag()" (change)="toggleOverride()" />
+                <span>Override approval limits (requires justification)</span>
+              </label>
+              @if (overrideFlag()) {
+                <div class="form-group">
+                  <label class="form-label">Override Reason <span class="required">*</span></label>
+                  <textarea
+                    class="form-control"
+                    placeholder="Provide justification for override..."
+                    rows="2"
+                    [value]="overrideReason()"
+                    (input)="updateOverrideReason($any($event.target).value)"
+                  ></textarea>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        @if (approvalAction() === 'REJECT') {
+          <div class="reject-section">
+            <div class="form-group">
+              <label class="form-label">Rejection Reason <span class="required">*</span></label>
+              <textarea
+                class="form-control"
+                placeholder="Provide reason for rejection..."
+                rows="3"
+                [value]="rejectionReason()"
+                (input)="updateRejectionReason($any($event.target).value)"
+              ></textarea>
+            </div>
+            <p class="warning-text">
+              ⚠️ The employee will be notified of this rejection with your reason.
+            </p>
+          </div>
+        }
+      </div>
+      <div class="modal-footer">
+        <button class="nx-btn" (click)="closeApprovalModal()">Cancel</button>
+        @if (approvalAction() === 'APPROVE') {
+          <button
+            class="nx-btn nx-btn--emerald"
+            [disabled]="!isApproveValid()"
+            (click)="confirmApproval()"
+          >
+            ✔ Confirm Approval
+          </button>
+        }
+        @if (approvalAction() === 'REJECT') {
+          <button
+            class="nx-btn nx-btn--danger"
+            [disabled]="!isRejectValid()"
+            (click)="confirmApproval()"
+          >
+            ✖ Confirm Rejection
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+}

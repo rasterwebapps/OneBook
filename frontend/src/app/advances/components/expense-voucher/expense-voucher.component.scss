@@ -1,0 +1,396 @@
+.expense-screen {
+  padding: var(--nx-space-md);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SUMMARY GRID
+// ═══════════════════════════════════════════════════════════════════════════
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--nx-space-md);
+  margin-bottom: var(--nx-space-lg);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SECTION TITLE
+// ═══════════════════════════════════════════════════════════════════════════
+
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--nx-text-primary);
+  margin-bottom: var(--nx-space-md);
+  padding-bottom: var(--nx-space-xs);
+  border-bottom: 2px solid var(--nx-primary);
+  display: inline-block;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// EXPENSES LIST
+// ═══════════════════════════════════════════════════════════════════════════
+
+.expenses-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-md);
+}
+
+.expense-card {
+  background: var(--nx-surface);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-lg);
+  padding: var(--nx-space-md);
+  transition: all 0.15s ease;
+
+  &:hover {
+    box-shadow: var(--nx-shadow-sm);
+  }
+}
+
+.expense-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--nx-space-sm);
+}
+
+.expense-amount {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--nx-text-primary);
+}
+
+.expense-description {
+  font-size: 1rem;
+  color: var(--nx-text-primary);
+  margin-bottom: var(--nx-space-sm);
+  line-height: 1.4;
+}
+
+.expense-meta {
+  display: flex;
+  gap: var(--nx-space-md);
+  font-size: 0.85rem;
+  color: var(--nx-text-muted);
+  margin-bottom: var(--nx-space-sm);
+}
+
+.meta-item {
+  display: flex;
+  gap: var(--nx-space-xs);
+}
+
+.meta-label {
+  color: var(--nx-text-muted);
+}
+
+.meta-value {
+  color: var(--nx-text-primary);
+  font-weight: 500;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SETTLEMENT BREAKDOWN
+// ═══════════════════════════════════════════════════════════════════════════
+
+.settlement-breakdown {
+  display: flex;
+  gap: var(--nx-space-md);
+  padding: var(--nx-space-sm);
+  background: var(--nx-surface-elevated);
+  border-radius: var(--nx-radius);
+  margin-top: var(--nx-space-sm);
+}
+
+.breakdown-item {
+  display: flex;
+  gap: var(--nx-space-xs);
+  font-size: 0.85rem;
+
+  &.reimbursement {
+    color: var(--nx-primary);
+    font-weight: 500;
+  }
+}
+
+.breakdown-label {
+  color: var(--nx-text-muted);
+}
+
+.breakdown-value {
+  font-weight: 600;
+}
+
+.payment-advice-link {
+  margin-top: var(--nx-space-sm);
+  padding: var(--nx-space-xs) var(--nx-space-sm);
+  background: var(--nx-info-bg);
+  border-radius: var(--nx-radius);
+  font-size: 0.85rem;
+  color: var(--nx-info);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MODAL
+// ═══════════════════════════════════════════════════════════════════════════
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--nx-space-md);
+}
+
+.modal-box {
+  background: var(--nx-surface);
+  border-radius: var(--nx-radius-lg);
+  box-shadow: var(--nx-shadow-lg);
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  &.wide {
+    max-width: 650px;
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--nx-space-md);
+  border-bottom: 1px solid var(--nx-border);
+
+  h3 {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  color: var(--nx-text-muted);
+  padding: 4px 8px;
+  border-radius: var(--nx-radius);
+
+  &:hover {
+    background: var(--nx-surface-elevated);
+    color: var(--nx-text-primary);
+  }
+}
+
+.modal-body {
+  padding: var(--nx-space-md);
+  overflow-y: auto;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--nx-space-sm);
+  padding: var(--nx-space-md);
+  border-top: 1px solid var(--nx-border);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// FORM
+// ═══════════════════════════════════════════════════════════════════════════
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--nx-space-md);
+
+  @media (max-width: 500px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-group {
+  margin-bottom: var(--nx-space-md);
+}
+
+.form-label {
+  display: block;
+  margin-bottom: var(--nx-space-xs);
+  font-weight: 500;
+  color: var(--nx-text-primary);
+
+  .required {
+    color: var(--nx-danger);
+  }
+}
+
+.form-control {
+  width: 100%;
+  padding: var(--nx-space-sm);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius);
+  font-size: 1rem;
+  background: var(--nx-surface);
+  color: var(--nx-text-primary);
+  transition: border-color 0.15s ease;
+
+  &:focus {
+    outline: none;
+    border-color: var(--nx-primary);
+    box-shadow: 0 0 0 3px var(--nx-primary-alpha);
+  }
+
+  &::placeholder {
+    color: var(--nx-text-muted);
+  }
+}
+
+textarea.form-control {
+  resize: vertical;
+  min-height: 80px;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ADVANCES SECTION
+// ═══════════════════════════════════════════════════════════════════════════
+
+.advances-section {
+  margin-top: var(--nx-space-md);
+  padding: var(--nx-space-md);
+  background: var(--nx-surface-elevated);
+  border-radius: var(--nx-radius);
+}
+
+.section-label {
+  margin: 0 0 var(--nx-space-xs) 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--nx-text-primary);
+}
+
+.section-hint {
+  margin: 0 0 var(--nx-space-sm) 0;
+  font-size: 0.85rem;
+  color: var(--nx-text-muted);
+}
+
+.advances-list-modal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-xs);
+}
+
+.advance-option {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--nx-space-sm);
+  padding: var(--nx-space-sm);
+  background: var(--nx-surface);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius);
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: var(--nx-primary);
+  }
+
+  &.selected {
+    border-color: var(--nx-primary);
+    background: var(--nx-primary-alpha);
+  }
+
+  input[type="checkbox"] {
+    margin-top: 3px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+  }
+}
+
+.advance-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.advance-purpose {
+  font-weight: 500;
+  color: var(--nx-text-primary);
+}
+
+.advance-details {
+  font-size: 0.85rem;
+  color: var(--nx-text-muted);
+
+  strong {
+    color: var(--nx-warning);
+  }
+}
+
+.no-advances {
+  padding: var(--nx-space-md);
+  text-align: center;
+  color: var(--nx-text-muted);
+  font-style: italic;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SETTLEMENT PREVIEW
+// ═══════════════════════════════════════════════════════════════════════════
+
+.settlement-preview {
+  margin-top: var(--nx-space-md);
+  padding: var(--nx-space-md);
+  background: var(--nx-success-bg);
+  border: 1px solid var(--nx-success);
+  border-radius: var(--nx-radius);
+}
+
+.preview-title {
+  margin: 0 0 var(--nx-space-sm) 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--nx-success);
+}
+
+.preview-row {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--nx-space-xs) 0;
+  font-size: 0.9rem;
+
+  &.total {
+    border-top: 1px solid var(--nx-success);
+    padding-top: var(--nx-space-sm);
+    margin-top: var(--nx-space-xs);
+    font-weight: 600;
+  }
+}
+
+.from-advance {
+  color: var(--nx-emerald);
+}
+
+.reimbursement {
+  color: var(--nx-primary);
+  font-weight: 700;
+}
+
+.reimbursement-note {
+  margin: var(--nx-space-sm) 0 0 0;
+  font-size: 0.8rem;
+  color: var(--nx-text-muted);
+}

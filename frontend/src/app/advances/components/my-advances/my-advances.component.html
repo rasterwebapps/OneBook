@@ -1,0 +1,204 @@
+<div class="advances-screen">
+
+  <!-- Header -->
+  <nx-page-header title="My Advances" subtitle="Request and track your employee advances">
+    <button class="nx-btn nx-btn--emerald" (click)="openCreateModal()">
+      ➕ Request Advance
+    </button>
+  </nx-page-header>
+
+  <!-- Summary Cards -->
+  <div class="summary-grid">
+    <nx-stat-card
+      label="Outstanding"
+      [value]="'₹' + (totalOutstanding() | number:'1.0-0')"
+      icon="💰"
+      variant="warning"
+    />
+    <nx-stat-card
+      label="Pending Approval"
+      [value]="pendingCount() + ' request(s)'"
+      icon="⏳"
+      variant="info"
+    />
+    <nx-stat-card
+      label="Total Disbursed"
+      [value]="'₹' + (summary().totalDisbursed | number:'1.0-0')"
+      icon="✅"
+      variant="success"
+    />
+  </div>
+
+  <!-- Tabs -->
+  <div class="advances-tabs">
+    <button class="tab-btn" [class.active]="activeTab() === 'all'" (click)="setTab('all')">
+      📋 All Advances
+    </button>
+    <button class="tab-btn" [class.active]="activeTab() === 'pending'" (click)="setTab('pending')">
+      ⏳ Pending
+      @if (pendingCount() > 0) {
+        <span class="tab-badge">{{ pendingCount() }}</span>
+      }
+    </button>
+    <button class="tab-btn" [class.active]="activeTab() === 'disbursed'" (click)="setTab('disbursed')">
+      💸 Disbursed
+    </button>
+  </div>
+
+  <!-- Search -->
+  <div class="advances-toolbar">
+    <nx-search-input
+      placeholder="Search by purpose..."
+      [value]="searchQuery()"
+      (searchChange)="updateSearch($event)"
+    />
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <nx-loading-spinner label="Loading advances..." />
+  }
+
+  <!-- Advances List -->
+  <div class="advances-list">
+    @for (advance of filteredAdvances(); track advance.id) {
+      <div class="advance-card" [class.pending]="advance.status.startsWith('PENDING')" (click)="viewAdvanceDetails(advance.id)">
+        <div class="advance-header">
+          <div class="advance-amount nx-number">₹{{ advance.amount | number:'1.0-0' }}</div>
+          <nx-status-badge [status]="advance.status" [label]="statusLabel(advance.status)" />
+        </div>
+        <div class="advance-purpose">{{ advance.purpose }}</div>
+        <div class="advance-meta">
+          <span class="meta-item">
+            <span class="meta-label">Requested:</span>
+            <span class="meta-value">{{ formatDate(advance.requestedDate) }}</span>
+          </span>
+          @if (advance.requiredBy) {
+            <span class="meta-item">
+              <span class="meta-label">Required by:</span>
+              <span class="meta-value">{{ formatDate(advance.requiredBy) }}</span>
+            </span>
+          }
+          <span class="meta-item">
+            <span class="meta-label">Approval:</span>
+            <span class="meta-value tier">{{ getApprovalTier(advance.amount) }}</span>
+          </span>
+        </div>
+
+        <!-- Settlement Progress (for disbursed advances) -->
+        @if (advance.status === 'DISBURSED' || advance.status === 'PARTIALLY_SETTLED') {
+          <div class="settlement-section">
+            <div class="settlement-bar">
+              <div class="settlement-progress" [style.width.%]="(advance.settledAmount / advance.amount) * 100"></div>
+            </div>
+            <div class="settlement-info">
+              <span>Settled: ₹{{ advance.settledAmount | number:'1.0-0' }}</span>
+              <span>Outstanding: ₹{{ advance.outstandingAmount | number:'1.0-0' }}</span>
+            </div>
+          </div>
+        }
+
+        <!-- Approval Chain -->
+        @if (advance.status !== 'DRAFT' && advance.status !== 'CANCELLED') {
+          <div class="approval-chain">
+            <div class="approval-step" [class.completed]="advance.hodApprovedBy" [class.required]="advance.hodApprovalRequired">
+              <span class="step-icon">{{ advance.hodApprovedBy ? '✅' : (advance.hodApprovalRequired ? '⏳' : '⚪') }}</span>
+              <span class="step-label">HOD</span>
+            </div>
+            @if (advance.ceoApprovalRequired) {
+              <div class="approval-arrow">→</div>
+              <div class="approval-step" [class.completed]="advance.ceoApprovedBy" [class.required]="advance.ceoApprovalRequired">
+                <span class="step-icon">{{ advance.ceoApprovedBy ? '✅' : '⏳' }}</span>
+                <span class="step-label">CEO</span>
+              </div>
+            }
+            @if (advance.mdApprovalRequired) {
+              <div class="approval-arrow">→</div>
+              <div class="approval-step" [class.completed]="advance.mdApprovedBy" [class.required]="advance.mdApprovalRequired">
+                <span class="step-icon">{{ advance.mdApprovedBy ? '✅' : '⏳' }}</span>
+                <span class="step-label">MD</span>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+
+    @if (filteredAdvances().length === 0 && !loading()) {
+      <nx-empty-state
+        icon="📭"
+        title="No advances found"
+        description="You haven't requested any advances yet. Click 'Request Advance' to create one."
+      />
+    }
+  </div>
+
+</div>
+
+<!-- Create Advance Modal -->
+@if (showCreateModal()) {
+  <div class="modal-overlay" (click)="closeCreateModal()">
+    <div class="modal-box nx-glass" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>💰 Request Advance</h3>
+        <button class="modal-close" (click)="closeCreateModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Amount (₹) <span class="required">*</span></label>
+          <input
+            type="number"
+            class="form-control"
+            placeholder="Enter amount"
+            [value]="newAdvance().amount || ''"
+            (input)="updateAmount($any($event.target).value)"
+            min="1"
+          />
+          <div class="form-hint">
+            Approval tier: {{ getApprovalTier(newAdvance().amount) }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Purpose <span class="required">*</span></label>
+          <textarea
+            class="form-control"
+            placeholder="Describe the purpose of this advance..."
+            rows="3"
+            [value]="newAdvance().purpose"
+            (input)="updatePurpose($any($event.target).value)"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Required By</label>
+          <input
+            type="date"
+            class="form-control"
+            [value]="newAdvance().requiredBy"
+            (input)="updateRequiredBy($any($event.target).value)"
+          />
+        </div>
+
+        <div class="info-box">
+          <strong>ℹ️ Approval Workflow</strong>
+          <ul>
+            <li>≤ ₹10,000 — HOD approval only</li>
+            <li>₹10,001 – ₹20,000 — HOD → CEO approval</li>
+            <li>> ₹20,000 — HOD → CEO → MD approval</li>
+          </ul>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="nx-btn" (click)="closeCreateModal()">Cancel</button>
+        <button
+          class="nx-btn nx-btn--emerald"
+          [disabled]="!isFormValid()"
+          (click)="submitAdvanceRequest()"
+        >
+          Submit Request
+        </button>
+      </div>
+    </div>
+  </div>
+}
