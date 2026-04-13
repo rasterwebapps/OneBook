@@ -12,7 +12,7 @@ spring:
 
   # PostgreSQL Configuration
   datasource:
-    url: jdbc:postgresql://localhost:5432/onebook
+    url: jdbc:postgresql://localhost:5433/onebook
     username: onebook
     password: onebook_secret
     driver-class-name: org.postgresql.Driver
