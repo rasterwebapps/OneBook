@@ -462,14 +462,14 @@ html.dark-mode .top-header {
   }
 }
 
-/* ─── Sidebar (Limitless Dark Sidebar — below header) ─── */
+/* ─── Sidebar — Deep Background with smooth collapse ─── */
 .sidebar {
   width: 260px;
-  background: var(--nx-sidebar-bg);
+  background: linear-gradient(180deg, var(--nx-sidebar-bg) 0%, #020617 100%);
   color: var(--nx-sidebar-text);
   display: flex;
   flex-direction: column;
-  transition: width var(--nx-transition-normal);
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   position: fixed;
   top: 52px;
   left: 0;
@@ -477,6 +477,66 @@ html.dark-mode .top-header {
   z-index: 100;
   overflow-y: auto;
   overflow-x: hidden;
+
+  &.collapsed {
+    width: 56px;
+
+    .tenant-info,
+    .tenant-caret {
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+    }
+
+    .tenant-selector {
+      justify-content: center;
+      padding: 12px 0;
+    }
+
+    .nav-section-toggle {
+      justify-content: center;
+      padding: 10px 0;
+
+      .nav-section-label,
+      .section-chevron {
+        display: none;
+      }
+
+      &::after {
+        content: '';
+        display: block;
+        width: 20px;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.1);
+      }
+    }
+
+    .nav-item {
+      justify-content: center;
+      padding: 8px 0;
+
+      .nav-label {
+        opacity: 0;
+        width: 0;
+        overflow: hidden;
+        margin: 0;
+      }
+    }
+
+    .status-text {
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+    }
+
+    .sidebar-footer {
+      justify-content: center;
+    }
+
+    .status-indicator {
+      justify-content: center;
+    }
+  }
 }
 
 .sidebar-collapsed .sidebar {
@@ -492,7 +552,7 @@ html.dark-mode .top-header {
   cursor: pointer;
   border-bottom: 1px solid var(--nx-sidebar-border);
   background: rgba(255, 255, 255, 0.03);
-  transition: background var(--nx-transition-fast);
+  transition: background var(--nx-transition-fast), padding 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   user-select: none;
 
   &:hover {
@@ -519,6 +579,7 @@ html.dark-mode .top-header {
 .tenant-info {
   flex: 1;
   min-width: 0;
+  transition: opacity 0.2s ease, width 0.25s ease;
 
   .tenant-role {
     font-size: 0.6rem;
@@ -545,7 +606,7 @@ html.dark-mode .top-header {
   height: 14px;
   color: rgba(255, 255, 255, 0.4);
   flex-shrink: 0;
-  transition: transform var(--nx-transition-fast);
+  transition: transform var(--nx-transition-fast), opacity 0.2s ease;
 
   &.open {
     transform: rotate(180deg);
@@ -619,7 +680,7 @@ html.dark-mode .top-header {
   background: none;
   border: none;
   cursor: pointer;
-  transition: color var(--nx-transition-fast);
+  transition: color var(--nx-transition-fast), padding 0.25s cubic-bezier(0.4, 0, 0.2, 1), justify-content 0.25s ease;
 
   .nav-section-label {
     flex: 1;
@@ -629,6 +690,7 @@ html.dark-mode .top-header {
     color: var(--nx-sidebar-section-text);
     font-weight: 600;
     text-align: left;
+    transition: opacity 0.2s ease;
   }
 
   .section-chevron {
@@ -656,9 +718,10 @@ html.dark-mode .top-header {
   text-decoration: none;
   font-size: 0.8125rem;
   font-weight: 500;
-  transition: all var(--nx-transition-fast);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   white-space: nowrap;
   border-left: 3px solid transparent;
+  position: relative;
 
   &:hover {
     background: rgba(255, 255, 255, 0.05);
@@ -667,9 +730,14 @@ html.dark-mode .top-header {
   }
 
   &.active {
-    background: rgba(255, 255, 255, 0.08);
+    background: linear-gradient(90deg, var(--nx-primary-dim) 0%, transparent 100%);
     color: #ffffff;
-    border-left-color: var(--nx-emerald);
+    border-left-color: var(--nx-primary);
+
+    .nav-icon {
+      color: var(--nx-primary);
+      filter: drop-shadow(0 0 6px var(--nx-primary-glow));
+    }
   }
 
   .nav-icon {
@@ -678,7 +746,8 @@ html.dark-mode .top-header {
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    color: rgba(255, 255, 255, 0.55);
+    color: var(--nx-sidebar-icon);
+    transition: color 0.2s ease, filter 0.2s ease;
 
     .icon-svg {
       width: 16px;
@@ -689,9 +758,10 @@ html.dark-mode .top-header {
   .nav-label {
     flex: 1;
     color: inherit;
+    transition: opacity 0.2s ease, width 0.25s ease;
+    overflow: hidden;
   }
 
-  &.active .nav-icon,
   &:hover .nav-icon {
     color: rgba(255, 255, 255, 0.9);
   }
@@ -712,6 +782,7 @@ html.dark-mode .top-header {
 .sidebar-footer {
   padding: 12px 16px;
   border-top: 1px solid var(--nx-sidebar-border);
+  transition: padding 0.25s ease;
 }
 
 .status-indicator {
@@ -720,6 +791,7 @@ html.dark-mode .top-header {
   gap: 8px;
   font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.6);
+  transition: justify-content 0.25s ease;
 
   .dot {
     width: 8px;
@@ -729,11 +801,28 @@ html.dark-mode .top-header {
     flex-shrink: 0;
   }
 
+  .status-text {
+    transition: opacity 0.2s ease, width 0.25s ease;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
   &.online .dot {
     background: var(--nx-success);
-    box-shadow: 0 0 4px rgba(76, 175, 80, 0.4);
+    box-shadow: 0 0 6px rgba(16, 185, 129, 0.5);
   }
   &.offline .dot { background: var(--nx-danger); }
+}
+
+/* ─── Sidebar custom thin scrollbar ─── */
+.sidebar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.12) transparent;
+
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 2px; }
+  &::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.25); }
 }
 
 /* ─── Main Content ─── */
@@ -786,38 +875,46 @@ html.dark-mode .top-header {
     display: none;
   }
 
-  .tenant-selector,
+  .tenant-info,
+  .tenant-caret,
   .tenant-dropdown {
     display: none;
   }
 
   .nav-section-toggle {
+    .nav-section-label,
+    .section-chevron { display: none; }
+
+    &::after {
+      content: '';
+      display: block;
+      width: 20px;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  .nav-item .nav-label {
     display: none;
   }
-}
 
-/* ─── Sidebar custom thin scrollbar ─── */
-.sidebar {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255,255,255,0.2) transparent;
+  .status-text {
+    display: none;
+  }
 
-  &::-webkit-scrollbar { width: 4px; }
-  &::-webkit-scrollbar-track { background: transparent; }
-  &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
-  &::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.35); }
-}
+  .sidebar-footer {
+    justify-content: center;
+  }
 
-/* ─── Active nav item left-border gradient ─── */
-.nav-item.active {
-  border-left: 3px solid var(--nx-emerald);
-  padding-left: calc(var(--nx-gap-md) - 3px);
-  background: linear-gradient(90deg, var(--nx-emerald-dim) 0%, transparent 100%);
+  .status-indicator {
+    justify-content: center;
+  }
 }
 
 /* ─── Tenant dropdown checkmark ─── */
 .tenant-check {
   margin-left: auto;
-  color: var(--nx-emerald);
+  color: var(--nx-primary);
   font-weight: 700;
   font-size: 0.9rem;
 }
@@ -846,14 +943,40 @@ html.dark-mode .top-header {
       position: fixed;
       top: 0;
       left: -280px;
+      width: 260px;
       height: 100vh;
       z-index: var(--nx-z-modal, 400);
-      transition: left var(--nx-transition-normal);
-      box-shadow: var(--nx-shadow-xl, 0 20px 25px rgba(0,0,0,0.1));
+      transition: left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--nx-shadow-xl, 0 20px 25px rgba(0,0,0,0.15));
     }
 
     &:not(.sidebar-collapsed) .sidebar {
       left: 0;
+
+      .tenant-info,
+      .tenant-caret {
+        display: flex;
+        opacity: 1;
+        width: auto;
+      }
+
+      .nav-section-toggle {
+        .nav-section-label,
+        .section-chevron { display: block; }
+        &::after { display: none; }
+      }
+
+      .nav-item .nav-label {
+        display: block;
+        opacity: 1;
+        width: auto;
+      }
+
+      .status-text {
+        display: inline;
+        opacity: 1;
+        width: auto;
+      }
     }
 
     &:not(.sidebar-collapsed)::before {

@@ -773,13 +773,19 @@ Services and components are in `frontend/src/app/keyboard/`.
 └────────────┴─────────────────────────────────────────────────┘
 ```
 
-### Sidebar
+### Sidebar — Deep Background with Smooth Collapse
 
-- **Theme**: Dark (`--nx-sidebar-bg: #263238`)
-- **Collapsible**: Toggle via hamburger menu; collapses to icon-only mode
-- **Sections**: Accounting, Reports, Management, Intelligence — each collapsible
-- **Tenant selector**: Top of sidebar; dropdown with available tenants
-- **Status indicator**: Bottom of sidebar; shows backend connection status
+- **Background**: Deep gradient (`linear-gradient(180deg, --nx-sidebar-bg, #020617)`) for premium depth
+- **Collapsible**: Toggle via hamburger menu; collapses to icon-only mode (56px) with smooth 0.25s cubic-bezier animation
+- **Collapsed state**: Labels fade out via `opacity: 0; width: 0` transition; nav items center icons; section toggles become thin separator lines
+- **Tooltips**: When collapsed, all nav items, section headers, and tenant selector show `[title]` attribute tooltips on hover
+- **Active state**: Left indicator line (`border-left: 3px solid --nx-primary`) + gradient background (`linear-gradient(90deg, --nx-primary-dim, transparent)`) + icon glow (`filter: drop-shadow(0 0 6px --nx-primary-glow)`)
+- **Icon color**: Default `--nx-sidebar-icon` (60% white), hover 90% white, active uses `--nx-primary` color with glow
+- **Sections**: Accounting, Reports, Management, Advances & Expenses, Intelligence — each collapsible with chevron
+- **Tenant selector**: Always visible; in collapsed state shows avatar only (info and caret transition to `opacity: 0`)
+- **Status indicator**: Always visible; in collapsed state shows dot only (status text transitions to `opacity: 0`)
+- **Scrollbar**: Ultra-thin (4px), 12% white thumb, transparent track
+- **Responsive**: On mobile (≤768px), sidebar becomes an overlay with backdrop, slides in/out from left
 
 ### Top Header — Modern Minimalist
 
