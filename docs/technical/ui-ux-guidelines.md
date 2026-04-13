@@ -446,14 +446,89 @@ Template structure:
 </div>
 ```
 
-### Dashboard Page (Bento Grid)
+### Dashboard Page (Full-Width Fluid Layout)
+
+The dashboard **must** be a full-width fluid container that stretches to fill the entire available content area. Never apply `max-width` to the dashboard wrapper — cards and grids must align edge-to-edge with the content boundary at every screen size.
+
+#### Layout Rules
+
+| Rule | Requirement |
+|------|-------------|
+| **Container width** | `width: 100%` — fluid, no `max-width` cap. The outer `.content-area` padding (24px) provides the inset. |
+| **KPI row** | Explicit `grid-template-columns: repeat(4, 1fr)` — all 4 cards share equal width at all breakpoints above 1024px. |
+| **Middle grid** | `grid-template-columns: 1fr 1fr` — chart and activity list split 50/50. |
+| **Secondary grid** | `grid-template-columns: 2fr 1fr` — quick actions take ⅔, integrations take ⅓. |
+| **Responsive stacking** | At ≤ 1024px KPI cards become 2×2; at ≤ 900px middle/secondary grids become single column; at ≤ 640px KPI cards stack to 1 column. |
+
+> **Why no `max-width`?** The dashboard sits inside `.content-area` which already provides 24px padding. Adding `max-width: 1400px` creates a secondary constraint that leaves empty space on wide monitors (> 1660px viewport). The cards should always fill the available width.
+
+#### KPI Cards — Glassmorphism Style
+
+Dashboard KPI cards use the `.glass-kpi-card` class with glassmorphism styling:
+
+```scss
+.glass-kpi-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: var(--nx-radius-xl);   /* 16px */
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+  padding: var(--nx-space-5);
+
+  &:hover {
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+  }
+
+  &.alert {
+    border-color: rgba(239, 68, 68, 0.3);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.7) 0%, rgba(254, 242, 242, 0.7) 100%);
+  }
+}
+```
+
+Each card contains: `.kpi-header` (icon + label), `.kpi-value` (large monospace number), `.kpi-trend` (pill badge with arrow and percentage).
+
+#### Template Structure
+
+```html
+<div class="fintech-dashboard">
+  <nx-page-header title="Dashboard" subtitle="Real-time financial overview and quick actions">
+    <button class="nx-btn nx-btn--emerald" routerLink="/voucher/payment">
+      + New Voucher <kbd>F5</kbd>
+    </button>
+  </nx-page-header>
+
+  <!-- KPI Row: 4 equal-width cards -->
+  <div class="kpi-row">
+    <div class="glass-kpi-card"><!-- Cash --></div>
+    <div class="glass-kpi-card"><!-- Bank --></div>
+    <div class="glass-kpi-card"><!-- Pending Validations --></div>
+    <div class="glass-kpi-card" [class.alert]="hasAlerts"><!-- Failed PANs --></div>
+  </div>
+
+  <!-- Middle: 50/50 chart + activity -->
+  <div class="dashboard-grid">
+    <div class="chart-placeholder"><!-- Cashflow Overview --></div>
+    <div class="activity-card"><!-- Recent Activity --></div>
+  </div>
+
+  <!-- Secondary: 2/3 + 1/3 -->
+  <div class="secondary-grid">
+    <div class="quick-actions-card"><!-- Quick Actions --></div>
+    <div class="status-card"><!-- Integrations --></div>
+  </div>
+</div>
+```
+
+#### Bento Grid (Generic Widgets)
+
+For non-dashboard pages that use generic widget grids, use the `nx-bento-grid` utility:
 
 ```html
 <div class="nx-bento-grid">
   <nx-stat-card icon="💰" label="Revenue" value="₹12,45,000" trend="+12%" trendDirection="up" color="emerald" />
   <nx-stat-card icon="📊" label="Expenses" value="₹8,30,000" trend="-3%" trendDirection="down" color="danger" />
-  <nx-stat-card icon="📈" label="Profit" value="₹4,15,000" trend="+22%" trendDirection="up" color="purple" />
-  <nx-stat-card icon="🏦" label="Cash" value="₹2,80,000" trendDirection="neutral" color="amber" />
 
   <div class="nx-bento-tile nx-bento-tile--span-2">
     <!-- Chart or larger widget -->
@@ -740,6 +815,8 @@ const ROUTE_BREADCRUMBS: Record<string, Breadcrumb[]> = {
 ### Responsive Behaviors
 
 - **Sidebar**: On `< md`, sidebar becomes an overlay (hidden by default)
+- **Dashboard KPI row**: `repeat(4, 1fr)` → `repeat(2, 1fr)` at ≤ 1024px → `1fr` at ≤ 640px
+- **Dashboard grids**: 2-column grids collapse to single column at ≤ 900px
 - **Bento grid**: `repeat(auto-fit, minmax(320px, 1fr))` — auto-stacks on narrow screens
 - **Data tables**: `<nx-data-table>` wraps in `overflow-x: auto` for horizontal scroll
 - **Header**: On mobile, search and some actions collapse into hamburger menu
@@ -1033,6 +1110,7 @@ Add `.sr-only` class for screen-reader-only text:
 13. **Use `aria-label`** on all icon-only buttons
 14. **Use semantic HTML** (`<table>`, `<thead>`, `<tfoot>`, `<nav>`, `<main>`, `<header>`)
 15. **Use `inject()`** function for dependency injection (not constructor parameters)
+16. **Use `width: 100%` (fluid layout)** for dashboard containers — cards must stretch to fill the full available content width
 
 ### ❌ Don't
 
@@ -1051,6 +1129,7 @@ Add `.sr-only` class for screen-reader-only text:
 13. **Don't use inline colors** like `style="color: red"` — use badge/amount components
 14. **Don't skip keyboard shortcuts** — every new page should register at least navigation shortcuts
 15. **Don't use `@ViewChild` for state** — use Signals and `input()` / `output()`
+16. **Don't use `max-width` on dashboard containers** — dashboard grids must be fluid full-width; the outer `.content-area` padding handles inset
 
 ---
 
