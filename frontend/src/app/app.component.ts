@@ -53,6 +53,11 @@ const ROUTE_BREADCRUMBS: Record<string, Breadcrumb[]> = {
   '/gst': [{ label: 'Management' }, { label: 'GST & Tax' }],
   '/banking': [{ label: 'Management' }, { label: 'Banking' }],
   '/master/create': [{ label: 'Management' }, { label: 'Masters' }],
+  '/advances': [{ label: 'Advances & Expenses' }, { label: 'My Advances' }],
+  '/advances/approvals': [{ label: 'Advances & Expenses' }, { label: 'Approval Queue' }],
+  '/expense-vouchers': [{ label: 'Advances & Expenses' }, { label: 'Expense Vouchers' }],
+  '/payment-advices': [{ label: 'Advances & Expenses' }, { label: 'Payment Advices' }],
+  '/client-accounts': [{ label: 'Management' }, { label: 'Client Accounts' }],
   '/ai': [{ label: 'Intelligence' }, { label: 'AI Insights' }],
   '/market': [{ label: 'Intelligence' }, { label: 'Market Valuation' }],
   '/auditor': [{ label: 'Intelligence' }, { label: 'Auditor Portal' }],
@@ -92,6 +97,7 @@ export class AppComponent implements OnInit {
   sectionAccounting = signal(true);
   sectionReports = signal(true);
   sectionManagement = signal(true);
+  sectionAdvances = signal(true);
   sectionIntelligence = signal(true);
 
   // Computed: show app shell only when NOT on public page
@@ -171,11 +177,12 @@ export class AppComponent implements OnInit {
     this.tenantDropdownOpen.set(false);
   }
 
-  toggleSection(section: 'accounting' | 'reports' | 'management' | 'intelligence'): void {
+  toggleSection(section: 'accounting' | 'reports' | 'management' | 'advances' | 'intelligence'): void {
     switch (section) {
       case 'accounting': this.sectionAccounting.update(v => !v); break;
       case 'reports': this.sectionReports.update(v => !v); break;
       case 'management': this.sectionManagement.update(v => !v); break;
+      case 'advances': this.sectionAdvances.update(v => !v); break;
       case 'intelligence': this.sectionIntelligence.update(v => !v); break;
     }
   }
