@@ -28,46 +28,48 @@
 
 ## 1. Design System Overview
 
-OneBook uses a custom **Limitless-inspired** design system. No third-party component libraries (no Angular Material, no Bootstrap). Every UI element is built from design tokens defined in `frontend/src/styles.scss`.
+OneBook uses a custom **FinTech-inspired** design system. No third-party component libraries (no Angular Material, no Bootstrap). Every UI element is built from design tokens defined in `frontend/src/styles.scss`.
 
 ### Brand Identity
 
 | Role | Token | Value | Usage |
 |------|-------|-------|-------|
-| **Primary** (Teal) | `--nx-emerald` | `#26a69a` | CTAs, active states, links, primary actions |
-| **Secondary** (Indigo) | `--nx-purple` | `#5c6bc0` | Secondary actions, chart accents, tags |
-| **Warning** (Amber) | `--nx-amber` | `#ff7043` | Warnings, attention indicators |
-| **Success** | `--nx-success` | `#4caf50` | Credit amounts, posted status, confirmations |
-| **Danger** | `--nx-danger` | `#ef5350` | Debit amounts, errors, destructive actions |
-| **Info** | `--nx-info` | `#42a5f5` | Informational badges, tooltips |
-| **Warning** | `--nx-warning` | `#ff9800` | Pending status, caution messages |
+| **Primary** (Sky Blue) | `--nx-primary` | `#0EA5E9` | CTAs, active states, links, primary actions |
+| **Secondary** (Indigo) | `--nx-purple` | `#6366F1` | Secondary actions, chart accents, tags |
+| **Warning** (Burnt Orange) | `--nx-amber` | `#F97316` | Warnings, attention indicators |
+| **Success** (Mint Green) | `--nx-success` | `#10B981` | Credit amounts, posted status, confirmations |
+| **Danger** (Deep Crimson) | `--nx-danger` | `#DC2626` | Debit amounts, errors, destructive actions |
+| **Info** | `--nx-info` | `#0EA5E9` | Informational badges, tooltips |
+| **Warning** | `--nx-warning` | `#F59E0B` | Pending status, caution messages |
 
 Each accent has three variants for layered depth:
 
 ```
---nx-emerald:      #26a69a     ← Solid (buttons, icons)
---nx-emerald-glow: rgba(38, 166, 154, 0.2)  ← Glow (focus rings, highlights)
---nx-emerald-dim:  rgba(38, 166, 154, 0.08) ← Dim (icon backgrounds, subtle fills)
+--nx-primary:      #0EA5E9     ← Solid (buttons, icons)
+--nx-primary-glow: rgba(14, 165, 233, 0.2)  ← Glow (focus rings, highlights)
+--nx-primary-dim:  rgba(14, 165, 233, 0.08) ← Dim (icon backgrounds, subtle fills)
 ```
+
+> **Note:** `--nx-emerald`, `--nx-emerald-glow`, `--nx-emerald-dim` are backward-compatible aliases for `--nx-primary` variants. Prefer `--nx-primary` in new code.
 
 ### Typography
 
 | Token | Value | Usage |
 |-------|-------|-------|
 | `--nx-font-primary` | `'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif` | All UI text |
-| `--nx-font-mono` | `'JetBrains Mono', 'Fira Code', 'Consolas', monospace` | Accounting numbers, codes, amounts |
+| `--nx-font-mono` | `'Fira Code', 'JetBrains Mono', 'Consolas', monospace` | Accounting numbers, codes, amounts |
 
-**Typography Scale:**
+**Fluid Typography Scale (clamp-based):**
 
-| Token | Size | Usage |
-|-------|------|-------|
-| `--nx-text-xs` | `0.6875rem` (11px) | Badges, labels, trends |
-| `--nx-text-sm` | `0.8125rem` (13px) | Table cells, secondary text |
-| `--nx-text-base` | `0.875rem` (14px) | Body text, card headers |
-| `--nx-text-lg` | `1rem` (16px) | Section titles, empty-state titles |
-| `--nx-text-xl` | `1.125rem` (18px) | Page subtitles |
-| `--nx-text-2xl` | `1.375rem` (22px) | Stat card values |
-| `--nx-text-3xl` | `1.75rem` (28px) | Page titles |
+| Token | Range | Usage |
+|-------|-------|-------|
+| `--nx-text-xs` | `clamp(0.625rem, 0.6rem + 0.125vw, 0.6875rem)` | Badges, labels, trends |
+| `--nx-text-sm` | `clamp(0.75rem, 0.72rem + 0.15vw, 0.8125rem)` | Table cells, secondary text |
+| `--nx-text-base` | `clamp(0.8125rem, 0.78rem + 0.16vw, 0.875rem)` | Body text, card headers |
+| `--nx-text-lg` | `clamp(0.9375rem, 0.9rem + 0.2vw, 1rem)` | Section titles, empty-state titles |
+| `--nx-text-xl` | `clamp(1rem, 0.95rem + 0.25vw, 1.125rem)` | Page subtitles |
+| `--nx-text-2xl` | `clamp(1.25rem, 1.15rem + 0.5vw, 1.375rem)` | Stat card values |
+| `--nx-text-3xl` | `clamp(1.5rem, 1.35rem + 0.75vw, 1.75rem)` | Page titles |
 
 **Font Weights:**
 
@@ -104,19 +106,19 @@ Each accent has three variants for layered depth:
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| `--nx-shadow-sm` | `0 1px 2px rgba(0,0,0,0.05)` | Cards at rest, badges |
-| `--nx-shadow-md` | `0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06)` | Card hover, bento-tile hover |
-| `--nx-shadow-lg` | `0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06)` | Dropdowns, elevated elements |
-| `--nx-shadow-xl` | `0 20px 25px rgba(0,0,0,0.10), 0 10px 10px rgba(0,0,0,0.04)` | Modals, command palette |
+| `--nx-shadow-sm` | `0 1px 2px rgba(0,0,0,0.04), 0 1px 1px rgba(0,0,0,0.02)` | Cards at rest, badges |
+| `--nx-shadow-md` | `0 4px 6px rgba(0,0,0,0.04), 0 2px 4px rgba(0,0,0,0.03)` | Card hover, bento-tile hover |
+| `--nx-shadow-lg` | `0 10px 15px rgba(0,0,0,0.06), 0 4px 6px rgba(0,0,0,0.04)` | Dropdowns, elevated elements |
+| `--nx-shadow-xl` | `0 20px 25px rgba(0,0,0,0.08), 0 8px 10px rgba(0,0,0,0.04)` | Modals, command palette |
 
 ### Border Radius Scale
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| `--nx-radius-sm` | `4px` | Buttons, badges, inputs |
-| `--nx-radius-md` | `6px` | Cards, bento tiles, glass elements |
-| `--nx-radius-lg` | `8px` | Larger cards, stat cards |
-| `--nx-radius-xl` | `12px` | Modal dialogs, command palette |
+| `--nx-radius-sm` | `6px` | Buttons, badges, inputs |
+| `--nx-radius-md` | `8px` | Cards, bento tiles, glass elements |
+| `--nx-radius-lg` | `12px` | Larger cards, stat cards, glass-card |
+| `--nx-radius-xl` | `16px` | Modal dialogs, command palette |
 
 ### Z-Index Scale
 
@@ -517,8 +519,8 @@ Template structure:
 ```
 
 Color rules:
-- **Debit** amounts → `var(--nx-danger)` (red `#ef5350`)
-- **Credit** amounts → `var(--nx-success)` (green `#4caf50`)
+- **Debit** amounts → `var(--nx-danger)` (deep crimson `#DC2626`)
+- **Credit** amounts → `var(--nx-success)` (mint green `#10B981`)
 - Always use Indian comma formatting (`en-IN` locale)
 - Always show 2 decimal places minimum
 
@@ -763,15 +765,16 @@ All design tokens are overridden in `html.dark-mode`:
 
 | Category | Light Mode | Dark Mode |
 |----------|-----------|-----------|
-| Background | `#eef0f2` | `#1e272e` |
-| Cards | `#ffffff` | `#2c3e50` |
-| Card hover | `#f8f9fa` | `#34495e` |
-| Surface | `#f5f6fa` | `#1a2226` |
-| Text primary | `#333333` | `#e0e0e0` |
-| Text secondary | `#666666` | `#b0bec5` |
-| Text muted | `#999999` | `#78909c` |
-| Border | `#e0e0e0` | `rgba(255,255,255,0.1)` |
-| Shadows | Light subtle | Darker, stronger |
+| Background | `#F8FAFC` | `#0F172A` |
+| Cards | `#ffffff` | `#1E293B` |
+| Card hover | `#F1F5F9` | `#334155` |
+| Surface | `#F1F5F9` | `#0F172A` |
+| Text primary | `#0F172A` | `#F1F5F9` |
+| Text secondary | `#475569` | `#94A3B8` |
+| Text muted | `#94A3B8` | `#64748B` |
+| Border | `#E2E8F0` | `rgba(148,163,184,0.12)` |
+| Glass bg | `rgba(255,255,255,0.7)` | `rgba(30,41,59,0.8)` |
+| Shadows | Light, subtle multi-layer | Darker, stronger |
 
 ### Rule: Always Use CSS Variables
 
@@ -897,7 +900,7 @@ Complete token reference from `frontend/src/styles.scss`. All tokens use the `--
 --nx-{category}-{modifier}
 ```
 
-Categories: `bg`, `text`, `border`, `shadow`, `radius`, `space`, `gap`, `font`, `transition`, `z`, `sidebar`, `navbar`, `header`, `page-header`, and accent names (`emerald`, `purple`, `amber`).
+Categories: `bg`, `text`, `border`, `shadow`, `radius`, `space`, `gap`, `font`, `transition`, `z`, `sidebar`, `navbar`, `header`, `page-header`, `primary`, and accent names (`emerald` (alias), `purple`, `amber`).
 
 ### Complete Token Table
 
@@ -911,7 +914,7 @@ Categories: `bg`, `text`, `border`, `shadow`, `radius`, `space`, `gap`, `font`, 
 `--nx-sidebar-bg`, `--nx-sidebar-header-bg`, `--nx-sidebar-text`, `--nx-sidebar-text-hover`, `--nx-sidebar-icon`, `--nx-sidebar-active-bg`, `--nx-sidebar-section-text`, `--nx-sidebar-border`
 
 **Accents:**
-`--nx-emerald`, `--nx-emerald-glow`, `--nx-emerald-dim`, `--nx-purple`, `--nx-purple-glow`, `--nx-purple-dim`, `--nx-amber`, `--nx-amber-glow`, `--nx-amber-dim`
+`--nx-primary`, `--nx-primary-glow`, `--nx-primary-dim`, `--nx-emerald` (alias), `--nx-emerald-glow` (alias), `--nx-emerald-dim` (alias), `--nx-purple`, `--nx-purple-glow`, `--nx-purple-dim`, `--nx-amber`, `--nx-amber-glow`, `--nx-amber-dim`
 
 **Text:**
 `--nx-text-primary`, `--nx-text-secondary`, `--nx-text-muted`
@@ -919,8 +922,10 @@ Categories: `bg`, `text`, `border`, `shadow`, `radius`, `space`, `gap`, `font`, 
 **Borders:**
 `--nx-border`, `--nx-border-glow`
 
-**Glass:**
+**Glass (Glassmorphic surfaces):**
 `--nx-glass-bg`, `--nx-glass-border`, `--nx-glass-blur`
+
+> Use the `.glass-card` CSS class for glassmorphic card surfaces with 12px backdrop blur.
 
 **Shadows:**
 `--nx-shadow-sm`, `--nx-shadow-md`, `--nx-shadow-lg`, `--nx-shadow-xl`
@@ -954,11 +959,11 @@ Categories: `bg`, `text`, `border`, `shadow`, `radius`, `space`, `gap`, `font`, 
 
 ### Focus Indicators
 
-All focusable elements receive a teal focus ring:
+All focusable elements receive a sky-blue focus ring:
 
 ```css
 *:focus-visible {
-  outline: 2px solid var(--nx-emerald);
+  outline: 2px solid var(--nx-primary);
   outline-offset: 2px;
 }
 ```
