@@ -7,93 +7,122 @@
   </nx-page-header>
 
   <!-- ═══════════════════════════════════════════════════════════════
-       TOP ROW: 4 KPI Metric Cards — Fintech Style (Mercury/Stripe Inspired)
-       Cash, Bank, Pending Validations, Failed PANs
+       TOP ROW: 4 Rich KPI Glass Cards — Icon above title, large value, colored variance
        ═══════════════════════════════════════════════════════════════ -->
   <div class="kpi-row">
     <!-- Cash Balance Card -->
     <div class="glass-kpi-card">
-      <div class="kpi-header">
-        <span class="kpi-icon cash">💵</span>
-        <span class="kpi-label">Cash</span>
+      <div class="kpi-icon-wrapper cash">
+        <svg class="kpi-svg-icon" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M6 12h.01M18 12h.01"/></svg>
       </div>
+      <span class="kpi-label">Cash Balance</span>
       <div class="kpi-value">₹{{ cashFlowSummary().currentBalance | number:'1.0-0' }}</div>
-      <div class="kpi-trend" [class.up]="cashFlowSummary().trend === 'up'" [class.down]="cashFlowSummary().trend !== 'up'">
-        <span class="trend-arrow">{{ cashFlowSummary().trend === 'up' ? '↑' : '↓' }}</span>
-        <span class="trend-text">{{ cashFlowSummary().trend === 'up' ? '+12.5%' : '-3.2%' }} MTD</span>
+      <div class="kpi-variance" [class.up]="cashFlowSummary().trend === 'up'" [class.down]="cashFlowSummary().trend !== 'up'">
+        <svg class="variance-arrow" viewBox="0 0 16 16">
+          @if (cashFlowSummary().trend === 'up') {
+            <path d="M8 3v10M4 7l4-4 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          } @else {
+            <path d="M8 13V3M4 9l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          }
+        </svg>
+        <span class="variance-value">{{ cashFlowSummary().trend === 'up' ? '+12.5%' : '-3.2%' }}</span>
+        <span class="variance-period">MTD</span>
       </div>
     </div>
 
     <!-- Bank Balance Card -->
     <div class="glass-kpi-card">
-      <div class="kpi-header">
-        <span class="kpi-icon bank">🏦</span>
-        <span class="kpi-label">Bank</span>
+      <div class="kpi-icon-wrapper bank">
+        <svg class="kpi-svg-icon" viewBox="0 0 24 24"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"/></svg>
       </div>
+      <span class="kpi-label">Bank Balance</span>
       <div class="kpi-value">₹{{ bankBalance() | number:'1.0-0' }}</div>
-      <div class="kpi-trend up">
-        <span class="trend-arrow">↑</span>
-        <span class="trend-text">+8.3% MTD</span>
+      <div class="kpi-variance up">
+        <svg class="variance-arrow" viewBox="0 0 16 16"><path d="M8 3v10M4 7l4-4 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="variance-value">+8.3%</span>
+        <span class="variance-period">MTD</span>
       </div>
     </div>
 
     <!-- Pending Validations Card -->
     <div class="glass-kpi-card">
-      <div class="kpi-header">
-        <span class="kpi-icon pending">⏳</span>
-        <span class="kpi-label">Pending Validations</span>
+      <div class="kpi-icon-wrapper pending">
+        <svg class="kpi-svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
       </div>
+      <span class="kpi-label">Pending Validations</span>
       <div class="kpi-value">{{ pendingValidations() }}</div>
-      <div class="kpi-trend neutral">
-        <span class="trend-arrow">→</span>
-        <span class="trend-text">{{ pendingValidations() > 0 ? 'Needs review' : 'All clear' }}</span>
+      <div class="kpi-variance neutral">
+        <svg class="variance-arrow" viewBox="0 0 16 16"><path d="M3 8h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span class="variance-value">{{ pendingValidations() > 0 ? 'Needs review' : 'All clear' }}</span>
       </div>
     </div>
 
     <!-- Failed PANs Card -->
     <div class="glass-kpi-card" [class.alert]="failedPANs() > 0">
-      <div class="kpi-header">
-        <span class="kpi-icon failed">⚠️</span>
-        <span class="kpi-label">Failed PANs</span>
+      <div class="kpi-icon-wrapper failed">
+        <svg class="kpi-svg-icon" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
       </div>
+      <span class="kpi-label">Failed PANs</span>
       <div class="kpi-value">{{ failedPANs() }}</div>
-      <div class="kpi-trend" [class.down]="failedPANs() > 0" [class.up]="failedPANs() === 0">
-        <span class="trend-arrow">{{ failedPANs() > 0 ? '!' : '✓' }}</span>
-        <span class="trend-text">{{ failedPANs() > 0 ? 'Action needed' : 'All verified' }}</span>
+      <div class="kpi-variance" [class.down]="failedPANs() > 0" [class.up]="failedPANs() === 0">
+        @if (failedPANs() > 0) {
+          <svg class="variance-arrow" viewBox="0 0 16 16"><path d="M8 2l6 10H2z" fill="currentColor"/></svg>
+          <span class="variance-value">Action needed</span>
+        } @else {
+          <svg class="variance-arrow" viewBox="0 0 16 16"><path d="M13 5L6 12 3 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="variance-value">All verified</span>
+        }
       </div>
     </div>
   </div>
 
   <!-- ═══════════════════════════════════════════════════════════════
        MIDDLE SECTION: 2-Column Grid
-       Left: Cashflow Chart Placeholder | Right: Recent Activity List
+       Left: Smooth Area Chart with Gradient Glow | Right: Modern Activity List
        ═══════════════════════════════════════════════════════════════ -->
   <div class="dashboard-grid">
-    <!-- Left Column: Cashflow Chart Placeholder -->
-    <div class="chart-placeholder">
+    <!-- Left Column: Cashflow Area Chart -->
+    <div class="chart-card">
       <div class="chart-header">
         <div class="chart-title">
-          <span class="chart-icon">📊</span>
+          <svg class="section-svg-icon" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
           <h3>Cashflow Overview</h3>
         </div>
         <span class="chart-badge">Last 30 Days</span>
       </div>
       <div class="chart-area">
-        <!-- Placeholder visualization -->
-        <svg class="placeholder-chart" viewBox="0 0 400 200" preserveAspectRatio="none">
+        <!-- Smooth Area Chart with Gradient Glow -->
+        <svg class="area-chart" viewBox="0 0 440 200" preserveAspectRatio="none">
           <defs>
-            <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stop-color="#26a69a" stop-opacity="0.3"/>
-              <stop offset="100%" stop-color="#26a69a" stop-opacity="0"/>
+            <linearGradient id="chartAreaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="var(--nx-primary)" stop-opacity="0.35"/>
+              <stop offset="50%" stop-color="var(--nx-primary)" stop-opacity="0.12"/>
+              <stop offset="100%" stop-color="var(--nx-primary)" stop-opacity="0"/>
             </linearGradient>
+            <linearGradient id="chartLineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="var(--nx-primary)" stop-opacity="0.6"/>
+              <stop offset="50%" stop-color="var(--nx-primary)" stop-opacity="1"/>
+              <stop offset="100%" stop-color="#38BDF8" stop-opacity="1"/>
+            </linearGradient>
+            <filter id="chartGlow">
+              <feGaussianBlur stdDeviation="3" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
           </defs>
-          <path d="M 0 160 Q 50 140 100 120 T 200 100 T 300 80 T 400 60 L 400 200 L 0 200 Z" fill="url(#areaGradient)" />
-          <path d="M 0 160 Q 50 140 100 120 T 200 100 T 300 80 T 400 60" fill="none" stroke="#26a69a" stroke-width="2" stroke-linecap="round"/>
+          <!-- Grid lines -->
+          <line x1="0" y1="50" x2="440" y2="50" stroke="var(--nx-border)" stroke-width="0.5" stroke-dasharray="4"/>
+          <line x1="0" y1="100" x2="440" y2="100" stroke="var(--nx-border)" stroke-width="0.5" stroke-dasharray="4"/>
+          <line x1="0" y1="150" x2="440" y2="150" stroke="var(--nx-border)" stroke-width="0.5" stroke-dasharray="4"/>
+          <!-- Area fill -->
+          <path d="M 0 160 C 30 155 60 145 90 135 C 120 125 150 110 180 100 C 210 90 240 85 270 75 C 300 65 330 55 360 50 C 390 45 420 42 440 40 L 440 200 L 0 200 Z" fill="url(#chartAreaGradient)"/>
+          <!-- Line with glow -->
+          <path d="M 0 160 C 30 155 60 145 90 135 C 120 125 150 110 180 100 C 210 90 240 85 270 75 C 300 65 330 55 360 50 C 390 45 420 42 440 40" fill="none" stroke="url(#chartLineGradient)" stroke-width="2.5" stroke-linecap="round" filter="url(#chartGlow)"/>
           <!-- Data points -->
-          <circle cx="100" cy="120" r="4" fill="#fff" stroke="#26a69a" stroke-width="2"/>
-          <circle cx="200" cy="100" r="4" fill="#fff" stroke="#26a69a" stroke-width="2"/>
-          <circle cx="300" cy="80" r="4" fill="#fff" stroke="#26a69a" stroke-width="2"/>
-          <circle cx="400" cy="60" r="4" fill="#fff" stroke="#26a69a" stroke-width="2"/>
+          <circle cx="90" cy="135" r="4" fill="var(--nx-bg-card)" stroke="var(--nx-primary)" stroke-width="2"/>
+          <circle cx="180" cy="100" r="4" fill="var(--nx-bg-card)" stroke="var(--nx-primary)" stroke-width="2"/>
+          <circle cx="270" cy="75" r="4" fill="var(--nx-bg-card)" stroke="var(--nx-primary)" stroke-width="2"/>
+          <circle cx="360" cy="50" r="4" fill="var(--nx-bg-card)" stroke="var(--nx-primary)" stroke-width="2"/>
+          <circle cx="440" cy="40" r="4" fill="var(--nx-bg-card)" stroke="#38BDF8" stroke-width="2"/>
         </svg>
         <div class="chart-metrics">
           <div class="chart-metric">
@@ -114,23 +143,48 @@
       </div>
     </div>
 
-    <!-- Right Column: Recent Activity — Compact list with last 5 vouchers -->
+    <!-- Right Column: Recent Activity — Modern list with status icons -->
     <div class="activity-card">
       <div class="activity-header">
         <div class="activity-title">
-          <span class="activity-icon">📋</span>
+          <svg class="section-svg-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
           <h3>Recent Activity</h3>
         </div>
-        <a routerLink="/voucher" class="view-all-link">View all →</a>
+        <a routerLink="/voucher" class="view-all-link">
+          View all
+          <svg class="link-arrow" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
       </div>
       <div class="activity-list">
         @for (activity of recentVouchers(); track activity.id; let idx = $index) {
           @if (idx < 5) {
-            <div class="activity-item">
-              <div class="activity-dot" [class]="activity.type"></div>
+            <div class="activity-item" [class]="activity.type">
+              <div class="activity-type-icon" [class]="activity.type">
+                @switch (activity.type) {
+                  @case ('sale') {
+                    <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                  }
+                  @case ('payment') {
+                    <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+                  }
+                  @case ('purchase') {
+                    <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+                  }
+                  @case ('receipt') {
+                    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  }
+                  @default {
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  }
+                }
+              </div>
               <div class="activity-info">
                 <span class="activity-desc">{{ activity.description }}</span>
-                <span class="activity-time">{{ activity.time }}</span>
+                <span class="activity-meta">
+                  <span class="activity-id">{{ activity.id }}</span>
+                  <span class="activity-sep">·</span>
+                  <span class="activity-time">{{ activity.time }}</span>
+                </span>
               </div>
               <span class="activity-amount" [class.positive]="activity.amount > 0" [class.negative]="activity.amount < 0">
                 {{ activity.amount > 0 ? '+' : '' }}₹{{ (activity.amount < 0 ? -activity.amount : activity.amount) | number:'1.0-0' }}
@@ -143,33 +197,41 @@
   </div>
 
   <!-- ═══════════════════════════════════════════════════════════════
-       SECONDARY SECTION: Quick Actions + System Status
+       SECONDARY SECTION: Quick Actions + Integrations
        ═══════════════════════════════════════════════════════════════ -->
   <div class="secondary-grid">
-    <!-- ⚡ Quick Actions -->
+    <!-- ⚡ Quick Actions — Clean grid with SVG icons -->
     <div class="quick-actions-card">
       <div class="section-header">
-        <span class="section-icon">⚡</span>
+        <svg class="section-svg-icon" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
         <h3>Quick Actions</h3>
       </div>
       <div class="action-buttons">
         <a [routerLink]="'/voucher/sales'" class="action-btn emerald">
-          <span class="btn-icon">🧾</span>
+          <span class="action-icon-wrap">
+            <svg class="action-svg" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          </span>
           <span class="btn-label">New Sale</span>
           <kbd>F8</kbd>
         </a>
         <a [routerLink]="'/voucher/purchase'" class="action-btn purple">
-          <span class="btn-icon">🛒</span>
+          <span class="action-icon-wrap">
+            <svg class="action-svg" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+          </span>
           <span class="btn-label">New Purchase</span>
           <kbd>F9</kbd>
         </a>
         <a [routerLink]="'/voucher/payment'" class="action-btn amber">
-          <span class="btn-icon">💸</span>
+          <span class="action-icon-wrap">
+            <svg class="action-svg" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+          </span>
           <span class="btn-label">Payment</span>
           <kbd>F5</kbd>
         </a>
         <a [routerLink]="'/voucher/receipt'" class="action-btn info">
-          <span class="btn-icon">📥</span>
+          <span class="action-icon-wrap">
+            <svg class="action-svg" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </span>
           <span class="btn-label">Receipt</span>
           <kbd>F6</kbd>
         </a>
@@ -179,19 +241,37 @@
       </div>
     </div>
 
-    <!-- 🔗 System Status -->
+    <!-- 🔗 Integrations — Simplified SVG icons, aligned labels -->
     <div class="status-card">
       <div class="section-header">
-        <span class="section-icon">🔗</span>
+        <svg class="section-svg-icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
         <h3>Integrations</h3>
       </div>
       <div class="status-list">
         @for (source of ingestionSources(); track source.name) {
           <div class="status-item">
-            <span class="status-icon">{{ source.icon }}</span>
-            <span class="status-name">{{ source.name }}</span>
-            <span class="status-indicator" [class.active]="source.status === 'active'" [class.syncing]="source.status === 'syncing'">
-              {{ source.status === 'active' ? '●' : '◐' }}
+            <div class="integration-icon" [class]="source.status">
+              @switch (source.name) {
+                @case ('Healthcare HL7') {
+                  <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                }
+                @case ('Auto DMS') {
+                  <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                }
+                @case ('ISO 20022') {
+                  <svg viewBox="0 0 24 24"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"/></svg>
+                }
+                @default {
+                  <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                }
+              }
+            </div>
+            <div class="integration-info">
+              <span class="status-name">{{ source.name }}</span>
+              <span class="status-sync">{{ source.lastSync }}</span>
+            </div>
+            <span class="status-pill" [class]="source.status">
+              {{ source.status === 'active' ? 'Active' : 'Syncing' }}
             </span>
           </div>
         }
