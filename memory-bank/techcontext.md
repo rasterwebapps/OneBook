@@ -61,6 +61,9 @@ OneBook/
 │   ├── .dockerignore
 │   ├── build.gradle
 │   ├── src/main/java/com/nexus/onebook/
+    └── shared/                   ← Shared module
+    └── client-accounts/          ← Client-accounts module
+    └── advances/                 ← Advances module
 │       ├── OneBookApplication.java
 │       ├── HealthController.java
 │       ├── config/               ← HeadlessApiConfig, RedisConfig
@@ -144,7 +147,7 @@ cd backend
 # Compile only
 ./gradlew compileJava
 
-# Run tests (514 tests)
+# Run tests (562 tests)
 ./gradlew test
 
 # Run specific test class

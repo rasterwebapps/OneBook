@@ -174,7 +174,7 @@
 - **Domain Submodules:** `accounts`, `advance`, `auditor`, `banking`, `cache`, `clientaccount`, `compliance`, `credit`, `currency`, `dashboard`, `entitlement`, `exception`, `fixedasset`, `foundation`, `ingestion`, `intelligence`, `inventory`, `operations`, `payment`, `payroll`, `reporting`, `security`, `tenant`, `voucher`
 
 ### Frontend (Angular 19+)
-- **Modules:** 17 feature modules (all lazy-loaded standalone components)
+- **Modules:** 18 feature modules (all lazy-loaded standalone components)
 - **Shared Components:** 13 (`nx-card`, `nx-stat-card`, `nx-badge`, `nx-amount`, `nx-skeleton`, `nx-empty-state`, `nx-data-table`, `nx-page-header`, `nx-search-input`, `nx-loading-spinner`, `nx-confirm-dialog`, `nx-status-badge`, `nx-toast`)
 - **Tests:** 217+ passing (15 pre-existing failures: 7 AppComponent + 8 StartComponent OAuthService dependency)
 - **State:** Signals-based (no RxJS for simple state)
