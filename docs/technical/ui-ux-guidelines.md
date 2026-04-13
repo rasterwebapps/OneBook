@@ -446,14 +446,89 @@ Template structure:
 </div>
 ```
 
-### Dashboard Page (Bento Grid)
+### Dashboard Page (Full-Width Fluid Layout)
+
+The dashboard **must** be a full-width fluid container that stretches to fill the entire available content area. Never apply `max-width` to the dashboard wrapper — cards and grids must align edge-to-edge with the content boundary at every screen size.
+
+#### Layout Rules
+
+| Rule | Requirement |
+|------|-------------|
+| **Container width** | `width: 100%` — fluid, no `max-width` cap. The outer `.content-area` padding (24px) provides the inset. |
+| **KPI row** | Explicit `grid-template-columns: repeat(4, 1fr)` — all 4 cards share equal width at all breakpoints above 1024px. |
+| **Middle grid** | `grid-template-columns: 1fr 1fr` — chart and activity list split 50/50. |
+| **Secondary grid** | `grid-template-columns: 2fr 1fr` — quick actions take ⅔, integrations take ⅓. |
+| **Responsive stacking** | At ≤ 1024px KPI cards become 2×2; at ≤ 900px middle/secondary grids become single column; at ≤ 640px KPI cards stack to 1 column. |
+
+> **Why no `max-width`?** The dashboard sits inside `.content-area` which already provides 24px padding. Adding `max-width: 1400px` creates a secondary constraint that leaves empty space on wide monitors (> 1660px viewport). The cards should always fill the available width.
+
+#### KPI Cards — Glassmorphism Style
+
+Dashboard KPI cards use the `.glass-kpi-card` class with glassmorphism styling:
+
+```scss
+.glass-kpi-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: var(--nx-radius-xl);   /* 16px */
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+  padding: var(--nx-space-5);
+
+  &:hover {
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+  }
+
+  &.alert {
+    border-color: rgba(239, 68, 68, 0.3);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.7) 0%, rgba(254, 242, 242, 0.7) 100%);
+  }
+}
+```
+
+Each card contains: `.kpi-header` (icon + label), `.kpi-value` (large monospace number), `.kpi-trend` (pill badge with arrow and percentage).
+
+#### Template Structure
+
+```html
+<div class="fintech-dashboard">
+  <nx-page-header title="Dashboard" subtitle="Real-time financial overview and quick actions">
+    <button class="nx-btn nx-btn--emerald" routerLink="/voucher/payment">
+      + New Voucher <kbd>F5</kbd>
+    </button>
+  </nx-page-header>
+
+  <!-- KPI Row: 4 equal-width cards -->
+  <div class="kpi-row">
+    <div class="glass-kpi-card"><!-- Cash --></div>
+    <div class="glass-kpi-card"><!-- Bank --></div>
+    <div class="glass-kpi-card"><!-- Pending Validations --></div>
+    <div class="glass-kpi-card" [class.alert]="hasAlerts"><!-- Failed PANs --></div>
+  </div>
+
+  <!-- Middle: 50/50 chart + activity -->
+  <div class="dashboard-grid">
+    <div class="chart-placeholder"><!-- Cashflow Overview --></div>
+    <div class="activity-card"><!-- Recent Activity --></div>
+  </div>
+
+  <!-- Secondary: 2/3 + 1/3 -->
+  <div class="secondary-grid">
+    <div class="quick-actions-card"><!-- Quick Actions --></div>
+    <div class="status-card"><!-- Integrations --></div>
+  </div>
+</div>
+```
+
+#### Bento Grid (Generic Widgets)
+
+For non-dashboard pages that use generic widget grids, use the `nx-bento-grid` utility:
 
 ```html
 <div class="nx-bento-grid">
   <nx-stat-card icon="💰" label="Revenue" value="₹12,45,000" trend="+12%" trendDirection="up" color="emerald" />
   <nx-stat-card icon="📊" label="Expenses" value="₹8,30,000" trend="-3%" trendDirection="down" color="danger" />
-  <nx-stat-card icon="📈" label="Profit" value="₹4,15,000" trend="+22%" trendDirection="up" color="purple" />
-  <nx-stat-card icon="🏦" label="Cash" value="₹2,80,000" trendDirection="neutral" color="amber" />
 
   <div class="nx-bento-tile nx-bento-tile--span-2">
     <!-- Chart or larger widget -->
@@ -670,48 +745,75 @@ Services and components are in `frontend/src/app/keyboard/`.
 ### App Shell Architecture
 
 ```
-┌──────────────────────────────────────────────────────────┐
-│ Top Header (52px)                                        │
-│  [☰] [Logo] OneBook │ Breadcrumbs ›  │ Search │ [Ctrl+K]│
-│                                       │ [🌐] [🔔] [👤]  │
-├────────────┬─────────────────────────────────────────────┤
-│ Sidebar    │ Main Content                                │
-│ (Dark)     │                                             │
-│ ┌────────┐ │  ┌───────────────────────────────────────┐  │
-│ │Tenant  │ │  │ Page Header                           │  │
-│ │Selector│ │  ├───────────────────────────────────────┤  │
-│ ├────────┤ │  │ Content (cards, tables, forms)         │  │
-│ │🏠 Dash │ │  │                                       │  │
-│ ├────────┤ │  │                                       │  │
-│ │Acctg ▾ │ │  │                                       │  │
-│ │ Voucher│ │  │                                       │  │
-│ │ Ledger │ │  │                                       │  │
-│ ├────────┤ │  └───────────────────────────────────────┘  │
-│ │Reports▾│ │                                             │
-│ ├────────┤ │                                             │
-│ │Mgmt  ▾ │ │                                             │
-│ ├────────┤ │                                             │
-│ │Intel ▾ │ │                                             │
-│ ├────────┤ │                                             │
-│ │Status  │ │                                             │
-│ └────────┘ │                                             │
-└────────────┴─────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│ Top Header (52px, frosted glass)                             │
+│  [☰] [▪ OneBook] │ Crumb › Crumb │ [🔍 Search…  Ctrl+K] │  │
+│                                    [📖] [⚙] [🔔] │ [AV Name]│
+├────────────┬─────────────────────────────────────────────────┤
+│ Sidebar    │ Main Content                                    │
+│ (Dark)     │                                                 │
+│ ┌────────┐ │  ┌───────────────────────────────────────────┐  │
+│ │Tenant  │ │  │ Page Header                               │  │
+│ │Selector│ │  ├───────────────────────────────────────────┤  │
+│ ├────────┤ │  │ Content (cards, tables, forms)             │  │
+│ │🏠 Dash │ │  │                                           │  │
+│ ├────────┤ │  │                                           │  │
+│ │Acctg ▾ │ │  │                                           │  │
+│ │ Voucher│ │  │                                           │  │
+│ │ Ledger │ │  │                                           │  │
+│ ├────────┤ │  └───────────────────────────────────────────┘  │
+│ │Reports▾│ │                                                 │
+│ ├────────┤ │                                                 │
+│ │Mgmt  ▾ │ │                                                 │
+│ ├────────┤ │                                                 │
+│ │Intel ▾ │ │                                                 │
+│ ├────────┤ │                                                 │
+│ │Status  │ │                                                 │
+│ └────────┘ │                                                 │
+└────────────┴─────────────────────────────────────────────────┘
 ```
 
-### Sidebar
+### Sidebar — Deep Background with Smooth Collapse
 
-- **Theme**: Dark (`--nx-sidebar-bg: #263238`)
-- **Collapsible**: Toggle via hamburger menu; collapses to icon-only mode
-- **Sections**: Accounting, Reports, Management, Intelligence — each collapsible
-- **Tenant selector**: Top of sidebar; dropdown with available tenants
-- **Status indicator**: Bottom of sidebar; shows backend connection status
+- **Background**: Deep gradient (`linear-gradient(180deg, --nx-sidebar-bg, #020617)`) for premium depth
+- **Collapsible**: Toggle via hamburger menu; collapses to icon-only mode (56px) with smooth 0.25s cubic-bezier animation
+- **Collapsed state**: Labels fade out via `opacity: 0; width: 0` transition; nav items center icons; section toggles become thin separator lines
+- **Tooltips**: When collapsed, all nav items, section headers, and tenant selector show `[title]` attribute tooltips on hover
+- **Active state**: Left indicator line (`border-left: 3px solid --nx-primary`) + gradient background (`linear-gradient(90deg, --nx-primary-dim, transparent)`) + icon glow (`filter: drop-shadow(0 0 6px --nx-primary-glow)`)
+- **Icon color**: Default `--nx-sidebar-icon` (60% white), hover 90% white, active uses `--nx-primary` color with glow
+- **Sections**: Accounting, Reports, Management, Advances & Expenses, Intelligence — each collapsible with chevron
+- **Tenant selector**: Always visible; in collapsed state shows avatar only (info and caret transition to `opacity: 0`)
+- **Status indicator**: Always visible; in collapsed state shows dot only (status text transitions to `opacity: 0`)
+- **Scrollbar**: Ultra-thin (4px), 12% white thumb, transparent track
+- **Responsive**: On mobile (≤768px), sidebar becomes an overlay with backdrop, slides in/out from left
 
-### Top Header
+### Top Header — Modern Minimalist
 
 - **Height**: `52px` (`--nx-header-height`)
-- **Left**: Hamburger toggle + logo + app title
-- **Center**: Dynamic breadcrumbs (route-to-breadcrumb mapping)
-- **Right**: Search box, `Ctrl+K` hint, language switcher, apps button, notifications, user menu
+- **Surface**: Frosted glass effect (`backdrop-filter: blur(12px)`, semi-transparent background)
+- **Left zone**: Hamburger toggle + SVG logo mark (rounded-rect with icon) + "OneBook" text
+- **Breadcrumbs**: SVG chevron separators (not text `›`), perfectly aligned with `gap: 4px`
+- **Center**: Expansive search input — full-width (max 480px), search icon on the left, `Ctrl+K` kbd hint on the right, `--nx-primary` focus border with glow ring
+- **Right zone**: Clean-vector 18px SVG action icons (Help/Book, Settings/Gear, Notifications/Bell), separated from user menu by a 1px vertical divider
+- **User menu**: High-quality gradient avatar (initials), user name + role label (uppercase, muted), dropdown caret
+- **User dropdown**: Avatar + name + email in header, Profile/Settings items, danger-styled Logout item
+
+#### Header Icon Requirements
+
+| Icon | Purpose | SVG Style |
+|------|---------|-----------|
+| Book (open) | Help & Resources | `stroke-only`, 18×18 |
+| Gear (Lucide-style) | Settings | `stroke-only`, 18×18 |
+| Bell | Notifications | `stroke-only`, 18×18, with `notif-badge` overlay |
+
+All header icons use `.header-icon-btn` with 7px padding, `--nx-text-muted` color, and `--nx-bg-surface` hover background.
+
+#### User Menu Requirements
+
+- **Avatar**: 32×32 circle, `linear-gradient(135deg, --nx-primary, #0284C7)`, white initials
+- **Name**: `0.8125rem`, `font-weight: 500`
+- **Role**: `0.625rem`, uppercase, `--nx-text-muted`, letter-spacing `0.05em`
+- **Dropdown avatar**: 36×36 with same gradient, displayed alongside name and email
 
 ### Breadcrumb System
 
@@ -740,6 +842,8 @@ const ROUTE_BREADCRUMBS: Record<string, Breadcrumb[]> = {
 ### Responsive Behaviors
 
 - **Sidebar**: On `< md`, sidebar becomes an overlay (hidden by default)
+- **Dashboard KPI row**: `repeat(4, 1fr)` → `repeat(2, 1fr)` at ≤ 1024px → `1fr` at ≤ 640px
+- **Dashboard grids**: 2-column grids collapse to single column at ≤ 900px
 - **Bento grid**: `repeat(auto-fit, minmax(320px, 1fr))` — auto-stacks on narrow screens
 - **Data tables**: `<nx-data-table>` wraps in `overflow-x: auto` for horizontal scroll
 - **Header**: On mobile, search and some actions collapse into hamburger menu
@@ -1033,6 +1137,7 @@ Add `.sr-only` class for screen-reader-only text:
 13. **Use `aria-label`** on all icon-only buttons
 14. **Use semantic HTML** (`<table>`, `<thead>`, `<tfoot>`, `<nav>`, `<main>`, `<header>`)
 15. **Use `inject()`** function for dependency injection (not constructor parameters)
+16. **Use `width: 100%` (fluid layout)** for dashboard containers — cards must stretch to fill the full available content width
 
 ### ❌ Don't
 
@@ -1051,6 +1156,7 @@ Add `.sr-only` class for screen-reader-only text:
 13. **Don't use inline colors** like `style="color: red"` — use badge/amount components
 14. **Don't skip keyboard shortcuts** — every new page should register at least navigation shortcuts
 15. **Don't use `@ViewChild` for state** — use Signals and `input()` / `output()`
+16. **Don't use `max-width` on dashboard containers** — dashboard grids must be fluid full-width; the outer `.content-area` padding handles inset
 
 ---
 

@@ -271,3 +271,26 @@ textarea.input { resize: vertical; min-height: 48px; }
   letter-spacing: 0.04em;
   margin-bottom: 4px;
 }
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .master-header { flex-wrap: wrap; gap: 8px; padding: 8px 16px; }
+  .master-header .header-tabs { margin-left: 0; }
+  .filter-bar { flex-wrap: wrap; gap: 8px; padding: 8px 16px; }
+  .master-list { overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 8px 16px; }
+  .master-table { min-width: 600px; }
+  .master-form { margin: 8px 16px; }
+}
+
+@media (max-width: 640px) {
+  .master-header { flex-direction: column; align-items: stretch; }
+  .master-header h2 { font-size: 1rem; }
+  .master-header .header-tabs { width: 100%; overflow-x: auto; }
+  .master-header .header-actions { width: 100%; justify-content: flex-end; }
+  .filter-bar { flex-direction: column; align-items: stretch; }
+  .search-input { max-width: none; }
+  .result-count { margin-left: 0; }
+  .master-table th, .master-table td { padding: 6px 8px; font-size: 0.75rem; }
+  .form-body { max-width: none; padding: 16px; }
+  .master-footer { flex-wrap: wrap; gap: 8px; padding: 6px 16px; }
+}

@@ -1,130 +1,252 @@
-<div class="auditor-dashboard">
-  <!-- Read-only view indicator banner -->
-  <div class="auditor-readonly-banner">
-    <span class="banner-icon">🔍</span>
-    <span>View Only — Auditor Access. No edits permitted in this portal.</span>
-  </div>
+<div class="auditor-shell">
+  <!-- ═══ Read-Only Watermark (behind all content) ═══ -->
+  <div class="readonly-watermark" aria-hidden="true">READ-ONLY</div>
 
-  <nx-page-header title="External Auditor Portal" subtitle="Read-only audit view with hash-chain verification" />
+  <nx-page-header title="External Auditor Portal" subtitle="Read-only audit view with hash-chain verification">
+    <span class="readonly-pill">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      Read-Only
+    </span>
+  </nx-page-header>
 
   @if (error()) {
-    <div class="error-banner">{{ error() }}</div>
+    <div class="error-banner">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      {{ error() }}
+    </div>
   }
 
   @if (loading()) {
     <nx-loading-spinner label="Loading audit data..." />
   }
 
-  <div class="dashboard-grid">
-    <!-- Security Audit Report -->
+  <!-- ═══ Auditor Summary — Glass KPI Row ═══ -->
+  @if (securityReport(); as report) {
+    <div class="kpi-row">
+      <div class="glass-kpi-card">
+        <div class="kpi-icon-wrap kpi-total">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </div>
+        <span class="kpi-label">Total Checks</span>
+        <div class="kpi-value">{{ report.totalChecks }}</div>
+        <span class="kpi-sub">Security verification tests</span>
+      </div>
+      <div class="glass-kpi-card">
+        <div class="kpi-icon-wrap kpi-pass">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <span class="kpi-label">Checks Passed</span>
+        <div class="kpi-value kpi-value--green">{{ report.passedChecks }}</div>
+        <span class="kpi-sub">All verifications clear</span>
+      </div>
+      <div class="glass-kpi-card">
+        <div class="kpi-icon-wrap kpi-fail">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        </div>
+        <span class="kpi-label">Checks Failed</span>
+        <div class="kpi-value" [class.kpi-value--red]="report.failedChecks > 0">{{ report.failedChecks }}</div>
+        <span class="kpi-sub">Requires attention</span>
+      </div>
+      <div class="glass-kpi-card">
+        <div class="kpi-icon-wrap kpi-chain">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        </div>
+        <span class="kpi-label">Chain Integrity</span>
+        <div class="kpi-value" [class.kpi-value--green]="report.auditChainIntact" [class.kpi-value--red]="!report.auditChainIntact">
+          {{ report.auditChainIntact ? '✓' : '✗' }}
+        </div>
+        <span class="kpi-sub">Hash-chain verification</span>
+      </div>
+    </div>
+  }
+
+  <!-- ═══ Main Panels Grid ═══ -->
+  <div class="panels-grid">
+
+    <!-- ── Security Audit Report ── -->
     @if (securityReport(); as report) {
-      <div class="security-card">
-        <h3>Security Audit Report</h3>
-        <div class="security-summary">
-          <div class="metric">
-            <span class="label">Total Checks</span>
-            <span class="value">{{ report.totalChecks }}</span>
-          </div>
-          <div class="metric">
-            <span class="label">Passed</span>
-            <span class="value positive">{{ report.passedChecks }}</span>
-          </div>
-          <div class="metric">
-            <span class="label">Failed</span>
-            <span class="value" [class.negative]="report.failedChecks > 0">{{ report.failedChecks }}</span>
+      <div class="panel-card panel-card--full">
+        <div class="panel-header">
+          <div class="panel-title-wrap">
+            <div class="panel-icon-wrap panel-icon--blue">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div>
+              <h3 class="panel-title">Security Audit Report</h3>
+              <span class="panel-sub">Encryption, key management &amp; chain verification</span>
+            </div>
           </div>
         </div>
-        <div class="status-indicators">
-          <div class="status-item">
-            <span class="dot" [style.background-color]="report.encryptionVerified ? '#22c55e' : '#ef4444'"></span>
-            Encryption Verified
+
+        <div class="verification-row">
+          <div class="verify-item">
+            <span class="verify-dot" [class.verify-pass]="report.encryptionVerified" [class.verify-fail]="!report.encryptionVerified"></span>
+            <span class="verify-label">Encryption Verified</span>
+            <span class="verify-pill" [class.pill-pass]="report.encryptionVerified" [class.pill-fail]="!report.encryptionVerified">
+              {{ report.encryptionVerified ? 'Pass' : 'Fail' }}
+            </span>
           </div>
-          <div class="status-item">
-            <span class="dot" [style.background-color]="report.keyManagementVerified ? '#22c55e' : '#ef4444'"></span>
-            Key Management
+          <div class="verify-item">
+            <span class="verify-dot" [class.verify-pass]="report.keyManagementVerified" [class.verify-fail]="!report.keyManagementVerified"></span>
+            <span class="verify-label">Key Management</span>
+            <span class="verify-pill" [class.pill-pass]="report.keyManagementVerified" [class.pill-fail]="!report.keyManagementVerified">
+              {{ report.keyManagementVerified ? 'Pass' : 'Fail' }}
+            </span>
           </div>
-          <div class="status-item">
-            <span class="dot" [style.background-color]="report.auditChainIntact ? '#22c55e' : '#ef4444'"></span>
-            Audit Chain Intact
+          <div class="verify-item">
+            <span class="verify-dot" [class.verify-pass]="report.auditChainIntact" [class.verify-fail]="!report.auditChainIntact"></span>
+            <span class="verify-label">Audit Chain Intact</span>
+            <span class="verify-pill" [class.pill-pass]="report.auditChainIntact" [class.pill-fail]="!report.auditChainIntact">
+              {{ report.auditChainIntact ? 'Pass' : 'Fail' }}
+            </span>
           </div>
         </div>
-        <ul class="findings-list">
-          @for (finding of report.findings; track finding) {
-            <li [class.pass]="finding.startsWith('PASS')" [class.fail]="finding.startsWith('FAIL')">
-              {{ finding }}
-            </li>
-          }
-        </ul>
+
+        @if (report.findings.length) {
+          <ul class="findings-list">
+            @for (finding of report.findings; track finding) {
+              <li class="finding-item" [class.finding-pass]="finding.startsWith('PASS')" [class.finding-fail]="finding.startsWith('FAIL')">
+                <svg class="finding-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  @if (finding.startsWith('PASS')) {
+                    <polyline points="20 6 9 17 4 12"/>
+                  } @else {
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                  }
+                </svg>
+                <span class="finding-text">{{ finding }}</span>
+              </li>
+            }
+          </ul>
+        }
       </div>
     }
 
-    <!-- Sample Requests -->
-    <div class="requests-card">
-      <h3>Sample Requests</h3>
+    <!-- ── Sample Requests ── -->
+    <div class="panel-card">
+      <div class="panel-header">
+        <div class="panel-title-wrap">
+          <div class="panel-icon-wrap panel-icon--purple">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <div>
+            <h3 class="panel-title">Sample Requests</h3>
+            <span class="panel-sub">{{ sampleRequests().length }} total requests</span>
+          </div>
+        </div>
+      </div>
       @if (sampleRequests().length === 0) {
         <p class="empty-state">No sample requests submitted.</p>
       } @else {
-        <ul class="request-list">
+        <ul class="item-list">
           @for (req of sampleRequests(); track req.id) {
-            <li class="request-item">
-              <div class="request-header">
-                <span class="auditor">{{ req.auditorName }}</span>
-                <span class="status-badge" [style.background-color]="statusColor(req.status)">
-                  {{ req.status }}
+            <li class="list-item">
+              <div class="list-item-header">
+                <div class="list-item-left">
+                  <span class="item-avatar">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  </span>
+                  <span class="item-name">{{ req.auditorName }}</span>
+                </div>
+                <span class="status-pill" [style.--pill-color]="statusColor(req.status)">
+                  <span class="status-dot"></span>{{ req.status }}
                 </span>
               </div>
-              <p class="description">{{ req.requestDescription }}</p>
-              <p class="meta">{{ req.tableName }} · {{ req.sampleSize }} samples</p>
+              <p class="item-desc">{{ req.requestDescription }}</p>
+              <div class="item-meta">
+                <span class="meta-tag">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                  {{ req.tableName }}
+                </span>
+                <span class="meta-tag">{{ req.sampleSize }} samples</span>
+              </div>
             </li>
           }
         </ul>
       }
     </div>
 
-    <!-- Audit Comments -->
-    <div class="comments-card">
-      <h3>Audit Comments <span class="badge">{{ unresolvedCount() }} unresolved</span></h3>
+    <!-- ── Audit Comments ── -->
+    <div class="panel-card">
+      <div class="panel-header">
+        <div class="panel-title-wrap">
+          <div class="panel-icon-wrap panel-icon--amber">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div>
+            <h3 class="panel-title">Audit Comments</h3>
+            <span class="panel-sub">{{ unresolvedCount() }} unresolved</span>
+          </div>
+        </div>
+        <span class="header-badge badge--amber">{{ unresolvedCount() }} open</span>
+      </div>
       @if (comments().length === 0) {
         <p class="empty-state">No audit comments.</p>
       } @else {
-        <ul class="comment-list">
+        <ul class="item-list">
           @for (comment of comments(); track comment.id) {
-            <li class="comment-item" [class.resolved]="comment.resolved">
-              <div class="comment-header">
-                <span class="auditor">{{ comment.auditorName }}</span>
-                <span class="resolved-badge" [class.is-resolved]="comment.resolved">
+            <li class="list-item" [class.list-item--muted]="comment.resolved">
+              <div class="list-item-header">
+                <div class="list-item-left">
+                  <span class="item-avatar">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  </span>
+                  <span class="item-name">{{ comment.auditorName }}</span>
+                </div>
+                <span class="resolve-pill" [class.resolve-pill--resolved]="comment.resolved" [class.resolve-pill--open]="!comment.resolved">
                   {{ comment.resolved ? 'Resolved' : 'Open' }}
                 </span>
               </div>
-              <p class="comment-text">{{ comment.commentText }}</p>
-              <p class="meta">{{ comment.tableName }} #{{ comment.recordId }}</p>
+              <p class="item-desc">{{ comment.commentText }}</p>
+              <div class="item-meta">
+                <span class="meta-tag">{{ comment.tableName }}</span>
+                <span class="meta-tag">#{{ comment.recordId }}</span>
+              </div>
             </li>
           }
         </ul>
       }
     </div>
 
-    <!-- Approval Workflows -->
-    <div class="workflows-card">
-      <h3>Approval Workflows <span class="badge">{{ pendingWorkflowCount() }} pending</span></h3>
+    <!-- ── Approval Workflows ── -->
+    <div class="panel-card">
+      <div class="panel-header">
+        <div class="panel-title-wrap">
+          <div class="panel-icon-wrap panel-icon--emerald">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          </div>
+          <div>
+            <h3 class="panel-title">Approval Workflows</h3>
+            <span class="panel-sub">{{ pendingWorkflowCount() }} pending</span>
+          </div>
+        </div>
+        <span class="header-badge badge--emerald">{{ pendingWorkflowCount() }} pending</span>
+      </div>
       @if (workflows().length === 0) {
         <p class="empty-state">No approval workflows.</p>
       } @else {
-        <ul class="workflow-list">
+        <ul class="item-list">
           @for (workflow of workflows(); track workflow.id) {
-            <li class="workflow-item">
-              <div class="workflow-header">
-                <span class="workflow-name">{{ workflow.workflowName }}</span>
-                <span class="status-badge" [style.background-color]="statusColor(workflow.status)">
-                  {{ workflow.status }}
+            <li class="list-item">
+              <div class="list-item-header">
+                <div class="list-item-left">
+                  <span class="item-avatar item-avatar--workflow">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  </span>
+                  <span class="item-name">{{ workflow.workflowName }}</span>
+                </div>
+                <span class="status-pill" [style.--pill-color]="statusColor(workflow.status)">
+                  <span class="status-dot"></span>{{ workflow.status }}
                 </span>
               </div>
-              <p class="description">{{ workflow.description }}</p>
-              <p class="meta">{{ workflow.auditorName }}</p>
+              <p class="item-desc">{{ workflow.description }}</p>
+              <div class="item-meta">
+                <span class="meta-tag">{{ workflow.auditorName }}</span>
+              </div>
             </li>
           }
         </ul>
       }
     </div>
+
   </div>
 </div>

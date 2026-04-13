@@ -200,3 +200,22 @@
   padding-top: var(--nx-space-md);
   border-top: 1px solid var(--nx-border);
 }
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .advice-header { flex-wrap: wrap; gap: 8px; }
+  .summary-grid { grid-template-columns: repeat(2, 1fr); }
+  .advice-tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .advice-meta { gap: 8px; }
+}
+
+@media (max-width: 640px) {
+  .advice-header { flex-direction: column; align-items: stretch; }
+  .summary-grid { grid-template-columns: 1fr !important; }
+  .advice-toolbar { max-width: none; }
+  .employee-avatar { width: 36px; height: 36px; font-size: 1.5rem; }
+  .amount { font-size: 1.2rem; }
+  .advice-meta { flex-direction: column; gap: 4px; }
+  .advice-tabs { gap: 0; }
+  .tab-btn { padding: 6px 10px; font-size: 0.82rem; }
+}

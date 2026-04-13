@@ -394,3 +394,22 @@ textarea.form-control {
   font-size: 0.8rem;
   color: var(--nx-text-muted);
 }
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .expense-header { flex-wrap: wrap; gap: 8px; }
+  .summary-grid { grid-template-columns: repeat(2, 1fr); }
+  .expense-meta { flex-wrap: wrap; gap: 8px; }
+  .settlement-breakdown { flex-wrap: wrap; gap: 8px; }
+  .modal-box { max-width: 96vw; }
+}
+
+@media (max-width: 640px) {
+  .expense-header { flex-direction: column; align-items: stretch; }
+  .summary-grid { grid-template-columns: 1fr !important; }
+  .expense-amount { font-size: 1.2rem; }
+  .expense-meta { flex-direction: column; gap: 4px; }
+  .settlement-breakdown { flex-direction: column; }
+  .form-row { grid-template-columns: 1fr; }
+  .advances-list-modal { gap: 6px; }
+}
