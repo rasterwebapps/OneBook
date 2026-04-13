@@ -360,4 +360,9 @@ textarea.input { resize: vertical; min-height: 64px; }
   .kpi-row { padding: var(--nx-space-2) var(--nx-space-3); }
   .date-range-wrap { width: 100%; .date-field { flex: 1; min-width: 0; width: auto; } }
   .filter-controls { width: 100%; }
+  .entry-header { flex-direction: column; align-items: stretch; }
+  .entry-header .entry-title h2 { font-size: 0.9rem; }
+  .voucher-grid th, .voucher-grid td { padding: 4px 6px; font-size: 0.75rem; }
+  .kpi-value { font-size: 1.125rem; }
+  .glass-kpi-card { padding: 8px 10px; }
 }

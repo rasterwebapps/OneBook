@@ -391,3 +391,24 @@ textarea.form-control {
     background: rgba(0, 0, 0, 0.7);
   }
 }
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .advance-header { flex-wrap: wrap; gap: 8px; }
+  .summary-grid { grid-template-columns: repeat(2, 1fr); }
+  .advances-tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .advance-meta { gap: 8px; }
+  .approval-chain { flex-wrap: wrap; }
+  .modal-box { max-width: 96vw; }
+}
+
+@media (max-width: 640px) {
+  .advance-header { flex-direction: column; align-items: stretch; }
+  .summary-grid { grid-template-columns: 1fr !important; }
+  .advances-toolbar { max-width: none; }
+  .advance-amount { font-size: 1.2rem; }
+  .advance-meta { flex-direction: column; gap: 4px; }
+  .advances-tabs { gap: 0; }
+  .tab-btn { padding: 6px 10px; font-size: 0.82rem; }
+  .approval-chain { flex-direction: column; align-items: flex-start; }
+}

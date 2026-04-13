@@ -694,6 +694,84 @@ textarea.form-control {
   margin: 0 auto;
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE DESIGN SYSTEM
+   Breakpoints: 640px (mobile), 768px (tablet), 1024px (desktop)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Responsive Table Wrapper ─── */
+.nx-table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--nx-border) transparent;
+
+  &::-webkit-scrollbar { height: 5px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: var(--nx-border); border-radius: 3px; }
+
+  /* Ensure inner tables don't shrink below a readable width */
+  > table, > .nx-data-table { min-width: 600px; }
+}
+
+/* ─── Responsive Grid Stack ─── */
+.nx-grid-stack {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--nx-space-4);
+}
+
+/* ─── Responsive Utilities ─── */
+.hide-mobile { }
+.show-mobile { display: none !important; }
+
+@media (max-width: 640px) {
+  .hide-mobile { display: none !important; }
+  .show-mobile { display: flex !important; }
+
+  /* Fluid content padding */
+  .content-area { padding: 12px !important; }
+
+  /* Bento grid — single column on mobile */
+  .nx-bento-grid { grid-template-columns: 1fr; padding: var(--nx-space-3); gap: var(--nx-space-3); }
+  .nx-bento-tile--span-2 { grid-column: 1; }
+
+  /* Stat cards — smaller on mobile */
+  .nx-stat-card { padding: var(--nx-space-3); }
+  .nx-stat-card .stat-value { font-size: var(--nx-text-xl); }
+
+  /* Form grids — single column on mobile */
+  .form-grid { grid-template-columns: 1fr; }
+
+  /* Data tables — reduce cell padding */
+  .nx-data-table th, .nx-data-table td { padding: var(--nx-space-1) var(--nx-space-2); font-size: var(--nx-text-xs); }
+
+  /* Card utility — tighter on mobile */
+  .nx-card .nx-card-header { padding: var(--nx-space-3); }
+  .nx-card .nx-card-body { padding: var(--nx-space-3); }
+}
+
+@media (max-width: 768px) {
+  /* Hide less-important columns on tablet */
+  .hide-tablet { display: none !important; }
+}
+
+@media (min-width: 1025px) {
+  .hide-desktop { display: none !important; }
+}
+
+/* ─── Responsive Font Scaling ─── */
+@media (max-width: 640px) {
+  html { font-size: 13px; }
+  h1 { font-size: var(--nx-text-xl); }
+  h2 { font-size: var(--nx-text-lg); }
+  h3 { font-size: var(--nx-text-base); }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  html { font-size: 13.5px; }
+}
+
 /* ─── Print Utility ─── */
 @media print {
   .no-print { display: none !important; }

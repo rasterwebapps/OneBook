@@ -676,9 +676,23 @@
 /* ═══════════════════════════════════════════════════════════════
    RESPONSIVE ADJUSTMENTS
    ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .fintech-dashboard { padding: var(--nx-space-4); }
+  .chart-header { flex-wrap: wrap; gap: 8px; }
+  .activity-header { flex-wrap: wrap; gap: 8px; }
+  .section-header { flex-wrap: wrap; gap: 8px; }
+  .status-list { gap: var(--nx-space-1); }
+}
+
 @media (max-width: 640px) {
   .fintech-dashboard { padding: var(--nx-space-3); }
   .kpi-value { font-size: 1.75rem; }
   .chart-metrics { grid-template-columns: 1fr; gap: var(--nx-space-2); }
   .area-chart { height: 140px; }
+  .chart-title h3 { font-size: 0.8125rem; }
+  .activity-title h3 { font-size: 0.8125rem; }
+  .section-header h3 { font-size: 0.8125rem; }
+  .activity-amount { min-width: 70px; font-size: 0.75rem; }
+  .status-item { padding: 8px var(--nx-space-2); }
+  .keyboard-hint { font-size: 0.6875rem; }
 }

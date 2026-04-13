@@ -224,3 +224,23 @@
   padding: 4px 12px; border-radius: var(--nx-radius-sm, 4px); cursor: pointer; font-size: 0.75rem;
   &:hover { background: var(--nx-bg-card-hover); }
 }
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .ai-header { flex-wrap: wrap; gap: 8px; }
+  .dashboard-grid { grid-template-columns: 1fr; }
+  .valuation-grid { grid-template-columns: repeat(2, 1fr); }
+  .insight-card .insight-header { flex-wrap: wrap; }
+}
+
+@media (max-width: 640px) {
+  .ai-header { flex-direction: column; align-items: stretch; }
+  .ai-title h2 { font-size: 1rem; }
+  .dashboard-grid { grid-template-columns: 1fr !important; }
+  .valuation-grid { grid-template-columns: 1fr; }
+  .sentiment-header { flex-wrap: wrap; gap: 4px; }
+  .insight-card { padding: 12px; }
+  .recommendation-card { padding: 12px; }
+  .insight-card .insight-actions { flex-wrap: wrap; }
+  .recommendation-card .rec-actions { flex-wrap: wrap; }
+}

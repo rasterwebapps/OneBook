@@ -848,6 +848,8 @@ html.dark-mode .top-header {
 }
 
 /* ─── Responsive ─── */
+
+/* Tablet: 641–768px — icon-only rail */
 @media (max-width: 768px) {
   .sidebar {
     width: 56px;
@@ -864,9 +866,13 @@ html.dark-mode .top-header {
     .logo-text { display: none; }
   }
 
-  .top-header-breadcrumbs,
-  .top-header-search {
+  .top-header-breadcrumbs {
     display: none;
+  }
+
+  .top-header-search {
+    max-width: 200px;
+    margin: 0 8px;
   }
 
   .user-meta,
@@ -911,6 +917,13 @@ html.dark-mode .top-header {
   }
 }
 
+/* Mobile: ≤640px — hidden sidebar + full-width drawer on toggle */
+@media (max-width: 640px) {
+  .top-header-search { display: none; }
+
+  .content-area { padding: 12px; }
+}
+
 /* ─── Tenant dropdown checkmark ─── */
 .tenant-check {
   margin-left: auto;
@@ -936,7 +949,7 @@ html.dark-mode .top-header {
   }
 }
 
-/* ─── Mobile sidebar overlay ─── */
+/* ─── Mobile sidebar overlay — drawer mode ─── */
 @media (max-width: 768px) {
   .app-layout {
     .sidebar {
@@ -950,6 +963,7 @@ html.dark-mode .top-header {
       box-shadow: var(--nx-shadow-xl, 0 20px 25px rgba(0,0,0,0.15));
     }
 
+    /* When sidebar is toggled open (not collapsed), slide in */
     &:not(.sidebar-collapsed) .sidebar {
       left: 0;
 
@@ -979,12 +993,27 @@ html.dark-mode .top-header {
       }
     }
 
+    /* Overlay backdrop */
     &:not(.sidebar-collapsed)::before {
       content: '';
       position: fixed;
       inset: 0;
       background: rgba(0, 0, 0, 0.5);
       z-index: calc(var(--nx-z-modal, 400) - 1);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
     }
+
+    /* Main content takes full width when drawer closed */
+    .main-content {
+      margin-left: 0;
+    }
+  }
+}
+
+/* ─── Mobile ≤640px — main content full bleed ─── */
+@media (max-width: 640px) {
+  .app-layout .main-content {
+    margin-left: 0;
   }
 }
