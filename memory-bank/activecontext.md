@@ -15,11 +15,17 @@
 
 ## Recent Changes (Latest Session)
 
+### Package Flattening: Removed `ledger/` Intermediate Directory (2026-04-13)
+- **REFACTORED: All 24 domain submodules moved** from `com.nexus.onebook.ledger.*` to `com.nexus.onebook.*` — the `ledger/` intermediate package has been eliminated.
+- **Java package path**: All `package com.nexus.onebook.ledger.*` declarations and `import com.nexus.onebook.ledger.*` statements updated project-wide (492 Java files, main + test trees).
+- **Filesystem**: All directories moved from `backend/src/main/java/com/nexus/onebook/ledger/<module>/` to `backend/src/main/java/com/nexus/onebook/<module>/`. Same for test tree.
+- **`LedgerIntegrationTest.java`**: Moved from `ledger/` root to `com.nexus.onebook` root (package was already correct).
+- **Agent/docs/scripts updated**: `validate-agent-ownership.sh`, `backend.agent.md`, `security.agent.md`, `MAINTENANCE.md`, developer-guide, memory-bank, glossary.
+
 ### Backend Domain Submodule Repackaging (2026-04-13)
-- **REFACTORED: Backend Java package structure** — Eliminated flat shared directories under `ledger/` and replaced with 16 domain submodules, each owning its own controller/, service/, model/, repository/, and dto/ subdirectories.
+- **REFACTORED: Backend Java package structure** — Eliminated flat shared directories under `ledger/` and replaced with 24 domain submodules, each owning its own controller/, service/, model/, repository/, and dto/ subdirectories.
 - **OLD FLAT STRUCTURE removed**: `ledger/controller/` (26), `ledger/service/` (40), `ledger/model/` (80), `ledger/repository/` (44), `ledger/dto/` (42)
-- **16 NEW DOMAIN SUBMODULES**: `accounts`, `auditor`, `banking`, `clientaccount`, `compliance`, `credit`, `currency`, `entitlement`, `fixedasset`, `foundation` (model/repo only), `intelligence`, `inventory`, `operations`, `payroll`, `reporting`, `tenant`
-- **UNCHANGED**: `advance/`, `cache/`, `dashboard/`, `exception/`, `ingestion/`, `payment/`, `security/`, `voucher/`
+- **24 DOMAIN SUBMODULES directly under `com.nexus.onebook`**: `accounts`, `advance`, `auditor`, `banking`, `cache`, `clientaccount`, `compliance`, `credit`, `currency`, `dashboard`, `entitlement`, `exception`, `fixedasset`, `foundation`, `ingestion`, `intelligence`, `inventory`, `operations`, `payment`, `payroll`, `reporting`, `security`, `tenant`, `voucher`
 - **BUG FIX**: Spring bean name conflicts resolved — `advance` vs `voucher` modules both had `PaymentAdviceController`/`PaymentAdviceService` — now qualified with unique bean names.
 - **TESTS**: 562 backend tests pass, 0 failures. CodeQL 0 alerts.
 
@@ -160,7 +166,7 @@
 ## Current Project State
 
 ### Backend (Spring Boot 3.4+ / Java 21)
-- **Package:** `com.nexus.onebook.ledger`
+- **Package:** `com.nexus.onebook`
 - **Structure:** 24 submodules (8 pre-existing + 16 new domain submodules from refactoring)
 - **Migrations:** V1–V15 (all applied; V12 intentionally skipped)
 - **Tests:** 562 passing

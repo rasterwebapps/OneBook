@@ -173,8 +173,8 @@ Feature: [Feature Name]
 ### 5.1 New Files Created
 | File | Package | Purpose |
 |------|---------|---------|
-| `[ClassName].java` | `com.nexus.onebook.ledger.[package]` | [Description] |
-| `[ClassName].java` | `com.nexus.onebook.ledger.[package]` | [Description] |
+| `[ClassName].java` | `com.nexus.onebook.[package]` | [Description] |
+| `[ClassName].java` | `com.nexus.onebook.[package]` | [Description] |
 
 ### 5.2 Modified Files
 | File | Change Description |

@@ -124,11 +124,11 @@ CREATE INDEX idx_payment_register_tenant_due_date
 ### 3.3 Implementation Files
 | File | Package | Description |
 |------|---------|-------------|
-| `PaymentRegisterEntry.java` | `ledger/payment/model/` | JPA entity for the register table |
-| `PaymentRegisterStatus.java` | `ledger/payment/model/` | Enum: AVAILABLE_FOR_PROCESSING, IN_BATCH, APPROVED, PAYMENT_GENERATED, PAID |
-| `PaymentRegisterRepository.java` | `ledger/payment/repository/` | JPA repository with vendor grouping queries |
-| `PaymentRegisterService.java` | `ledger/payment/service/` | Business logic for register view and status transitions |
-| `PaymentRegisterController.java` | `ledger/payment/controller/` | REST endpoints |
+| `PaymentRegisterEntry.java` | `payment/model/` | JPA entity for the register table |
+| `PaymentRegisterStatus.java` | `payment/model/` | Enum: AVAILABLE_FOR_PROCESSING, IN_BATCH, APPROVED, PAYMENT_GENERATED, PAID |
+| `PaymentRegisterRepository.java` | `payment/repository/` | JPA repository with vendor grouping queries |
+| `PaymentRegisterService.java` | `payment/service/` | Business logic for register view and status transitions |
+| `PaymentRegisterController.java` | `payment/controller/` | REST endpoints |
 | `V11__payment_processing.sql` | `db/migration/` | Schema migration |
 
 ---

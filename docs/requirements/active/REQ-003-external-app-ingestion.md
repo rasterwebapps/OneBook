@@ -205,12 +205,12 @@ Feature: External App Ingestion Pipeline
 ### 5.1 New Files Created
 | File | Package | Purpose |
 |------|---------|---------|
-| `ExternalAppIngestionService.java` | `com.nexus.onebook.ledger.ingestion.externalapp` | Pipeline orchestration |
-| `IngestionController.java` | `com.nexus.onebook.ledger.ingestion.controller` | REST endpoints |
-| `FinancialEventRepository.java` | `com.nexus.onebook.ledger.ingestion.repository` | Event persistence |
-| `OcrInvoiceService.java` | `com.nexus.onebook.ledger.ingestion.automation` | OCR adapter |
-| `ThreeWayMatchingService.java` | `com.nexus.onebook.ledger.ingestion.automation` | PO/GR/Invoice matching |
-| `CorporateCardService.java` | `com.nexus.onebook.ledger.ingestion.connector` | Corporate card adapter |
+| `ExternalAppIngestionService.java` | `com.nexus.onebook.ingestion.externalapp` | Pipeline orchestration |
+| `IngestionController.java` | `com.nexus.onebook.ingestion.controller` | REST endpoints |
+| `FinancialEventRepository.java` | `com.nexus.onebook.ingestion.repository` | Event persistence |
+| `OcrInvoiceService.java` | `com.nexus.onebook.ingestion.automation` | OCR adapter |
+| `ThreeWayMatchingService.java` | `com.nexus.onebook.ingestion.automation` | PO/GR/Invoice matching |
+| `CorporateCardService.java` | `com.nexus.onebook.ingestion.connector` | Corporate card adapter |
 
 ### 5.2 Migration
 - Migration file: `V6__ingestion_layer.sql`

@@ -95,15 +95,15 @@ The Architect agent prevents "foundation rot" — small misconfigurations in Doc
 **Milestones Served:** M2 (Universal Ledger), M7 (Reporting & FAR), M10 (Auditor Portal), M11 (Payment Processing), M12 (Employee Advances)
 
 **What It Owns:**
-- **Backend Models:** `ledger/model/` — `LedgerAccount`, `JournalEntry`, `JournalLine`, `VoucherType`, `CostCenter`, `LedgerGroup`, `FixedAsset`, `DepreciationSchedule`
-- **Payment Module:** `ledger/payment/` — `PaymentRegisterEntry`, `PaymentBatch`, `PaymentBatchItem`, `PaymentRegisterService`, `PaymentBatchService`, `PaymentFileGeneratorService`, `PaymentRegisterController`, `PaymentBatchController`
-- **Voucher Settlement Module:** `ledger/voucher/` — `Voucher`, `VoucherItem`, `Receipt`, `PaymentAdvice`, `VoucherService`, `ReceiptService`, `PaymentAdviceService`, `UploadedFileService`, `VoucherController`, `ReceiptController`, `PaymentAdviceController`, `UploadedFileController`
-- **Advance Module (planned):** `ledger/advance/` — `EmployeeAdvance`, `ExpenseVoucher`, `AdvanceReceipt`, `AdvanceLimitCheckService`, `ApprovalTierResolver`, `AdvanceSettlementService`, `EmployeeAdvanceService`, `ExpenseVoucherService`, `AdvanceReceiptService`, `PaymentAdviceService`, `AdvanceReportService`, and corresponding controllers
-- **Backend Repositories:** `ledger/repository/` — all JPA repositories
-- **Backend Services:** `ledger/service/` — `JournalService`, `LedgerAccountService`, `TrialBalanceService`, `VoucherTypeService`, `CostCenterService`, `LedgerGroupService`, `FixedAssetService`, `ProfitAndLossService`, `BalanceSheetService`, `CashFlowService`
-- **Backend Controllers:** `ledger/controller/` — `LedgerController`, `JournalController`, `VoucherTypeController`, `CostCenterController`, `LedgerGroupController`, `ReportController`, `FixedAssetController`
-- **Backend DTOs:** `ledger/dto/` — all request/response records
-- **Backend Exceptions:** `ledger/exception/` — `GlobalExceptionHandler`, custom exceptions
+- **Backend Models:** each module's `model/` — `LedgerAccount`, `JournalEntry`, `JournalLine`, `VoucherType`, `CostCenter`, `LedgerGroup`, `FixedAsset`, `DepreciationSchedule`
+- **Payment Module:** `payment/` — `PaymentRegisterEntry`, `PaymentBatch`, `PaymentBatchItem`, `PaymentRegisterService`, `PaymentBatchService`, `PaymentFileGeneratorService`, `PaymentRegisterController`, `PaymentBatchController`
+- **Voucher Settlement Module:** `voucher/` — `Voucher`, `VoucherItem`, `Receipt`, `PaymentAdvice`, `VoucherService`, `ReceiptService`, `PaymentAdviceService`, `UploadedFileService`, `VoucherController`, `ReceiptController`, `PaymentAdviceController`, `UploadedFileController`
+- **Advance Module (planned):** `advance/` — `EmployeeAdvance`, `ExpenseVoucher`, `AdvanceReceipt`, `AdvanceLimitCheckService`, `ApprovalTierResolver`, `AdvanceSettlementService`, `EmployeeAdvanceService`, `ExpenseVoucherService`, `AdvanceReceiptService`, `PaymentAdviceService`, `AdvanceReportService`, and corresponding controllers
+- **Backend Repositories:** each module's `repository/` — all JPA repositories
+- **Backend Services:** each module's `service/` — `JournalService`, `LedgerAccountService`, `TrialBalanceService`, `VoucherTypeService`, `CostCenterService`, `LedgerGroupService`, `FixedAssetService`, `ProfitAndLossService`, `BalanceSheetService`, `CashFlowService`
+- **Backend Controllers:** each module's `controller/` — `LedgerController`, `JournalController`, `VoucherTypeController`, `CostCenterController`, `LedgerGroupController`, `ReportController`, `FixedAssetController`
+- **Backend DTOs:** each module's `dto/` — all request/response records
+- **Backend Exceptions:** `exception/` — `GlobalExceptionHandler`, custom exceptions
 - **Flyway Migrations:** SQL schema design (V1–V11, V13–V15) including JSONB columns, balanced-entry triggers, payment processing, voucher settlement, and employee advances
 - **Documentation:** `docs/technical/sql-schema.md`, `docs/technical/api-documentation.md`
 - **Frontend:** `accounting/` module (ledger view, voucher entry), `reports/` module
@@ -128,9 +128,9 @@ The accounting engine is the **heart of the system**. Every other module (ingest
 **Milestones Served:** M3 (Zero-Knowledge Security), M10 (Hardening & Production Readiness)
 
 **What It Owns:**
-- **Backend Security Package:** `ledger/security/` — `FieldEncryptionService`, `BlindIndexService`, `KeyManagementService`, `AuditLogService`, `EncryptedStringConverter`
-- **Security Models:** `ledger/security/model/` — encrypted field entities
-- **Security Repositories:** `ledger/security/repository/`
+- **Backend Security Package:** `security/` — `FieldEncryptionService`, `BlindIndexService`, `KeyManagementService`, `AuditLogService`, `EncryptedStringConverter`
+- **Security Models:** `security/model/` — encrypted field entities
+- **Security Repositories:** `security/repository/`
 - **Security Config:** `application.yml` keys under `onebook.security.encryption.*`
 - **Hardening Services:** `SecurityAuditService` (5 automated checks)
 - **Document Vault:** Smart Document Vault (S3/MinIO encrypted attachments)
@@ -157,7 +157,7 @@ Security is non-negotiable in a financial system. The "Blind DBA" concept (where
 **Milestones Served:** M4 (Redis Warm Cache & Performance)
 
 **What It Owns:**
-- **Backend Cache Package:** `ledger/cache/` — `WarmCacheService`, `WarmCacheController`, `CacheConstants`
+- **Backend Cache Package:** `cache/` — `WarmCacheService`, `WarmCacheController`, `CacheConstants`
 - **Redis Config:** `com.nexus.onebook.config.RedisConfig` (Jackson + JSR310 serialization)
 - **Virtual Threads:** Spring Boot Virtual Thread configuration
 - **Cache Patterns:** Cache-aside and write-through implementations in service layer
@@ -215,12 +215,12 @@ The "Better-than-Tally" UX is a core differentiator. Tally-experienced accountan
 **Milestones Served:** M6 (Universal Ingestion Layer & Automation)
 
 **What It Owns:**
-- **Ingestion Gateway:** `ledger/ingestion/gateway/` — `FinancialEventAdapter` (interface), `AdapterRegistry`, `FinancialEventGateway`
-- **Adapters:** `ledger/ingestion/adapter/` — `Hl7Adapter` (Healthcare), `DmsAdapter` (Automotive), `Iso20022Adapter` (Banking), `WebhookAdapter` (SaaS)
-- **Universal Mapper:** `ledger/ingestion/mapper/` — `UniversalMapper` (account code → ID resolution)
-- **Automation:** `ledger/ingestion/automation/` — `OcrInvoiceService`, `ThreeWayMatchingService`
-- **Connectors:** `ledger/ingestion/connector/` — `CorporateCardService`, `HrmPayrollConnector`, `InventoryEventListener`
-- **Ingestion DTOs/Models/Controllers/Repositories:** All files under `ledger/ingestion/`
+- **Ingestion Gateway:** `ingestion/gateway/` — `FinancialEventAdapter` (interface), `AdapterRegistry`, `FinancialEventGateway`
+- **Adapters:** `ingestion/adapter/` — `Hl7Adapter` (Healthcare), `DmsAdapter` (Automotive), `Iso20022Adapter` (Banking), `WebhookAdapter` (SaaS)
+- **Universal Mapper:** `ingestion/mapper/` — `UniversalMapper` (account code → ID resolution)
+- **Automation:** `ingestion/automation/` — `OcrInvoiceService`, `ThreeWayMatchingService`
+- **Connectors:** `ingestion/connector/` — `CorporateCardService`, `HrmPayrollConnector`, `InventoryEventListener`
+- **Ingestion DTOs/Models/Controllers/Repositories:** All files under `ingestion/`
 
 **What It Does:**
 - Validates the pluggable adapter pattern: new industry adapters must implement `FinancialEventAdapter` and auto-register via Spring DI.
@@ -408,28 +408,41 @@ This matrix shows which agents need to collaborate on cross-cutting concerns:
 ```
 com.nexus.onebook/
 ├── config/                          → @Architect
-└── ledger/
-    ├── cache/                       → @PerfEngineer
-    ├── controller/                  → @LedgerExpert (core), @ComplianceAgent (compliance endpoints)
-    ├── dto/                         → @LedgerExpert
-    ├── exception/                   → @LedgerExpert
-    ├── ingestion/
-    │   ├── adapter/                 → @IntegrationBot
-    │   ├── automation/              → @IntegrationBot
-    │   ├── connector/               → @IntegrationBot
-    │   ├── controller/              → @IntegrationBot
-    │   ├── dto/                     → @IntegrationBot
-    │   ├── gateway/                 → @IntegrationBot
-    │   ├── mapper/                  → @IntegrationBot
-    │   ├── model/                   → @IntegrationBot
-    │   └── repository/              → @IntegrationBot
-    ├── model/                       → @LedgerExpert
-    ├── repository/                  → @LedgerExpert
-    ├── security/
-    │   ├── model/                   → @SecurityWarden
-    │   └── repository/              → @SecurityWarden
-    └── service/                     → @LedgerExpert (core), @AIEngineer (AI services),
-                                       @ComplianceAgent (compliance services)
+├── accounts/                        → @LedgerExpert
+├── advance/                         → @LedgerExpert
+├── auditor/                         → @AuditAgent
+├── banking/                         → @LedgerExpert
+├── cache/                           → @PerfEngineer
+├── clientaccount/                   → @LedgerExpert
+├── compliance/                      → @ComplianceAgent
+├── credit/                          → @LedgerExpert
+├── currency/                        → @LedgerExpert
+├── dashboard/                       → @LedgerExpert
+├── entitlement/                     → @LedgerExpert
+├── exception/                       → @LedgerExpert
+├── fixedasset/                      → @LedgerExpert
+├── foundation/                      → @LedgerExpert
+├── ingestion/
+│   ├── adapter/                     → @IntegrationBot
+│   ├── automation/                  → @IntegrationBot
+│   ├── connector/                   → @IntegrationBot
+│   ├── controller/                  → @IntegrationBot
+│   ├── dto/                         → @IntegrationBot
+│   ├── gateway/                     → @IntegrationBot
+│   ├── mapper/                      → @IntegrationBot
+│   ├── model/                       → @IntegrationBot
+│   └── repository/                  → @IntegrationBot
+├── intelligence/                    → @AIEngineer
+├── inventory/                       → @LedgerExpert
+├── operations/                      → @LedgerExpert
+├── payment/                         → @LedgerExpert
+├── payroll/                         → @LedgerExpert
+├── reporting/                       → @LedgerExpert
+├── security/
+│   ├── model/                       → @SecurityWarden
+│   └── repository/                  → @SecurityWarden
+├── tenant/                          → @Architect
+└── voucher/                         → @LedgerExpert
 ```
 
 ### Frontend Module Ownership (105+ tests)

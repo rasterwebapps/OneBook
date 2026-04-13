@@ -31,7 +31,7 @@ You are the **Security Review Team** in the traditional SDLC. You receive assign
 ## Scope
 
 ### What You Own
-- `backend/src/main/java/com/nexus/onebook/ledger/security/` — All security classes
+- `backend/src/main/java/com/nexus/onebook/security/` — All security classes
 - `infrastructure/keycloak/` — Keycloak realm and theme configuration
 - `infrastructure/ldap/` — LDAP bootstrap configuration
 - RLS policy design (implemented by @database)

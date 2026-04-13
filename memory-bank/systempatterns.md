@@ -58,7 +58,7 @@ Any tampered record breaks the chain and is detectable.
 
 ### 7. DTO-Only REST Responses
 JPA entities are never serialized directly into REST responses.  
-Always use DTO records (`*Request`, `*Response`) in `ledger/dto/`.
+Always use DTO records (`*Request`, `*Response`) in `<module>/dto/`.
 
 **Why:** Prevents accidental exposure of encrypted fields, lazy-load exceptions, and circular references.
 

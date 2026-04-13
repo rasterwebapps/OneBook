@@ -17,7 +17,7 @@ This directory contains validation and automation scripts to ensure code quality
 - ✅ All frontend modules in `frontend/src/app/` are documented
 - ✅ All backend services in `backend/src/main/java/.../service/` are documented
 - ✅ All backend controllers in `backend/src/main/java/.../controller/` are documented
-- ✅ All backend packages in `backend/src/main/java/.../ledger/` are documented
+- ✅ All backend packages in `backend/src/main/java/com/nexus/onebook/` are documented
 - ⚠️ Database migrations (warnings only, doesn't fail)
 
 **Exit codes**:

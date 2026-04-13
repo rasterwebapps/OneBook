@@ -234,13 +234,13 @@ Feature: Zero-Knowledge Field Encryption
 ### 5.1 New Files Created
 | File | Package | Purpose |
 |------|---------|---------|
-| `FieldEncryptionService.java` | `com.nexus.onebook.ledger.security` | AES-256-GCM encrypt/decrypt |
-| `BlindIndexService.java` | `com.nexus.onebook.ledger.security` | HMAC-SHA256 blind index computation |
-| `KeyManagementService.java` | `com.nexus.onebook.ledger.security` | Key loading, versioning, rotation |
-| `AuditLogService.java` | `com.nexus.onebook.ledger.security` | Hash-chained audit trail |
-| `EncryptedStringConverter.java` | `com.nexus.onebook.ledger.security` | JPA AttributeConverter |
-| `AuditLog.java` | `com.nexus.onebook.ledger.entity` | Audit log JPA entity |
-| `AuditLogRepository.java` | `com.nexus.onebook.ledger.repository` | Audit log repository |
+| `FieldEncryptionService.java` | `com.nexus.onebook.security` | AES-256-GCM encrypt/decrypt |
+| `BlindIndexService.java` | `com.nexus.onebook.security` | HMAC-SHA256 blind index computation |
+| `KeyManagementService.java` | `com.nexus.onebook.security` | Key loading, versioning, rotation |
+| `AuditLogService.java` | `com.nexus.onebook.security` | Hash-chained audit trail |
+| `EncryptedStringConverter.java` | `com.nexus.onebook.security` | JPA AttributeConverter |
+| `AuditLog.java` | `com.nexus.onebook.entity` | Audit log JPA entity |
+| `AuditLogRepository.java` | `com.nexus.onebook.repository` | Audit log repository |
 
 ### 5.2 Migration
 - Migration file: `V5__blind_dba_infrastructure.sql`

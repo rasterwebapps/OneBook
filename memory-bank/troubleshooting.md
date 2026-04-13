@@ -47,7 +47,7 @@
 **Symptom:** `LazyInitializationException` when serializing JPA entities to JSON  
 **Root Cause:** JPA entity returned directly from controller, triggering lazy-loaded collection access outside transaction  
 **Fix:** Introduced DTO records for all REST responses  
-**Files:** All `*Controller.java` and `ledger/dto/` package  
+**Files:** All `*Controller.java` and module `dto/` package  
 **Lesson:** Never expose JPA entities in REST responses — always use DTOs
 
 ### Validation Script False Positives
