@@ -23,7 +23,7 @@
 | [REQ-011](active/REQ-011-payment-register.md) | Payment Register | BR-011 | FR-015 | TR-008 | PaymentRegisterEntry.java<br>PaymentRegisterStatus.java<br>PaymentRegisterRepository.java<br>PaymentRegisterService.java<br>PaymentRegisterController.java<br>V11__payment_processing.sql | PaymentRegisterServiceTest<br>PaymentRegisterControllerTest | US-021 | ✅ COMPLETED |
 | [REQ-012](active/REQ-012-payment-batch-processing.md) | Payment Batch Processing | BR-012 | FR-016 | TR-008 | PaymentBatch.java<br>PaymentBatchItem.java<br>PaymentBatchStatus.java<br>PaymentBatchService.java<br>PaymentBatchController.java<br>V11__payment_processing.sql | PaymentBatchServiceTest<br>PaymentBatchControllerTest | US-022, US-023 | ✅ COMPLETED |
 | [REQ-013](active/REQ-013-payment-generation.md) | Payment File Generation | BR-013 | FR-017 | TR-008 | PaymentFileGeneratorService.java<br>V11__payment_processing.sql | PaymentFileGeneratorServiceTest | US-024 | ✅ COMPLETED |
-| [REQ-014](active/REQ-014-employee-advances-and-settlement.md) | Employee Advances, Expense Settlement, Advance Receipt & Payment Advice | BR-014 | FR-018 | TR-009 | EmployeeAdvance.java<br>ExpenseVoucher.java<br>AdvanceReceipt.java<br>V15__employee_advances_settlement.sql | — | US-025, US-026, US-027 | 📝 DRAFT |
+| [REQ-014](active/REQ-014-employee-advances-and-settlement.md) | Employee Advances, Expense Settlement, Advance Receipt & Payment Advice | BR-014 | FR-018 | TR-009 | EmployeeAdvance.java<br>ExpenseVoucher.java<br>AdvanceReceipt.java<br>EmployeePaymentAdvice.java<br>V15__employee_advances_settlement.sql | EmployeeAdvanceServiceTest<br>ExpenseVoucherServiceTest<br>AdvanceReceiptServiceTest<br>PaymentAdviceServiceTest | US-025, US-026, US-027 | 🔄 IN_PROGRESS |
 
 ---
 

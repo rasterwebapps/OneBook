@@ -152,6 +152,8 @@ CREATE POLICY tenant_isolation_ar ON advance_receipts
 CREATE INDEX idx_advance_receipts_tenant_employee ON advance_receipts (tenant_id, employee_id);
 
 -- 7. Payment advice (reimbursement payable to employee)
+-- Note: Named 'payment_advices_m12' to distinguish from existing 'payment_advices' table in V14.
+-- This table is for employee expense reimbursements; the V14 table is for voucher settlements.
 CREATE TABLE payment_advices_m12 (
     id                  BIGSERIAL PRIMARY KEY,
     tenant_id           VARCHAR(255) NOT NULL,

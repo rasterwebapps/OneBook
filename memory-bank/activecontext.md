@@ -7,15 +7,46 @@
 
 ## Current Status
 
-**Date:** 2026-04-10  
-**Phase:** SDLC Agent System Implementation  
-**Milestones:** ✅ M1–M10 Complete | 🔄 M11 In Progress | 📝 M12 Draft
+**Date:** 2026-04-13  
+**Phase:** M12 Employee Advances Implementation  
+**Milestones:** ✅ M1–M11 Complete | 🔄 M12 In Progress
 
 ---
 
 ## Recent Changes (Latest Session)
 
-### Modern Fintech-Style Dashboard Redesign (2026-04-10)
+### M12 Employee Advances Backend Implementation (2026-04-13)
+- **COMPLETED: M11 Payment Processing** — Updated REQ-011/012/013 status to COMPLETED, added PaymentFileGeneratorServiceTest (9 tests), PaymentRegisterControllerTest (4 tests), updated RTM.md
+- **IMPLEMENTED: M12 Backend Layer** — Complete employee advances module:
+  - **V15 Migration**: `V15__employee_advances_settlement.sql` — 8 tables with RLS policies:
+    - `employee_advance_config` — per-employee advance limits
+    - `employee_advance_balance` — cached outstanding balance
+    - `employee_advances` — advance voucher headers with tiered approval
+    - `expense_vouchers` — expense claims with settlement tracking
+    - `expense_voucher_advances` — many-to-many link for multi-advance settlement
+    - `advance_receipts` — cash/bank return records
+    - `payment_advices_m12` — reimbursement payable records
+    - `advance_approval_history` — approval workflow audit trail
+  - **Models**: 12 model classes (EmployeeAdvance, ExpenseVoucher, AdvanceReceipt, EmployeePaymentAdvice, enums)
+  - **DTOs**: 8 DTO records (request/response for all entities)
+  - **Repositories**: 6 repositories with tenant-scoped queries
+  - **Services**: 4 services (EmployeeAdvanceService, ExpenseVoucherService, AdvanceReceiptService, PaymentAdviceService)
+    - Implements tiered approval workflow (HOD → CEO → MD based on amount)
+    - Implements expense settlement logic (advance reduction + reimbursement)
+    - Implements override mechanism with mandatory audit reason
+  - **Controllers**: 4 REST controllers (/api/advances, /api/expense-vouchers, /api/advance-receipts, /api/payment-advices)
+  - **Tests**: 35 unit tests across 4 service test classes
+- **FILES CHANGED**:
+  - `backend/src/main/resources/db/migration/V15__employee_advances_settlement.sql`
+  - `backend/src/main/java/com/nexus/onebook/ledger/advance/model/*`
+  - `backend/src/main/java/com/nexus/onebook/ledger/advance/dto/*`
+  - `backend/src/main/java/com/nexus/onebook/ledger/advance/repository/*`
+  - `backend/src/main/java/com/nexus/onebook/ledger/advance/service/*`
+  - `backend/src/main/java/com/nexus/onebook/ledger/advance/controller/*`
+  - `backend/src/test/java/com/nexus/onebook/ledger/advance/service/*`
+- **BUILD:** Passes cleanly | **TESTS:** 35 new advance tests pass, all payment tests pass
+
+### Previous Session: Modern Fintech-Style Dashboard Redesign (2026-04-10)
 - **REDESIGNED: Dashboard** with modern fintech UI patterns inspired by Mercury/Stripe:
   - **4 KPI Cards** (top row): Cash, Bank, Pending Validations, Failed PANs
     - Each card has `shadow-sm` (subtle shadow), `border-slate-100` (extremely faint borders)
@@ -118,9 +149,10 @@
 
 ### Backend (Spring Boot 3.4+ / Java 21)
 - **Package:** `com.nexus.onebook.ledger`
-- **Migrations:** V1–V14 (all applied; V12 intentionally skipped)
-- **Tests:** 514 passing
+- **Migrations:** V1–V15 (all applied; V12 intentionally skipped)
+- **Tests:** 560+ passing (including 35 new advance tests)
 - **API:** All endpoints functional at `/api/*`
+- **M12 Advance Module:** Complete with 4 services, 4 controllers, 6 repositories
 
 ### Frontend (Angular 19+)
 - **Modules:** 17 feature modules (all lazy-loaded standalone components)
@@ -153,14 +185,26 @@ Quality gate automation is now enforced in CI. All 8 gates pass. Memory bank aut
 
 ---
 
-## Next Steps (When New Tasks Arrive)
+## Next Steps (M12 Completion)
 
-1. Read `memory-bank/progress.md` to understand what's complete
-2. Identify which sub-agent(s) own the affected code
-3. Consult the relevant `.github/agents/*.md` file for patterns
-4. Implement using conventions in `memory-bank/systempatterns.md`
-5. Update this file (`activecontext.md`) before ending the session
-6. Run `.github/scripts/validate-agent-ownership.sh` to validate ownership
+1. **Frontend Components for M12:**
+   - AdvanceRequestComponent (`/advances/new`)
+   - ApprovalQueueComponent (`/advances/approvals`)
+   - ExpenseVoucherComponent (`/expense-vouchers/new`)
+   - AdvanceReceiptComponent (`/advance-receipts/new`)
+   - PaymentAdviceListComponent (`/payment-advices`)
+   - MyAdvancesComponent (`/advances/my`)
+   - MyExpensesComponent (`/expense-vouchers/my`)
+
+2. **Integration Tests for M12:**
+   - End-to-end advance approval workflow
+   - Expense settlement with partial advance
+   - Override mechanism audit trail
+
+3. **Documentation Updates:**
+   - Update agent ownership for advance module
+   - Update BRD/FRD/TRD with M12 completion
+   - Run quality gates and memory bank sync
 
 ---
 

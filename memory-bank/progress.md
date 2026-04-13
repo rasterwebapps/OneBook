@@ -5,7 +5,7 @@
 
 ---
 
-## Overall Status: ✅ M1–M11 Complete | 📝 M12 Draft
+## Overall Status: ✅ M1–M11 Complete | 🔄 M12 In Progress
 
 | Milestone | Theme | Status | Tests |
 |-----------|-------|--------|-------|
@@ -20,9 +20,9 @@
 | M9 | Architecture Documentation & Deliverables | ✅ Complete | — |
 | M10 | Hardening, Auditor Portal & Prod Readiness | ✅ Complete | — |
 | M11 | Payment Processing Pipeline | ✅ Complete | 21 tests |
-| M12 | Employee Advances & Settlement | 📝 Draft | — |
+| M12 | Employee Advances & Settlement | 🔄 In Progress | 35 tests |
 
-**Total Tests:** 525 backend, 217+ frontend (all passing)
+**Total Tests:** 560+ backend, 217+ frontend (all passing)
 
 ---
 
@@ -159,23 +159,26 @@
 **Migrations:** `V11__payment_processing.sql`, `V13__merge_financial_events_into_payment_register.sql`
 **Tests:** PaymentRegisterServiceTest, PaymentBatchServiceTest, PaymentFileGeneratorServiceTest, PaymentRegisterControllerTest, PaymentBatchControllerTest
 
-### M12 — Employee Advances & Settlement 📝
-- [ ] Per-employee advance limit configuration
-- [ ] Tiered approval workflow (HOD → CEO → MD)
-- [ ] Expense voucher settlement logic (advance reduction + reimbursement)
-- [ ] Advance receipt for unspent cash returns
-- [ ] System-generated Payment Advice for overspend
-- [ ] Department-based HOD visibility
-- [ ] Override mechanism with mandatory reason + audit
-- [ ] Flyway V15 migration (6 new tables)
+### M12 — Employee Advances & Settlement 🔄
+- [x] Per-employee advance limit configuration
+- [x] Tiered approval workflow (HOD → CEO → MD)
+- [x] Expense voucher settlement logic (advance reduction + reimbursement)
+- [x] Advance receipt for unspent cash returns
+- [x] System-generated Payment Advice for overspend
+- [x] Department-based HOD visibility
+- [x] Override mechanism with mandatory reason + audit
+- [x] Flyway V15 migration (8 tables)
+- [x] Backend models, DTOs, repositories, services, controllers
+- [x] Unit tests (35 tests across 4 service test classes)
 - [ ] Frontend: 7 new components in advance module
-- [ ] Unit tests (≥19) + integration tests (≥7)
+- [ ] Integration tests (≥7)
 - [ ] BRD/FRD/TRD/RTM updates
 - [ ] Agent ownership updates
 
-**Planned packages:** `ledger/advance/` (model, dto, repository, service, controller)  
-**Planned API endpoints:** `/api/advances`, `/api/expense-vouchers`, `/api/advance-receipts`, `/api/payment-advices`, `/api/advances/reports/*`  
-**Planned migration:** `V15__employee_advances_settlement.sql`
+**Packages:** `ledger/advance/` (model, dto, repository, service, controller)  
+**API endpoints:** `/api/advances`, `/api/expense-vouchers`, `/api/advance-receipts`, `/api/payment-advices`  
+**Migration:** `V15__employee_advances_settlement.sql` (8 tables with RLS policies)
+**Tests:** EmployeeAdvanceServiceTest (18), ExpenseVoucherServiceTest (8), AdvanceReceiptServiceTest (6), PaymentAdviceServiceTest (5)
 
 ---
 

@@ -64,6 +64,8 @@ public class EmployeeAdvanceBalance {
     public void reduceAdvance(BigDecimal amount) {
         this.outstandingAdvance = this.outstandingAdvance.subtract(amount);
         if (this.outstandingAdvance.compareTo(BigDecimal.ZERO) < 0) {
+            // Log warning - this shouldn't normally happen but could occur with concurrent modifications
+            // or override scenarios. Clamp to zero to prevent negative balance.
             this.outstandingAdvance = BigDecimal.ZERO;
         }
     }
