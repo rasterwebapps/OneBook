@@ -38,6 +38,7 @@ You are the **Frontend Development Team** in the traditional SDLC. You receive a
 
 ### Frontend Modules
 - `frontend/src/app/accounting/` — Ledger, voucher entry
+- `frontend/src/app/advances/` — Employee advances, expense vouchers, payment advices (M12)
 - `frontend/src/app/ai/` — AI features
 - `frontend/src/app/auditor/` — Auditor portal
 - `frontend/src/app/auth/` — Authentication (OIDC, guards)
@@ -52,6 +53,7 @@ You are the **Frontend Development Team** in the traditional SDLC. You receive a
 - `frontend/src/app/payable/` — Accounts payable
 - `frontend/src/app/receivable/` — Accounts receivable
 - `frontend/src/app/reports/` — Financial reports
+- `frontend/src/app/shared/` — Shared components (nx-* design system)
 
 ### Domain Knowledge Consolidated From
 - Component architecture, keyboard navigation, Signals, i18n (from legacy @UXSpecialist)
