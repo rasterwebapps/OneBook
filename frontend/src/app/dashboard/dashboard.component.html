@@ -12,7 +12,7 @@
        ═══════════════════════════════════════════════════════════════ -->
   <div class="kpi-row">
     <!-- Cash Balance Card -->
-    <div class="kpi-card">
+    <div class="glass-kpi-card">
       <div class="kpi-header">
         <span class="kpi-icon cash">💵</span>
         <span class="kpi-label">Cash</span>
@@ -25,7 +25,7 @@
     </div>
 
     <!-- Bank Balance Card -->
-    <div class="kpi-card">
+    <div class="glass-kpi-card">
       <div class="kpi-header">
         <span class="kpi-icon bank">🏦</span>
         <span class="kpi-label">Bank</span>
@@ -38,7 +38,7 @@
     </div>
 
     <!-- Pending Validations Card -->
-    <div class="kpi-card">
+    <div class="glass-kpi-card">
       <div class="kpi-header">
         <span class="kpi-icon pending">⏳</span>
         <span class="kpi-label">Pending Validations</span>
@@ -51,7 +51,7 @@
     </div>
 
     <!-- Failed PANs Card -->
-    <div class="kpi-card" [class.alert]="failedPANs() > 0">
+    <div class="glass-kpi-card" [class.alert]="failedPANs() > 0">
       <div class="kpi-header">
         <span class="kpi-icon failed">⚠️</span>
         <span class="kpi-label">Failed PANs</span>

@@ -26,26 +26,28 @@
   @media (max-width: 640px) { grid-template-columns: 1fr; }
 }
 
-/* KPI Card — shadow-sm + subtle trend badge */
-.kpi-card {
-  background: #ffffff;
-  border: 1px solid #f1f5f9; /* border-slate-100 — extremely faint */
-  border-radius: var(--nx-radius-lg);
-  padding: var(--nx-space-5);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* shadow-sm */
+/* KPI Card — Glassmorphism design system */
+.glass-kpi-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
   transition: all 0.2s ease;
 
   &:hover {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    transform: translateY(-1px);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
   }
 
   /* Alert state for Failed PANs */
   &.alert {
     border-color: rgba(239, 68, 68, 0.3);
-    background: linear-gradient(180deg, #fff 0%, #fef2f2 100%);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.7) 0%, rgba(254, 242, 242, 0.7) 100%);
   }
 }
+
 
 .kpi-header {
   display: flex;
@@ -78,11 +80,11 @@
 }
 
 .kpi-value {
-  font-size: 1.75rem;
-  font-weight: 700;
-  font-family: var(--nx-font-mono);
+  font-family: 'Fira Code', 'Roboto Mono', monospace;
+  font-weight: 600;
+  font-size: 2rem;
+  color: #0F172A;
   font-variant-numeric: tabular-nums;
-  color: #0f172a;
   letter-spacing: -0.02em;
   margin-bottom: var(--nx-space-2);
 }
@@ -98,13 +100,15 @@
   font-weight: 600;
 
   &.up {
-    background: rgba(34, 197, 94, 0.1);
-    color: #16a34a;
+    background: rgba(16, 185, 129, 0.1);
+    color: #10B981;
+    font-weight: 700;
   }
 
   &.down {
     background: rgba(239, 68, 68, 0.1);
     color: #dc2626;
+    font-weight: 700;
   }
 
   &.neutral {
@@ -477,7 +481,7 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-.kpi-card,
+.glass-kpi-card,
 .chart-placeholder,
 .activity-card,
 .quick-actions-card,
@@ -485,7 +489,7 @@
   animation: fadeInUp 0.4s ease-out backwards;
 }
 
-.kpi-card {
+.glass-kpi-card {
   @for $i from 1 through 4 {
     &:nth-child(#{$i}) { animation-delay: #{$i * 0.05}s; }
   }
@@ -496,6 +500,6 @@
    ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 640px) {
   .fintech-dashboard { padding: var(--nx-space-3); }
-  .kpi-value { font-size: 1.5rem; }
+  .kpi-value { font-size: 1.75rem; }
   .chart-metrics { grid-template-columns: 1fr; gap: var(--nx-space-2); }
 }
