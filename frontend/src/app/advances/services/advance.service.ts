@@ -130,18 +130,18 @@ export class AdvanceService {
   // ═══════════════════════════════════════════════════════════════════════════
 
   getPaymentAdvices(): Observable<PaymentAdvice[]> {
-    return this.http.get<PaymentAdvice[]>(`${this.baseUrl}/payment-advices`);
+    return this.http.get<PaymentAdvice[]>(`${this.baseUrl}/employee-payment-advices`);
   }
 
   getPaymentAdviceById(id: number): Observable<PaymentAdvice> {
-    return this.http.get<PaymentAdvice>(`${this.baseUrl}/payment-advices/${id}`);
+    return this.http.get<PaymentAdvice>(`${this.baseUrl}/employee-payment-advices/${id}`);
   }
 
   getPendingPaymentAdvices(): Observable<PaymentAdvice[]> {
-    return this.http.get<PaymentAdvice[]>(`${this.baseUrl}/payment-advices/pending`);
+    return this.http.get<PaymentAdvice[]>(`${this.baseUrl}/employee-payment-advices?status=PENDING_PAYMENT`);
   }
 
   markPaymentAdvicePaid(id: number, paymentVoucherId: number): Observable<PaymentAdvice> {
-    return this.http.post<PaymentAdvice>(`${this.baseUrl}/payment-advices/${id}/pay`, { paymentVoucherId });
+    return this.http.post<PaymentAdvice>(`${this.baseUrl}/employee-payment-advices/${id}/pay`, { paymentVoucherId });
   }
 }

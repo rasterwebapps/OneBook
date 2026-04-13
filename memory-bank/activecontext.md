@@ -55,12 +55,13 @@
 
 ### M12 Backend Implementation (2026-04-13, earlier session)
 - **COMPLETED: M12 Backend Layer** — Complete employee advances module:
-  - **V15 Migration**: `V15__employee_advances_settlement.sql` — 8 tables with RLS policies
+  - **V16 Migration**: `V16__employee_advances_settlement.sql` — 8 tables with RLS policies (renamed from V15 to resolve conflict with V15__voucher_receipt_advance_settlement.sql)
+  - **Endpoint Alignment**: Backend uses `/api/employee-payment-advices`, frontend AdvanceService updated to match
   - **Models**: 12 model classes (EmployeeAdvance, ExpenseVoucher, AdvanceReceipt, EmployeePaymentAdvice, enums)
   - **DTOs**: 8 DTO records (request/response for all entities)
   - **Repositories**: 6 repositories with tenant-scoped queries
   - **Services**: 4 services implementing tiered approval workflow
-  - **Controllers**: 4 REST controllers
+  - **Controllers**: 4 REST controllers (`/api/advances`, `/api/expense-vouchers`, `/api/advance-receipts`, `/api/employee-payment-advices`)
   - **Tests**: 35 unit tests across 4 service test classes
 - **BUILD:** Passes cleanly | **TESTS:** All 35 new advance tests pass
 
