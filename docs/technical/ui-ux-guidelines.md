@@ -745,32 +745,32 @@ Services and components are in `frontend/src/app/keyboard/`.
 ### App Shell Architecture
 
 ```
-┌──────────────────────────────────────────────────────────┐
-│ Top Header (52px)                                        │
-│  [☰] [Logo] OneBook │ Breadcrumbs ›  │ Search │ [Ctrl+K]│
-│                                       │ [🌐] [🔔] [👤]  │
-├────────────┬─────────────────────────────────────────────┤
-│ Sidebar    │ Main Content                                │
-│ (Dark)     │                                             │
-│ ┌────────┐ │  ┌───────────────────────────────────────┐  │
-│ │Tenant  │ │  │ Page Header                           │  │
-│ │Selector│ │  ├───────────────────────────────────────┤  │
-│ ├────────┤ │  │ Content (cards, tables, forms)         │  │
-│ │🏠 Dash │ │  │                                       │  │
-│ ├────────┤ │  │                                       │  │
-│ │Acctg ▾ │ │  │                                       │  │
-│ │ Voucher│ │  │                                       │  │
-│ │ Ledger │ │  │                                       │  │
-│ ├────────┤ │  └───────────────────────────────────────┘  │
-│ │Reports▾│ │                                             │
-│ ├────────┤ │                                             │
-│ │Mgmt  ▾ │ │                                             │
-│ ├────────┤ │                                             │
-│ │Intel ▾ │ │                                             │
-│ ├────────┤ │                                             │
-│ │Status  │ │                                             │
-│ └────────┘ │                                             │
-└────────────┴─────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│ Top Header (52px, frosted glass)                             │
+│  [☰] [▪ OneBook] │ Crumb › Crumb │ [🔍 Search…  Ctrl+K] │  │
+│                                    [📖] [⚙] [🔔] │ [AV Name]│
+├────────────┬─────────────────────────────────────────────────┤
+│ Sidebar    │ Main Content                                    │
+│ (Dark)     │                                                 │
+│ ┌────────┐ │  ┌───────────────────────────────────────────┐  │
+│ │Tenant  │ │  │ Page Header                               │  │
+│ │Selector│ │  ├───────────────────────────────────────────┤  │
+│ ├────────┤ │  │ Content (cards, tables, forms)             │  │
+│ │🏠 Dash │ │  │                                           │  │
+│ ├────────┤ │  │                                           │  │
+│ │Acctg ▾ │ │  │                                           │  │
+│ │ Voucher│ │  │                                           │  │
+│ │ Ledger │ │  │                                           │  │
+│ ├────────┤ │  └───────────────────────────────────────────┘  │
+│ │Reports▾│ │                                                 │
+│ ├────────┤ │                                                 │
+│ │Mgmt  ▾ │ │                                                 │
+│ ├────────┤ │                                                 │
+│ │Intel ▾ │ │                                                 │
+│ ├────────┤ │                                                 │
+│ │Status  │ │                                                 │
+│ └────────┘ │                                                 │
+└────────────┴─────────────────────────────────────────────────┘
 ```
 
 ### Sidebar
@@ -781,12 +781,33 @@ Services and components are in `frontend/src/app/keyboard/`.
 - **Tenant selector**: Top of sidebar; dropdown with available tenants
 - **Status indicator**: Bottom of sidebar; shows backend connection status
 
-### Top Header
+### Top Header — Modern Minimalist
 
 - **Height**: `52px` (`--nx-header-height`)
-- **Left**: Hamburger toggle + logo + app title
-- **Center**: Dynamic breadcrumbs (route-to-breadcrumb mapping)
-- **Right**: Search box, `Ctrl+K` hint, language switcher, apps button, notifications, user menu
+- **Surface**: Frosted glass effect (`backdrop-filter: blur(12px)`, semi-transparent background)
+- **Left zone**: Hamburger toggle + SVG logo mark (rounded-rect with icon) + "OneBook" text
+- **Breadcrumbs**: SVG chevron separators (not text `›`), perfectly aligned with `gap: 4px`
+- **Center**: Expansive search input — full-width (max 480px), search icon on the left, `Ctrl+K` kbd hint on the right, `--nx-primary` focus border with glow ring
+- **Right zone**: Clean-vector 18px SVG action icons (Help/Book, Settings/Gear, Notifications/Bell), separated from user menu by a 1px vertical divider
+- **User menu**: High-quality gradient avatar (initials), user name + role label (uppercase, muted), dropdown caret
+- **User dropdown**: Avatar + name + email in header, Profile/Settings items, danger-styled Logout item
+
+#### Header Icon Requirements
+
+| Icon | Purpose | SVG Style |
+|------|---------|-----------|
+| Book (open) | Help & Resources | `stroke-only`, 18×18 |
+| Gear (Lucide-style) | Settings | `stroke-only`, 18×18 |
+| Bell | Notifications | `stroke-only`, 18×18, with `notif-badge` overlay |
+
+All header icons use `.header-icon-btn` with 7px padding, `--nx-text-muted` color, and `--nx-bg-surface` hover background.
+
+#### User Menu Requirements
+
+- **Avatar**: 32×32 circle, `linear-gradient(135deg, --nx-primary, #0284C7)`, white initials
+- **Name**: `0.8125rem`, `font-weight: 500`
+- **Role**: `0.625rem`, uppercase, `--nx-text-muted`, letter-spacing `0.05em`
+- **Dropdown avatar**: 36×36 with same gradient, displayed alongside name and email
 
 ### Breadcrumb System
 
