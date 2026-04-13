@@ -8,12 +8,26 @@
 ## Current Status
 
 **Date:** 2026-04-13  
-**Phase:** M12 Complete — All Milestones Done  
+**Phase:** Post-M12 — Backend Package Refactoring Complete  
 **Milestones:** ✅ M1–M12 Complete
 
 ---
 
 ## Recent Changes (Latest Session)
+
+### Package Flattening: Removed `ledger/` Intermediate Directory (2026-04-13)
+- **REFACTORED: All 24 domain submodules moved** from `com.nexus.onebook.ledger.*` to `com.nexus.onebook.*` — the `ledger/` intermediate package has been eliminated.
+- **Java package path**: All `package com.nexus.onebook.ledger.*` declarations and `import com.nexus.onebook.ledger.*` statements updated project-wide (492 Java files, main + test trees).
+- **Filesystem**: All directories moved from `backend/src/main/java/com/nexus/onebook/ledger/<module>/` to `backend/src/main/java/com/nexus/onebook/<module>/`. Same for test tree.
+- **`LedgerIntegrationTest.java`**: Moved from `ledger/` root to `com.nexus.onebook` root (package was already correct).
+- **Agent/docs/scripts updated**: `validate-agent-ownership.sh`, `backend.agent.md`, `security.agent.md`, `MAINTENANCE.md`, developer-guide, memory-bank, glossary.
+
+### Backend Domain Submodule Repackaging (2026-04-13)
+- **REFACTORED: Backend Java package structure** — Eliminated flat shared directories under `ledger/` and replaced with 24 domain submodules, each owning its own controller/, service/, model/, repository/, and dto/ subdirectories.
+- **OLD FLAT STRUCTURE removed**: `ledger/controller/` (26), `ledger/service/` (40), `ledger/model/` (80), `ledger/repository/` (44), `ledger/dto/` (42)
+- **24 DOMAIN SUBMODULES directly under `com.nexus.onebook`**: `accounts`, `advance`, `auditor`, `banking`, `cache`, `clientaccount`, `compliance`, `credit`, `currency`, `dashboard`, `entitlement`, `exception`, `fixedasset`, `foundation`, `ingestion`, `intelligence`, `inventory`, `operations`, `payment`, `payroll`, `reporting`, `security`, `tenant`, `voucher`
+- **BUG FIX**: Spring bean name conflicts resolved — `advance` vs `voucher` modules both had `PaymentAdviceController`/`PaymentAdviceService` — now qualified with unique bean names.
+- **TESTS**: 562 backend tests pass, 0 failures. CodeQL 0 alerts.
 
 ### M12 Employee Advances — FULL STACK IMPLEMENTATION (2026-04-13)
 - **COMPLETED: M12 Employee Advances & Settlement** — Full frontend implementation:
@@ -152,14 +166,15 @@
 ## Current Project State
 
 ### Backend (Spring Boot 3.4+ / Java 21)
-- **Package:** `com.nexus.onebook.ledger`
+- **Package:** `com.nexus.onebook`
+- **Structure:** 24 submodules (8 pre-existing + 16 new domain submodules from refactoring)
 - **Migrations:** V1–V15 (all applied; V12 intentionally skipped)
-- **Tests:** 560+ passing (including 35 new advance tests)
+- **Tests:** 562 passing
 - **API:** All endpoints functional at `/api/*`
-- **M12 Advance Module:** Complete with 4 services, 4 controllers, 6 repositories
+- **Domain Submodules:** `accounts`, `advance`, `auditor`, `banking`, `cache`, `clientaccount`, `compliance`, `credit`, `currency`, `dashboard`, `entitlement`, `exception`, `fixedasset`, `foundation`, `ingestion`, `intelligence`, `inventory`, `operations`, `payment`, `payroll`, `reporting`, `security`, `tenant`, `voucher`
 
 ### Frontend (Angular 19+)
-- **Modules:** 17 feature modules (all lazy-loaded standalone components)
+- **Modules:** 18 feature modules (all lazy-loaded standalone components)
 - **Shared Components:** 13 (`nx-card`, `nx-stat-card`, `nx-badge`, `nx-amount`, `nx-skeleton`, `nx-empty-state`, `nx-data-table`, `nx-page-header`, `nx-search-input`, `nx-loading-spinner`, `nx-confirm-dialog`, `nx-status-badge`, `nx-toast`)
 - **Tests:** 217+ passing (15 pre-existing failures: 7 AppComponent + 8 StartComponent OAuthService dependency)
 - **State:** Signals-based (no RxJS for simple state)

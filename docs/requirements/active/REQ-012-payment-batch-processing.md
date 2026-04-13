@@ -164,16 +164,16 @@ This integrates with the existing `JournalService` (REQ-004).
 ### 3.3 Implementation Files
 | File | Package | Description |
 |------|---------|-------------|
-| `PaymentBatch.java` | `ledger/payment/model/` | JPA entity for payment_batches |
-| `PaymentBatchItem.java` | `ledger/payment/model/` | JPA entity for payment_batch_items |
-| `PaymentBatchStatus.java` | `ledger/payment/model/` | Enum: PENDING_APPROVAL, APPROVED, REJECTED, PAYMENT_GENERATED, COMPLETED |
-| `PaymentBatchRepository.java` | `ledger/payment/repository/` | JPA repository with status filter queries |
-| `PaymentBatchItemRepository.java` | `ledger/payment/repository/` | JPA repository for batch items |
-| `CreateBatchRequest.java` | `ledger/payment/dto/` | Request DTO for batch creation |
-| `PaymentBatchResponse.java` | `ledger/payment/dto/` | Response DTO |
-| `BatchApprovalRequest.java` | `ledger/payment/dto/` | Approve/reject request DTO |
-| `PaymentBatchService.java` | `ledger/payment/service/` | Business logic: batch creation, net payable calculation, journal posting |
-| `PaymentBatchController.java` | `ledger/payment/controller/` | REST endpoints |
+| `PaymentBatch.java` | `payment/model/` | JPA entity for payment_batches |
+| `PaymentBatchItem.java` | `payment/model/` | JPA entity for payment_batch_items |
+| `PaymentBatchStatus.java` | `payment/model/` | Enum: PENDING_APPROVAL, APPROVED, REJECTED, PAYMENT_GENERATED, COMPLETED |
+| `PaymentBatchRepository.java` | `payment/repository/` | JPA repository with status filter queries |
+| `PaymentBatchItemRepository.java` | `payment/repository/` | JPA repository for batch items |
+| `CreateBatchRequest.java` | `payment/dto/` | Request DTO for batch creation |
+| `PaymentBatchResponse.java` | `payment/dto/` | Response DTO |
+| `BatchApprovalRequest.java` | `payment/dto/` | Approve/reject request DTO |
+| `PaymentBatchService.java` | `payment/service/` | Business logic: batch creation, net payable calculation, journal posting |
+| `PaymentBatchController.java` | `payment/controller/` | REST endpoints |
 
 ---
 

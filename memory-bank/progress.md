@@ -90,7 +90,7 @@
 - [x] HRM/Payroll connector
 - [x] Inventory event listener
 
-**Key packages:** `ledger/ingestion/gateway/`, `ledger/ingestion/adapter/`, `ledger/ingestion/mapper/`
+**Key packages:** `ingestion/gateway/`, `ingestion/adapter/`, `ingestion/mapper/`
 
 ### M7 — Reporting, Tax, Compliance & FAR ✅
 - [x] P&L, Balance Sheet, Cash Flow reports
@@ -154,7 +154,7 @@
 - [x] BRD/FRD/TRD/RTM updates
 - [x] Agent ownership updates
 
-**Key packages:** `ledger/payment/` (model, dto, repository, service, controller)  
+**Key packages:** `payment/` (model, dto, repository, service, controller)  
 **API endpoints:** `/api/payment-register`, `/api/payment-batches`, `/api/payment-batches/{id}/generate-file`  
 **Migrations:** `V11__payment_processing.sql`, `V13__merge_financial_events_into_payment_register.sql`
 **Tests:** PaymentRegisterServiceTest, PaymentBatchServiceTest, PaymentFileGeneratorServiceTest, PaymentRegisterControllerTest, PaymentBatchControllerTest
@@ -176,7 +176,7 @@
 - [x] BRD/FRD/TRD/RTM updates
 
 **Packages:** 
-- Backend: `ledger/advance/` (model, dto, repository, service, controller)
+- Backend: `advance/` (model, dto, repository, service, controller)
 - Frontend: `advances/` (components, models, services)
 
 **API endpoints:** `/api/advances`, `/api/expense-vouchers`, `/api/advance-receipts`, `/api/payment-advices`  
@@ -250,7 +250,7 @@
 - [x] Flyway V14 migration with 18 tables, CHECK constraints, RLS policies, tenant isolation
 - [x] 24 unit tests (VoucherServiceTest, ReceiptServiceTest, PaymentAdviceServiceTest, UploadedFileServiceTest)
 
-**Key packages:** `ledger/voucher/` (model, dto, repository, service, controller), `ledger/model/` (foundation entities)
+**Key packages:** `voucher/` (model, dto, repository, service, controller), `foundation/model/` (foundation entities)
 **API endpoints:** `/api/vouchers`, `/api/receipts`, `/api/payment-advices`, `/api/uploaded-files`
 **Migration:** `V14__voucher_receipt_advance_settlement.sql`
 

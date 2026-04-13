@@ -120,35 +120,50 @@ When you receive a complex task, decompose it into these sub-tasks and execute i
 ## Patterns & Conventions
 
 ### Backend Packages
-- `ledger/model/` — JPA entities
-- `ledger/dto/` — DTO records
-- `ledger/repository/` — Spring Data JPA repositories
-- `ledger/service/` — Business logic services
-- `ledger/controller/` — REST controllers
-- `ledger/security/` — Encryption, blind index (@security domain)
-- `ledger/cache/` — Redis cache (@infra domain)
-- `ledger/exception/` — Custom exceptions and GlobalExceptionHandler
-- `ledger/ingestion/` — Adapters, gateway, mapper
-- `ledger/voucher/` — Voucher settlement module
-- `ledger/payment/` — Payment processing module
-- `ledger/dashboard/` — Cross-domain dashboard
+Each domain module lives directly under `com.nexus.onebook.<module>` with the standard layers:
+- `<module>/model/` — JPA entities
+- `<module>/dto/` — DTO records
+- `<module>/repository/` — Spring Data JPA repositories
+- `<module>/service/` — Business logic services
+- `<module>/controller/` — REST controllers
+
+Cross-cutting modules:
+- `security/` — Encryption, blind index (@security domain)
+- `cache/` — Redis cache (@infra domain)
+- `exception/` — Custom exceptions and GlobalExceptionHandler
+- `ingestion/` — Adapters, gateway, mapper
+- `voucher/` — Voucher settlement module
+- `payment/` — Payment processing module
+- `dashboard/` — Cross-domain dashboard
 
 ### Package Structure
 ```
 com.nexus.onebook/
 ├── config/           ← Spring configuration
-├── ledger/
-│   ├── model/        ← JPA entities
-│   ├── dto/          ← DTO records
-│   ├── repository/   ← Spring Data JPA repositories
-│   ├── service/      ← Business logic services
-│   ├── controller/   ← REST controllers
-│   ├── security/     ← Encryption, blind index (@security domain)
-│   ├── cache/        ← Redis cache (@infra domain)
-│   ├── ingestion/    ← Adapters, gateway, mapper
-│   ├── voucher/      ← Voucher settlement module
-│   ├── payment/      ← Payment processing module
-│   └── dashboard/    ← Cross-domain dashboard
+├── accounts/         ← Chart of accounts, journal, trial balance
+├── advance/          ← Employee advance module
+├── auditor/          ← Audit trail
+├── banking/          ← Banking / bank reconciliation
+├── cache/            ← Redis cache (@infra domain)
+├── clientaccount/    ← Client account management
+├── compliance/       ← Compliance and regulatory
+├── credit/           ← Credit management
+├── currency/         ← Multi-currency support
+├── dashboard/        ← Cross-domain dashboard
+├── entitlement/      ← Entitlement / permissions
+├── exception/        ← Custom exceptions and GlobalExceptionHandler
+├── fixedasset/       ← Fixed asset management
+├── foundation/       ← Foundation entities (org hierarchy)
+├── ingestion/        ← Adapters, gateway, mapper
+├── intelligence/     ← AI/ML intelligence layer
+├── inventory/        ← Inventory management
+├── operations/       ← Operations module
+├── payment/          ← Payment processing module
+├── payroll/          ← Payroll module
+├── reporting/        ← Financial reporting
+├── security/         ← Encryption, blind index (@security domain)
+├── tenant/           ← Multi-tenancy
+├── voucher/          ← Voucher settlement module
 ├── HealthController.java
 └── OneBookApplication.java
 ```

@@ -88,7 +88,7 @@ Register Items:  APPROVED → PAYMENT_GENERATED
 ### 3.1 Implementation Files
 | File | Package | Description |
 |------|---------|-------------|
-| `PaymentFileGeneratorService.java` | `ledger/payment/service/` | Generates CSV content, updates batch and register entry statuses |
+| `PaymentFileGeneratorService.java` | `payment/service/` | Generates CSV content, updates batch and register entry statuses |
 
 ### 3.2 CSV Generation Logic
 ```java

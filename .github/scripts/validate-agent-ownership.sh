@@ -60,24 +60,22 @@ echo ""
 echo "⚙️  Checking Backend Services..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-cd "$REPO_ROOT/backend/src/main/java/com/nexus/onebook/ledger/service"
-for file in *Service.java; do
-    if [ -f "$file" ]; then
-        service_name="${file%.java}"
-        found=0
-        # Check if service name is mentioned in agent instruction files
-        for agent_file in "$AGENTS_DIR"/*.agent.md; do
-            if [ -f "$agent_file" ]; then
-                if grep -q "$service_name" "$agent_file" 2>/dev/null; then
-                    found=1
-                    break
-                fi
+ONEBOOK_PKG="$REPO_ROOT/backend/src/main/java/com/nexus/onebook"
+find "$ONEBOOK_PKG" -name "*Service.java" | while read -r service_file; do
+    file=$(basename "$service_file")
+    service_name="${file%.java}"
+    found=0
+    for agent_file in "$AGENTS_DIR"/*.agent.md; do
+        if [ -f "$agent_file" ]; then
+            if grep -q "$service_name" "$agent_file" 2>/dev/null; then
+                found=1
+                break
             fi
-        done
-        if [ $found -eq 0 ]; then
-            echo -e "${RED}✗${NC} Missing: Backend Service - $service_name"
-            EXIT_CODE=1
         fi
+    done
+    if [ $found -eq 0 ]; then
+        echo -e "${RED}✗${NC} Missing: Backend Service - $service_name"
+        EXIT_CODE=1
     fi
 done
 
@@ -86,24 +84,21 @@ echo ""
 echo "🎮 Checking Backend Controllers..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-cd "$REPO_ROOT/backend/src/main/java/com/nexus/onebook/ledger/controller"
-for file in *Controller.java; do
-    if [ -f "$file" ]; then
-        controller_name="${file%.java}"
-        found=0
-        # Check if controller name is mentioned in agent instruction files
-        for agent_file in "$AGENTS_DIR"/*.agent.md; do
-            if [ -f "$agent_file" ]; then
-                if grep -q "$controller_name" "$agent_file" 2>/dev/null; then
-                    found=1
-                    break
-                fi
+find "$ONEBOOK_PKG" -name "*Controller.java" | while read -r ctrl_file; do
+    file=$(basename "$ctrl_file")
+    controller_name="${file%.java}"
+    found=0
+    for agent_file in "$AGENTS_DIR"/*.agent.md; do
+        if [ -f "$agent_file" ]; then
+            if grep -q "$controller_name" "$agent_file" 2>/dev/null; then
+                found=1
+                break
             fi
-        done
-        if [ $found -eq 0 ]; then
-            echo -e "${RED}✗${NC} Missing: Backend Controller - $controller_name"
-            EXIT_CODE=1
         fi
+    done
+    if [ $found -eq 0 ]; then
+        echo -e "${RED}✗${NC} Missing: Backend Controller - $controller_name"
+        EXIT_CODE=1
     fi
 done
 
@@ -112,10 +107,13 @@ echo ""
 echo "📦 Checking Backend Packages..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-cd "$REPO_ROOT/backend/src/main/java/com/nexus/onebook/ledger"
+cd "$ONEBOOK_PKG"
 for dir in */; do
     dir=${dir%/}
-    check_ownership "ledger/$dir" "Backend Package"
+    # Skip non-domain entries at the onebook root level
+    if [[ "$dir" != "config" ]]; then
+        check_ownership "$dir" "Backend Package"
+    fi
 done
 
 # Check Database Migrations

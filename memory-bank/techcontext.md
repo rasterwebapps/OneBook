@@ -63,21 +63,34 @@ OneBook/
 │   ├── src/main/java/com/nexus/onebook/
     └── shared/                   ← Shared module
     └── client-accounts/          ← Client-accounts module
+    └── advances/                 ← Advances module
 │       ├── OneBookApplication.java
 │       ├── HealthController.java
 │       ├── config/               ← HeadlessApiConfig, RedisConfig
-│       └── ledger/
-│           ├── cache/            ← WarmCacheService, CacheConstants
-│           ├── controller/       ← REST controllers
-│           ├── dto/              ← Request/Response records
-│           ├── exception/        ← GlobalExceptionHandler
-│           ├── ingestion/        ← Gateway, Adapters, Mapper
-│           ├── model/            ← JPA entities (foundation: Department, Payer, Payee, etc.)
-│           ├── payment/          ← Payment register, batch processing, file generation (M11)
-│           ├── repository/       ← Spring Data JPA repositories
-│           ├── security/         ← Encryption, BlindIndex, Audit
-│           ├── service/          ← Business logic services
-│           └── voucher/          ← Voucher settlement, receipt, payment advice (V14)
+│       ├── accounts/             ← Chart of accounts, journal, trial balance, reporting
+│       ├── advance/              ← Employee advance & settlement (M12)
+│       ├── auditor/              ← Audit trail
+│       ├── banking/              ← Banking / bank reconciliation
+│       ├── cache/                ← WarmCacheService, CacheConstants
+│       ├── clientaccount/        ← Client account management
+│       ├── compliance/           ← Compliance and regulatory
+│       ├── credit/               ← Credit management
+│       ├── currency/             ← Multi-currency support
+│       ├── dashboard/            ← Cross-domain dashboard
+│       ├── entitlement/          ← Entitlement / permissions
+│       ├── exception/            ← GlobalExceptionHandler
+│       ├── fixedasset/           ← Fixed asset management
+│       ├── foundation/           ← Foundation entities (org hierarchy)
+│       ├── ingestion/            ← Gateway, Adapters, Mapper
+│       ├── intelligence/         ← AI/ML intelligence layer
+│       ├── inventory/            ← Inventory management
+│       ├── operations/           ← Operations module
+│       ├── payment/              ← Payment register, batch processing, file generation (M11)
+│       ├── payroll/              ← Payroll module
+│       ├── reporting/            ← Financial reporting
+│       ├── security/             ← Encryption, BlindIndex, Audit
+│       ├── tenant/               ← Multi-tenancy
+│       └── voucher/              ← Voucher settlement, receipt, payment advice (V14)
 └── frontend/                     ← Frontend Service (Angular 21+)
     ├── Dockerfile                ← Multi-stage Nginx image
     ├── .dockerignore
@@ -134,11 +147,11 @@ cd backend
 # Compile only
 ./gradlew compileJava
 
-# Run tests (525 tests)
+# Run tests (562 tests)
 ./gradlew test
 
 # Run specific test class
-./gradlew test --tests "com.nexus.onebook.ledger.service.JournalServiceTest"
+./gradlew test --tests "com.nexus.onebook.service.JournalServiceTest"
 ```
 
 ### Frontend
@@ -172,7 +185,7 @@ npm start
 
 ### Package Structure
 All code lives under `com.nexus.onebook` (base package).  
-Business logic lives under `com.nexus.onebook.ledger`.
+Business logic lives under `com.nexus.onebook`.
 
 ### Naming Conventions
 - Classes: `PascalCase`

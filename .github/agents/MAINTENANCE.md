@@ -37,7 +37,7 @@ flowchart TD
 
 ## Ownership Rules
 
-### Backend Services (`backend/src/main/java/com/nexus/onebook/ledger/service/`)
+### Backend Services (`backend/src/main/java/com/nexus/onebook/service/`)
 
 | Service Type | Owner Agent | File |
 |-------------|-------------|------|
@@ -63,7 +63,7 @@ flowchart TD
 | DisasterRecovery | @infra | `infra.agent.md` |
 | WhatsApp notifications | @backend | `backend.agent.md` |
 
-### Backend Controllers (`backend/src/main/java/com/nexus/onebook/ledger/controller/`)
+### Backend Controllers (`backend/src/main/java/com/nexus/onebook/controller/`)
 
 Controllers follow the same ownership as their corresponding services. Add the controller to the same agent file as the service it calls.
 
@@ -191,7 +191,7 @@ When adding new code to OneBook, follow this checklist:
 
 ### Example 1: Adding a New AI Service
 
-**New file**: `backend/src/main/java/com/nexus/onebook/ledger/service/SentimentAnalysisService.java`
+**New file**: `backend/src/main/java/com/nexus/onebook/service/SentimentAnalysisService.java`
 
 **Steps:**
 1. Domain: AI/Intelligence → Owner: @backend

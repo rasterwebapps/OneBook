@@ -48,7 +48,7 @@ OneBook/
 │   │       ├── OneBookApplication.java
 │   │       ├── HealthController.java
 │   │       ├── config/         # HeadlessApiConfig, RedisConfig
-│   │       └── ledger/         # Core business logic
+│   │       └── <module>/       # Domain modules (accounts, payment, voucher...)
 │   │           ├── cache/      # WarmCacheService, CacheConstants
 │   │           ├── controller/ # REST controllers
 │   │           ├── dto/        # Request/Response records
@@ -162,7 +162,7 @@ cd backend
 ./gradlew test
 
 # Run a specific test class
-./gradlew test --tests "com.nexus.onebook.ledger.service.JournalServiceTest"
+./gradlew test --tests "com.nexus.onebook.service.JournalServiceTest"
 ```
 
 **Test count**: 204 tests across unit and integration tests.
@@ -335,15 +335,15 @@ docs: update API documentation
 
 ### Adding a New REST Endpoint
 
-1. Create a DTO in `ledger/dto/` (use Java records)
-2. Create a service in `ledger/service/`
-3. Create a controller in `ledger/controller/` with `@RestController` and `@RequestMapping`
+1. Create a DTO record in the module's `dto/` directory (use Java records)
+2. Create a service in the module's `service/` directory
+3. Create a controller in the module's `controller/` directory with `@RestController` and `@RequestMapping`
 4. Add unit tests for service and controller
 5. Document the endpoint in [API Documentation](api-documentation.md)
 
 ### Adding a New Ingestion Adapter
 
-1. Implement `FinancialEventAdapter` interface in `ledger/ingestion/adapter/`
+1. Implement `FinancialEventAdapter` interface in `ingestion/adapter/`
 2. Define `getAdapterType()` to return the adapter identifier
 3. Implement `parse(tenantId, rawPayload)` to return a `FinancialEvent`
 4. The adapter is auto-discovered by `AdapterRegistry` via Spring DI
