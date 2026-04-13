@@ -1,74 +1,79 @@
-/* ─── Nexus Universal — Global Design System (Limitless-Inspired) ─── */
+/* ─── Nexus Universal — Global Design System (FinTech-Inspired) ─── */
 
 /* ─── Design Tokens ─── */
 :root {
-  /* Core Backgrounds — Limitless Light Theme */
-  --nx-bg-primary: #eef0f2;
+  /* Core Backgrounds — FinTech Light Theme */
+  --nx-bg-primary: #F8FAFC;
   --nx-bg-secondary: #ffffff;
   --nx-bg-card: #ffffff;
-  --nx-bg-card-hover: #f8f9fa;
-  --nx-bg-surface: #f5f6fa;
+  --nx-bg-card-hover: #F1F5F9;
+  --nx-bg-surface: #F1F5F9;
 
-  /* Sidebar — Limitless Dark Sidebar */
-  --nx-sidebar-bg: #263238;
-  --nx-sidebar-header-bg: #1a2226;
+  /* Sidebar — Deep Slate Sidebar */
+  --nx-sidebar-bg: #0F172A;
+  --nx-sidebar-header-bg: #020617;
   --nx-sidebar-text: rgba(255, 255, 255, 0.75);
   --nx-sidebar-text-hover: #ffffff;
   --nx-sidebar-icon: rgba(255, 255, 255, 0.6);
-  --nx-sidebar-active-bg: rgba(255, 255, 255, 0.1);
+  --nx-sidebar-active-bg: rgba(14, 165, 233, 0.15);
   --nx-sidebar-section-text: rgba(255, 255, 255, 0.4);
-  --nx-sidebar-border: rgba(255, 255, 255, 0.1);
+  --nx-sidebar-border: rgba(255, 255, 255, 0.08);
 
-  /* Primary Accent — Limitless Teal */
-  --nx-emerald: #26a69a;
-  --nx-emerald-glow: rgba(38, 166, 154, 0.2);
-  --nx-emerald-dim: rgba(38, 166, 154, 0.08);
+  /* Primary Accent — Vibrant Sky Blue */
+  --nx-primary: #0EA5E9;
+  --nx-primary-glow: rgba(14, 165, 233, 0.2);
+  --nx-primary-dim: rgba(14, 165, 233, 0.08);
+
+  /* Backward-compatible aliases */
+  --nx-emerald: var(--nx-primary);
+  --nx-emerald-glow: var(--nx-primary-glow);
+  --nx-emerald-dim: var(--nx-primary-dim);
 
   /* Secondary Accent — Indigo */
-  --nx-purple: #5c6bc0;
-  --nx-purple-glow: rgba(92, 107, 192, 0.2);
-  --nx-purple-dim: rgba(92, 107, 192, 0.08);
+  --nx-purple: #6366F1;
+  --nx-purple-glow: rgba(99, 102, 241, 0.2);
+  --nx-purple-dim: rgba(99, 102, 241, 0.08);
 
-  /* Warning Accent — Amber */
-  --nx-amber: #ff7043;
-  --nx-amber-glow: rgba(255, 112, 67, 0.2);
-  --nx-amber-dim: rgba(255, 112, 67, 0.08);
+  /* Warning Accent — Burnt Orange */
+  --nx-amber: #F97316;
+  --nx-amber-glow: rgba(249, 115, 22, 0.2);
+  --nx-amber-dim: rgba(249, 115, 22, 0.08);
 
-  /* Text — Light Theme */
-  --nx-text-primary: #333333;
-  --nx-text-secondary: #666666;
-  --nx-text-muted: #999999;
+  /* Text — Light Theme (Slate-tinted) */
+  --nx-text-primary: #0F172A;
+  --nx-text-secondary: #475569;
+  --nx-text-muted: #94A3B8;
 
-  /* Borders */
-  --nx-border: #e0e0e0;
-  --nx-border-glow: #d0d0d0;
+  /* Borders — Slate-tinted */
+  --nx-border: #E2E8F0;
+  --nx-border-glow: #CBD5E1;
 
-  /* Card Backgrounds */
-  --nx-glass-bg: #ffffff;
-  --nx-glass-border: #e0e0e0;
-  --nx-glass-blur: 0px;
+  /* Glass Surfaces */
+  --nx-glass-bg: rgba(255, 255, 255, 0.7);
+  --nx-glass-border: rgba(255, 255, 255, 0.18);
+  --nx-glass-blur: 12px;
 
-  /* Shadows — Limitless Subtle Shadows */
-  --nx-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --nx-shadow-md: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
-  --nx-shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.06);
+  /* Shadows — Sophisticated Multi-layer */
+  --nx-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 1px rgba(0, 0, 0, 0.02);
+  --nx-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.03);
+  --nx-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.06), 0 4px 6px rgba(0, 0, 0, 0.04);
 
-  /* Typography — Clean Sans-Serif */
+  /* Typography — Premium FinTech Fonts */
   --nx-font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --nx-font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  --nx-font-mono: 'Fira Code', 'JetBrains Mono', 'Consolas', monospace;
 
   /* Transitions */
   --nx-transition-fast: 0.15s ease-in-out;
   --nx-transition-normal: 0.2s ease-in-out;
   --nx-transition-slow: 0.3s ease-in-out;
 
-  /* Border Radius — Clean, Subtle */
-  --nx-radius-sm: 4px;
-  --nx-radius-md: 6px;
-  --nx-radius-lg: 8px;
-  --nx-radius-xl: 12px;
+  /* Border Radius — Modern, Rounded */
+  --nx-radius-sm: 6px;
+  --nx-radius-md: 8px;
+  --nx-radius-lg: 12px;
+  --nx-radius-xl: 16px;
 
-  /* Spacing */
+  /* Spacing (legacy aliases) */
   --nx-gap-sm: 8px;
   --nx-gap-md: 16px;
   --nx-gap-lg: 20px;
@@ -78,19 +83,19 @@
 
   /* Navbar */
   --nx-navbar-bg: #ffffff;
-  --nx-navbar-border: #ddd;
+  --nx-navbar-border: #E2E8F0;
   --nx-navbar-height: 52px;
 
   /* Page Header */
-  --nx-page-header-bg: #f5f5f5;
+  --nx-page-header-bg: #F1F5F9;
 
-  /* Status Colors */
-  --nx-success: #4caf50;
-  --nx-danger: #ef5350;
-  --nx-warning: #ff9800;
-  --nx-info: #42a5f5;
+  /* Status Colors — Curated FinTech Palette */
+  --nx-success: #10B981;
+  --nx-danger: #DC2626;
+  --nx-warning: #F59E0B;
+  --nx-info: #0EA5E9;
 
-  /* ── Spacing Scale (4px base) ── */
+  /* ── Spacing Scale (4px base, high-density) ── */
   --nx-space-1: 4px;
   --nx-space-2: 8px;
   --nx-space-3: 12px;
@@ -102,16 +107,16 @@
   --nx-space-12: 48px;
 
   /* ── Extended Shadows ── */
-  --nx-shadow-xl: 0 20px 25px rgba(0,0,0,0.10), 0 10px 10px rgba(0,0,0,0.04);
+  --nx-shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.08), 0 8px 10px rgba(0, 0, 0, 0.04);
 
-  /* ── Typography Scale ── */
-  --nx-text-xs: 0.6875rem;
-  --nx-text-sm: 0.8125rem;
-  --nx-text-base: 0.875rem;
-  --nx-text-lg: 1rem;
-  --nx-text-xl: 1.125rem;
-  --nx-text-2xl: 1.375rem;
-  --nx-text-3xl: 1.75rem;
+  /* ── Fluid Typography Scale (clamp-based) ── */
+  --nx-text-xs: clamp(0.625rem, 0.6rem + 0.125vw, 0.6875rem);
+  --nx-text-sm: clamp(0.75rem, 0.72rem + 0.15vw, 0.8125rem);
+  --nx-text-base: clamp(0.8125rem, 0.78rem + 0.16vw, 0.875rem);
+  --nx-text-lg: clamp(0.9375rem, 0.9rem + 0.2vw, 1rem);
+  --nx-text-xl: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --nx-text-2xl: clamp(1.25rem, 1.15rem + 0.5vw, 1.375rem);
+  --nx-text-3xl: clamp(1.5rem, 1.35rem + 0.75vw, 1.75rem);
   --nx-font-weight-normal: 400;
   --nx-font-weight-medium: 500;
   --nx-font-weight-semibold: 600;
@@ -124,28 +129,28 @@
   --nx-z-tooltip: 600;
 }
 
-/* Dark mode overrides */
+/* Dark mode overrides — Deep Slate FinTech */
 html.dark-mode {
-  --nx-bg-primary: #1e272e;
-  --nx-bg-secondary: #263238;
-  --nx-bg-card: #2c3e50;
-  --nx-bg-card-hover: #34495e;
-  --nx-bg-surface: #1a2226;
-  --nx-sidebar-bg: #1a2226;
-  --nx-sidebar-header-bg: #141b1e;
-  --nx-text-primary: #e0e0e0;
-  --nx-text-secondary: #b0bec5;
-  --nx-text-muted: #78909c;
-  --nx-border: rgba(255, 255, 255, 0.1);
-  --nx-border-glow: rgba(255, 255, 255, 0.15);
-  --nx-glass-bg: #2c3e50;
-  --nx-glass-border: rgba(255, 255, 255, 0.08);
-  --nx-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
-  --nx-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-  --nx-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
-  --nx-navbar-bg: #263238;
-  --nx-navbar-border: rgba(255, 255, 255, 0.1);
-  --nx-page-header-bg: #1e272e;
+  --nx-bg-primary: #0F172A;
+  --nx-bg-secondary: #1E293B;
+  --nx-bg-card: #1E293B;
+  --nx-bg-card-hover: #334155;
+  --nx-bg-surface: #0F172A;
+  --nx-sidebar-bg: #020617;
+  --nx-sidebar-header-bg: #020617;
+  --nx-text-primary: #F1F5F9;
+  --nx-text-secondary: #94A3B8;
+  --nx-text-muted: #64748B;
+  --nx-border: rgba(148, 163, 184, 0.12);
+  --nx-border-glow: rgba(148, 163, 184, 0.2);
+  --nx-glass-bg: rgba(30, 41, 59, 0.8);
+  --nx-glass-border: rgba(148, 163, 184, 0.1);
+  --nx-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+  --nx-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.35), 0 2px 4px rgba(0, 0, 0, 0.2);
+  --nx-shadow-lg: 0 10px 24px rgba(0, 0, 0, 0.4), 0 4px 8px rgba(0, 0, 0, 0.25);
+  --nx-navbar-bg: #1E293B;
+  --nx-navbar-border: rgba(148, 163, 184, 0.12);
+  --nx-page-header-bg: #0F172A;
 }
 
 /* ─── Reset & Base ─── */
@@ -166,9 +171,9 @@ html, body {
 }
 
 a {
-  color: var(--nx-emerald);
+  color: var(--nx-primary);
   text-decoration: none;
-  &:hover { color: #1e8e83; text-decoration: none; }
+  &:hover { color: #0284C7; text-decoration: none; }
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -177,7 +182,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
 }
 
-/* ─── Scrollbar (Limitless-style thin scrollbar) ─── */
+/* ─── Scrollbar (Thin, minimal scrollbar) ─── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.15); border-radius: 3px; }
@@ -185,16 +190,26 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ─── Focus ─── */
 *:focus-visible {
-  outline: 2px solid var(--nx-emerald);
+  outline: 2px solid var(--nx-primary);
   outline-offset: 2px;
 }
 
-/* ─── Card Utility (Limitless-style clean cards) ─── */
+/* ─── Card Utility (Clean elevated cards) ─── */
 .nx-glass {
   background: var(--nx-bg-card);
   border: 1px solid var(--nx-border);
   border-radius: var(--nx-radius-md);
   box-shadow: var(--nx-shadow-sm);
+}
+
+/* ─── Glassmorphic Card ─── */
+.glass-card {
+  background: var(--nx-glass-bg);
+  backdrop-filter: blur(var(--nx-glass-blur));
+  -webkit-backdrop-filter: blur(var(--nx-glass-blur));
+  border: 1px solid var(--nx-glass-border);
+  border-radius: var(--nx-radius-lg);
+  box-shadow: var(--nx-shadow-md);
 }
 
 /* ─── Bento Grid ─── */
@@ -229,7 +244,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ─── Status Animations ─── */
 @keyframes nx-pulse-emerald {
-  0%, 100% { box-shadow: 0 0 0 0 var(--nx-emerald-glow); }
+  0%, 100% { box-shadow: 0 0 0 0 var(--nx-primary-glow); }
   50% { box-shadow: 0 0 0 4px transparent; }
 }
 
@@ -244,7 +259,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @keyframes nx-glow-success {
-  0% { box-shadow: 0 0 0 0 var(--nx-emerald-glow); }
+  0% { box-shadow: 0 0 0 0 var(--nx-primary-glow); }
   70% { box-shadow: 0 0 0 8px transparent; }
   100% { box-shadow: 0 0 0 0 transparent; }
 }
@@ -257,7 +272,7 @@ h1, h2, h3, h4, h5, h6 {
   animation: nx-glow-success 0.6s ease forwards;
 }
 
-/* ─── Limitless-Style Buttons ─── */
+/* ─── FinTech-Style Buttons ─── */
 .nx-btn {
   display: inline-flex;
   align-items: center;
@@ -287,13 +302,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .nx-btn--emerald {
-  background: var(--nx-emerald);
-  border-color: var(--nx-emerald);
+  background: var(--nx-primary);
+  border-color: var(--nx-primary);
   color: #ffffff;
 
   &:hover:not(:disabled) {
-    background: #2bbbad;
-    border-color: #2bbbad;
+    background: #0284C7;
+    border-color: #0284C7;
   }
 }
 
@@ -303,8 +318,8 @@ h1, h2, h3, h4, h5, h6 {
   color: #ffffff;
 
   &:hover:not(:disabled) {
-    background: #7986cb;
-    border-color: #7986cb;
+    background: #818CF8;
+    border-color: #818CF8;
   }
 }
 
@@ -314,23 +329,23 @@ h1, h2, h3, h4, h5, h6 {
   color: #ffffff;
 
   &:hover:not(:disabled) {
-    background: #ff8a65;
-    border-color: #ff8a65;
+    background: #FB923C;
+    border-color: #FB923C;
   }
 }
 
-/* ─── Kbd Tag (Limitless-style) ─── */
+/* ─── Kbd Tag (FinTech-style) ─── */
 kbd {
   display: inline-block;
-  background: #f5f5f5;
-  border: 1px solid #e0e0e0;
-  border-radius: 3px;
+  background: var(--nx-bg-surface);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-sm);
   padding: 1px 6px;
   font-family: var(--nx-font-primary);
   font-size: 0.72rem;
   color: var(--nx-text-secondary);
   line-height: 1.6;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
 }
 
 /* ─── Numbers (Accounting) ─── */
@@ -340,7 +355,7 @@ kbd {
   letter-spacing: -0.02em;
 }
 
-/* ─── Limitless-Style Badge ─── */
+/* ─── FinTech-Style Badge ─── */
 .nx-badge {
   display: inline-flex;
   align-items: center;
@@ -352,23 +367,23 @@ kbd {
 }
 
 .nx-badge--success {
-  background: rgba(76, 175, 80, 0.1);
-  color: #4caf50;
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--nx-success);
 }
 
 .nx-badge--info {
-  background: rgba(66, 165, 245, 0.1);
-  color: #42a5f5;
+  background: rgba(14, 165, 233, 0.1);
+  color: var(--nx-info);
 }
 
 .nx-badge--warning {
-  background: rgba(255, 152, 0, 0.1);
-  color: #ff9800;
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--nx-warning);
 }
 
 .nx-badge--danger {
-  background: rgba(239, 83, 80, 0.1);
-  color: #ef5350;
+  background: rgba(220, 38, 38, 0.1);
+  color: var(--nx-danger);
 }
 
 /* ─── Table Action Buttons (inline) ─── */
@@ -493,7 +508,7 @@ kbd {
   &.emerald .stat-icon { background: var(--nx-emerald-dim); color: var(--nx-emerald); }
   &.purple .stat-icon { background: var(--nx-purple-dim); color: var(--nx-purple); }
   &.amber .stat-icon { background: var(--nx-amber-dim); color: var(--nx-amber); }
-  &.danger .stat-icon { background: rgba(239, 83, 80, 0.08); color: var(--nx-danger); }
+  &.danger .stat-icon { background: rgba(220, 38, 38, 0.08); color: var(--nx-danger); }
 }
 
 /* ─── nx-skeleton Utility ─── */
@@ -567,8 +582,8 @@ kbd {
   color: #ffffff;
 
   &:hover:not(:disabled) {
-    background: #e53935;
-    border-color: #e53935;
+    background: #B91C1C;
+    border-color: #B91C1C;
   }
 }
 
@@ -626,8 +641,8 @@ kbd {
   outline: none;
 
   &:focus {
-    border-color: var(--nx-emerald);
-    box-shadow: 0 0 0 3px var(--nx-emerald-glow);
+    border-color: var(--nx-primary);
+    box-shadow: 0 0 0 3px var(--nx-primary-glow);
   }
 
   &::placeholder {
