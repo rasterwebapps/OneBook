@@ -8,12 +8,20 @@
 ## Current Status
 
 **Date:** 2026-04-13  
-**Phase:** M12 Complete — All Milestones Done  
+**Phase:** Post-M12 — Backend Package Refactoring Complete  
 **Milestones:** ✅ M1–M12 Complete
 
 ---
 
 ## Recent Changes (Latest Session)
+
+### Backend Domain Submodule Repackaging (2026-04-13)
+- **REFACTORED: Backend Java package structure** — Eliminated flat shared directories under `ledger/` and replaced with 16 domain submodules, each owning its own controller/, service/, model/, repository/, and dto/ subdirectories.
+- **OLD FLAT STRUCTURE removed**: `ledger/controller/` (26), `ledger/service/` (40), `ledger/model/` (80), `ledger/repository/` (44), `ledger/dto/` (42)
+- **16 NEW DOMAIN SUBMODULES**: `accounts`, `auditor`, `banking`, `clientaccount`, `compliance`, `credit`, `currency`, `entitlement`, `fixedasset`, `foundation` (model/repo only), `intelligence`, `inventory`, `operations`, `payroll`, `reporting`, `tenant`
+- **UNCHANGED**: `advance/`, `cache/`, `dashboard/`, `exception/`, `ingestion/`, `payment/`, `security/`, `voucher/`
+- **BUG FIX**: Spring bean name conflicts resolved — `advance` vs `voucher` modules both had `PaymentAdviceController`/`PaymentAdviceService` — now qualified with unique bean names.
+- **TESTS**: 562 backend tests pass, 0 failures. CodeQL 0 alerts.
 
 ### M12 Employee Advances — FULL STACK IMPLEMENTATION (2026-04-13)
 - **COMPLETED: M12 Employee Advances & Settlement** — Full frontend implementation:
@@ -153,10 +161,11 @@
 
 ### Backend (Spring Boot 3.4+ / Java 21)
 - **Package:** `com.nexus.onebook.ledger`
+- **Structure:** 24 submodules (8 pre-existing + 16 new domain submodules from refactoring)
 - **Migrations:** V1–V15 (all applied; V12 intentionally skipped)
-- **Tests:** 560+ passing (including 35 new advance tests)
+- **Tests:** 562 passing
 - **API:** All endpoints functional at `/api/*`
-- **M12 Advance Module:** Complete with 4 services, 4 controllers, 6 repositories
+- **Domain Submodules:** `accounts`, `advance`, `auditor`, `banking`, `cache`, `clientaccount`, `compliance`, `credit`, `currency`, `dashboard`, `entitlement`, `exception`, `fixedasset`, `foundation`, `ingestion`, `intelligence`, `inventory`, `operations`, `payment`, `payroll`, `reporting`, `security`, `tenant`, `voucher`
 
 ### Frontend (Angular 19+)
 - **Modules:** 17 feature modules (all lazy-loaded standalone components)
