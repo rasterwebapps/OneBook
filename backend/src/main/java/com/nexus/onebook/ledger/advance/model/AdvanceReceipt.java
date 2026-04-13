@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
+import com.nexus.onebook.ledger.foundation.model.Advance;
 
 /**
  * Advance receipt entity.

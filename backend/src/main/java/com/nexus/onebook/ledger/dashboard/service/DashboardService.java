@@ -5,14 +5,14 @@ import com.nexus.onebook.ledger.dashboard.dto.DashboardSummaryDTO.BalanceSheetSu
 import com.nexus.onebook.ledger.dashboard.dto.DashboardSummaryDTO.CashFlowSummary;
 import com.nexus.onebook.ledger.dashboard.dto.DashboardSummaryDTO.ProfitAndLossSummary;
 import com.nexus.onebook.ledger.dashboard.dto.DashboardSummaryDTO.TrialBalanceSummary;
-import com.nexus.onebook.ledger.dto.BalanceSheetReport;
-import com.nexus.onebook.ledger.dto.CashFlowReport;
-import com.nexus.onebook.ledger.dto.ProfitAndLossReport;
-import com.nexus.onebook.ledger.dto.TrialBalanceReport;
-import com.nexus.onebook.ledger.service.BalanceSheetService;
-import com.nexus.onebook.ledger.service.CashFlowService;
-import com.nexus.onebook.ledger.service.ProfitAndLossService;
-import com.nexus.onebook.ledger.service.TrialBalanceService;
+import com.nexus.onebook.ledger.accounts.dto.BalanceSheetReport;
+import com.nexus.onebook.ledger.accounts.dto.CashFlowReport;
+import com.nexus.onebook.ledger.accounts.dto.ProfitAndLossReport;
+import com.nexus.onebook.ledger.accounts.dto.TrialBalanceReport;
+import com.nexus.onebook.ledger.accounts.service.BalanceSheetService;
+import com.nexus.onebook.ledger.accounts.service.CashFlowService;
+import com.nexus.onebook.ledger.accounts.service.ProfitAndLossService;
+import com.nexus.onebook.ledger.accounts.service.TrialBalanceService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

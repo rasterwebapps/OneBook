@@ -1,6 +1,6 @@
 package com.nexus.onebook.ledger.voucher.model;
 
-import com.nexus.onebook.ledger.model.Advance;
+import com.nexus.onebook.ledger.foundation.model.Advance;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;

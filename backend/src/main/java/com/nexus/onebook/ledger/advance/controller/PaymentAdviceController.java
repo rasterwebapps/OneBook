@@ -11,8 +11,8 @@ import java.util.List;
  * REST controller for payment advices.
  * Manages employee reimbursement payments.
  */
-@RestController
-@RequestMapping("/api/payment-advices")
+@RestController("advancePaymentAdviceController")
+@RequestMapping("/api/advance/payment-advices")
 public class PaymentAdviceController {
 
     private final PaymentAdviceService paymentAdviceService;

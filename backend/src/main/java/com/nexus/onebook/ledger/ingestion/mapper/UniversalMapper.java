@@ -1,10 +1,10 @@
 package com.nexus.onebook.ledger.ingestion.mapper;
 
-import com.nexus.onebook.ledger.dto.JournalEntryRequest;
-import com.nexus.onebook.ledger.dto.JournalTransactionRequest;
+import com.nexus.onebook.ledger.accounts.dto.JournalEntryRequest;
+import com.nexus.onebook.ledger.accounts.dto.JournalTransactionRequest;
 import com.nexus.onebook.ledger.payment.model.PaymentRegisterEntry;
-import com.nexus.onebook.ledger.model.LedgerAccount;
-import com.nexus.onebook.ledger.repository.LedgerAccountRepository;
+import com.nexus.onebook.ledger.accounts.model.LedgerAccount;
+import com.nexus.onebook.ledger.accounts.repository.LedgerAccountRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

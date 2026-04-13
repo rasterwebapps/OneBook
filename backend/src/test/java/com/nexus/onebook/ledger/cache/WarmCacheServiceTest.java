@@ -1,9 +1,9 @@
 package com.nexus.onebook.ledger.cache;
 
-import com.nexus.onebook.ledger.dto.TrialBalanceLine;
-import com.nexus.onebook.ledger.dto.TrialBalanceReport;
-import com.nexus.onebook.ledger.model.AccountType;
-import com.nexus.onebook.ledger.model.LedgerAccount;
+import com.nexus.onebook.ledger.accounts.dto.TrialBalanceLine;
+import com.nexus.onebook.ledger.accounts.dto.TrialBalanceReport;
+import com.nexus.onebook.ledger.accounts.model.AccountType;
+import com.nexus.onebook.ledger.accounts.model.LedgerAccount;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

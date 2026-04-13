@@ -5,9 +5,9 @@ import com.nexus.onebook.ledger.ingestion.model.AdapterType;
 import com.nexus.onebook.ledger.payment.model.PaymentRegisterStatus;
 import com.nexus.onebook.ledger.payment.model.PaymentRegisterEntry;
 import com.nexus.onebook.ledger.payment.repository.PaymentRegisterRepository;
-import com.nexus.onebook.ledger.dto.JournalTransactionRequest;
-import com.nexus.onebook.ledger.model.JournalTransaction;
-import com.nexus.onebook.ledger.service.JournalService;
+import com.nexus.onebook.ledger.accounts.dto.JournalTransactionRequest;
+import com.nexus.onebook.ledger.accounts.model.JournalTransaction;
+import com.nexus.onebook.ledger.accounts.service.JournalService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
