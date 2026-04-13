@@ -6,7 +6,7 @@ import { DecimalPipe, DatePipe } from '@angular/common';
 import { VoucherService } from '../../services/voucher.service';
 import { AccountMasterService } from '../../services/account-master.service';
 import { Voucher, VoucherCategory, VOUCHER_TYPE_CONFIG } from '../../models/voucher.models';
-import { NxPageHeaderComponent, NxStatusBadgeComponent } from '../../../shared/components';
+import { NxPageHeaderComponent } from '../../../shared/components';
 
 type ExplorerMode = 'explorer' | 'entry';
 type SortField = 'voucherNumber' | 'date' | 'amount' | 'none';
@@ -39,7 +39,7 @@ const CATEGORY_COLORS: Record<VoucherCategory, string> = {
 @Component({
   selector: 'app-voucher-explorer',
   standalone: true,
-  imports: [DecimalPipe, DatePipe, NxPageHeaderComponent, NxStatusBadgeComponent],
+  imports: [DecimalPipe, DatePipe, NxPageHeaderComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './voucher-explorer.component.html',
   styleUrl: './voucher-explorer.component.scss',
@@ -161,6 +161,24 @@ export class VoucherExplorerComponent implements OnInit {
   readonly postedCount = computed(() => this.allVouchers().filter(v => v.posted).length);
   readonly unpostedCount = computed(() => this.allVouchers().filter(v => !v.posted).length);
   readonly totalAmount = computed(() => this.allVouchers().reduce((s, v) => s + v.amount, 0));
+
+  /** Expose page size for template pagination summary */
+  readonly pageSize = PAGE_SIZE;
+
+  /** Generate page number array for modern pagination (with ellipsis as -1) */
+  readonly paginationPages = computed(() => {
+    const total = this.totalPages();
+    const current = this.currentPage();
+    if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+    const pages: number[] = [1];
+    if (current > 3) pages.push(-1);
+    const start = Math.max(2, current - 1);
+    const end = Math.min(total - 1, current + 1);
+    for (let i = start; i <= end; i++) pages.push(i);
+    if (current < total - 2) pages.push(-1);
+    pages.push(total);
+    return pages;
+  });
 
   /* ── Expose constants to template ── */
   readonly categoryLabels = CATEGORY_LABELS;
@@ -339,6 +357,12 @@ export class VoucherExplorerComponent implements OnInit {
 
   nextPage(): void {
     this.currentPage.update(p => Math.min(this.totalPages(), p + 1));
+  }
+
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages()) {
+      this.currentPage.set(page);
+    }
   }
 
   /** Resolve account ID to display name */
