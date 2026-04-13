@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import com.nexus.onebook.ledger.accounts.model.Branch;
+import com.nexus.onebook.ledger.foundation.model.Payee;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -2,24 +2,25 @@ package com.nexus.onebook.ledger.ingestion.externalapp;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nexus.onebook.ledger.dto.DocumentUploadRequest;
+import com.nexus.onebook.ledger.operations.dto.DocumentUploadRequest;
 import com.nexus.onebook.ledger.ingestion.dto.*;
 import com.nexus.onebook.ledger.ingestion.gateway.FinancialEventGateway;
 import com.nexus.onebook.ledger.ingestion.model.AdapterType;
 import com.nexus.onebook.ledger.payment.model.PaymentRegisterStatus;
 import com.nexus.onebook.ledger.payment.model.PaymentRegisterEntry;
 
-import com.nexus.onebook.ledger.model.VaultDocument;
+import com.nexus.onebook.ledger.operations.model.VaultDocument;
 import com.nexus.onebook.ledger.payment.model.PaymentRegisterEntry;
 import com.nexus.onebook.ledger.payment.model.PaymentRegisterStatus;
 import com.nexus.onebook.ledger.payment.repository.PaymentRegisterRepository;
-import com.nexus.onebook.ledger.service.DocumentVaultService;
+import com.nexus.onebook.ledger.operations.service.DocumentVaultService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import com.nexus.onebook.ledger.foundation.model.Application;
 
 /**
  * Universal External Application Ingestion Service.

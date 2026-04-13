@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import com.nexus.onebook.ledger.foundation.model.Application;
 
 /**
  * REST controller for the Universal Ingestion Layer.

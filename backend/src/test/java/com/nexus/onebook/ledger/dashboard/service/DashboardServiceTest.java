@@ -1,16 +1,16 @@
 package com.nexus.onebook.ledger.dashboard.service;
 
 import com.nexus.onebook.ledger.dashboard.dto.DashboardSummaryDTO;
-import com.nexus.onebook.ledger.dto.BalanceSheetReport;
-import com.nexus.onebook.ledger.dto.CashFlowLine;
-import com.nexus.onebook.ledger.dto.CashFlowReport;
-import com.nexus.onebook.ledger.dto.ProfitAndLossReport;
-import com.nexus.onebook.ledger.dto.TrialBalanceLine;
-import com.nexus.onebook.ledger.dto.TrialBalanceReport;
-import com.nexus.onebook.ledger.service.BalanceSheetService;
-import com.nexus.onebook.ledger.service.CashFlowService;
-import com.nexus.onebook.ledger.service.ProfitAndLossService;
-import com.nexus.onebook.ledger.service.TrialBalanceService;
+import com.nexus.onebook.ledger.accounts.dto.BalanceSheetReport;
+import com.nexus.onebook.ledger.accounts.dto.CashFlowLine;
+import com.nexus.onebook.ledger.accounts.dto.CashFlowReport;
+import com.nexus.onebook.ledger.accounts.dto.ProfitAndLossReport;
+import com.nexus.onebook.ledger.accounts.dto.TrialBalanceLine;
+import com.nexus.onebook.ledger.accounts.dto.TrialBalanceReport;
+import com.nexus.onebook.ledger.accounts.service.BalanceSheetService;
+import com.nexus.onebook.ledger.accounts.service.CashFlowService;
+import com.nexus.onebook.ledger.accounts.service.ProfitAndLossService;
+import com.nexus.onebook.ledger.accounts.service.TrialBalanceService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

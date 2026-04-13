@@ -1,8 +1,8 @@
 package com.nexus.onebook.ledger.payment.service;
 
 import com.nexus.onebook.ledger.cache.WarmCacheService;
-import com.nexus.onebook.ledger.dto.JournalEntryRequest;
-import com.nexus.onebook.ledger.dto.JournalTransactionRequest;
+import com.nexus.onebook.ledger.accounts.dto.JournalEntryRequest;
+import com.nexus.onebook.ledger.accounts.dto.JournalTransactionRequest;
 
 
 
@@ -14,7 +14,7 @@ import com.nexus.onebook.ledger.payment.repository.PaymentBatchItemRepository;
 import com.nexus.onebook.ledger.payment.repository.PaymentBatchRepository;
 import com.nexus.onebook.ledger.payment.repository.PaymentRegisterRepository;
 import com.nexus.onebook.ledger.security.AuditLogService;
-import com.nexus.onebook.ledger.service.JournalService;
+import com.nexus.onebook.ledger.accounts.service.JournalService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

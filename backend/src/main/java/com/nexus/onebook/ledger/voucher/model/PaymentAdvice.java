@@ -1,6 +1,21 @@
 package com.nexus.onebook.ledger.voucher.model;
 
-import com.nexus.onebook.ledger.model.*;
+import com.nexus.onebook.ledger.accounts.model.*;
+import com.nexus.onebook.ledger.auditor.model.*;
+import com.nexus.onebook.ledger.banking.model.*;
+import com.nexus.onebook.ledger.clientaccount.model.*;
+import com.nexus.onebook.ledger.compliance.model.*;
+import com.nexus.onebook.ledger.credit.model.*;
+import com.nexus.onebook.ledger.currency.model.*;
+import com.nexus.onebook.ledger.entitlement.model.*;
+import com.nexus.onebook.ledger.fixedasset.model.*;
+import com.nexus.onebook.ledger.foundation.model.*;
+import com.nexus.onebook.ledger.intelligence.model.*;
+import com.nexus.onebook.ledger.inventory.model.*;
+import com.nexus.onebook.ledger.operations.model.*;
+import com.nexus.onebook.ledger.payroll.model.*;
+import com.nexus.onebook.ledger.reporting.model.*;
+import com.nexus.onebook.ledger.tenant.model.*;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;

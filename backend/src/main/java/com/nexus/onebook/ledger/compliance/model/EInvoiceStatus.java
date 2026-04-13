@@ -1,0 +1,7 @@
+package com.nexus.onebook.ledger.compliance.model;
+
+public enum EInvoiceStatus {
+    DRAFT,
+    GENERATED,
+    CANCELLED
+}

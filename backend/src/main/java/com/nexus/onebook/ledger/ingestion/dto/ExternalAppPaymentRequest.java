@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
+import com.nexus.onebook.ledger.foundation.model.Application;
 
 /**
  * Common request DTO for ingesting a payment request from any integrated external application

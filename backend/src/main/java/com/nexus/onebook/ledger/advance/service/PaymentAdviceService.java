@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * Service for managing payment advices.
  * Payment advice represents a liability (Employee Reimbursement Payable).
  */
-@Service
+@Service("advancePaymentAdviceService")
 public class PaymentAdviceService {
 
     private final EmployeePaymentAdviceRepository paymentAdviceRepository;

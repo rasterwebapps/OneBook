@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
+import com.nexus.onebook.ledger.foundation.model.Advance;
 
 /**
  * Service for managing advance receipts.

@@ -1,15 +1,15 @@
 package com.nexus.onebook.ledger.payment.service;
 
 import com.nexus.onebook.ledger.cache.WarmCacheService;
-import com.nexus.onebook.ledger.dto.JournalTransactionRequest;
-import com.nexus.onebook.ledger.model.JournalTransaction;
+import com.nexus.onebook.ledger.accounts.dto.JournalTransactionRequest;
+import com.nexus.onebook.ledger.accounts.model.JournalTransaction;
 import com.nexus.onebook.ledger.payment.dto.CreateBatchRequest;
 import com.nexus.onebook.ledger.payment.model.*;
 import com.nexus.onebook.ledger.payment.repository.PaymentBatchItemRepository;
 import com.nexus.onebook.ledger.payment.repository.PaymentBatchRepository;
 import com.nexus.onebook.ledger.payment.repository.PaymentRegisterRepository;
 import com.nexus.onebook.ledger.security.AuditLogService;
-import com.nexus.onebook.ledger.service.JournalService;
+import com.nexus.onebook.ledger.accounts.service.JournalService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

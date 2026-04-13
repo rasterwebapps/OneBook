@@ -1,11 +1,11 @@
 package com.nexus.onebook.ledger.cache;
 
 import com.nexus.onebook.ledger.exception.GlobalExceptionHandler;
-import com.nexus.onebook.ledger.model.AccountType;
-import com.nexus.onebook.ledger.model.LedgerAccount;
-import com.nexus.onebook.ledger.service.LedgerAccountService;
-import com.nexus.onebook.ledger.service.TrialBalanceService;
-import com.nexus.onebook.ledger.dto.TrialBalanceReport;
+import com.nexus.onebook.ledger.accounts.model.AccountType;
+import com.nexus.onebook.ledger.accounts.model.LedgerAccount;
+import com.nexus.onebook.ledger.accounts.service.LedgerAccountService;
+import com.nexus.onebook.ledger.accounts.service.TrialBalanceService;
+import com.nexus.onebook.ledger.accounts.dto.TrialBalanceReport;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

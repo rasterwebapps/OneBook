@@ -1,7 +1,7 @@
 package com.nexus.onebook.ledger.cache;
 
-import com.nexus.onebook.ledger.dto.TrialBalanceReport;
-import com.nexus.onebook.ledger.model.LedgerAccount;
+import com.nexus.onebook.ledger.accounts.dto.TrialBalanceReport;
+import com.nexus.onebook.ledger.accounts.model.LedgerAccount;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
