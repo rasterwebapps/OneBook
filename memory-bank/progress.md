@@ -5,7 +5,7 @@
 
 ---
 
-## Overall Status: ✅ M1–M10 Complete | 🔄 M11 In Progress | 📝 M12 Draft
+## Overall Status: ✅ M1–M11 Complete | 📝 M12 Draft
 
 | Milestone | Theme | Status | Tests |
 |-----------|-------|--------|-------|
@@ -19,10 +19,10 @@
 | M8 | Advanced Intelligence, Forecasting & Markets | ✅ Complete | — |
 | M9 | Architecture Documentation & Deliverables | ✅ Complete | — |
 | M10 | Hardening, Auditor Portal & Prod Readiness | ✅ Complete | — |
-| M11 | Payment Processing Pipeline | 🔄 In Progress | — |
+| M11 | Payment Processing Pipeline | ✅ Complete | 21 tests |
 | M12 | Employee Advances & Settlement | 📝 Draft | — |
 
-**Total Tests:** 514 backend, 105+ frontend (all passing)
+**Total Tests:** 525 backend, 217+ frontend (all passing)
 
 ---
 
@@ -141,7 +141,7 @@
 **Key services:** `AuditorPortalService`, `SecurityAuditService`, `ObservabilityService`, `DisasterRecoveryService`  
 **Migration:** `V9__hardening_audit_production.sql`
 
-### M11 — Payment Processing Pipeline 🔄
+### M11 — Payment Processing Pipeline ✅
 - [x] Payment register data model (vendor grouping, due-date sorting)
 - [x] PaymentRegisterEntry, PaymentRegisterStatus model + repository
 - [x] PaymentRegisterService + PaymentRegisterController
@@ -150,13 +150,14 @@
 - [x] PaymentFileGeneratorService (CSV generation for NEFT/RTGS/IMPS)
 - [x] Journal posting on batch approval (Dr AP, Cr Bank)
 - [x] Flyway V11 + V13 migrations with RLS policies
-- [ ] Unit and integration tests for payment services
-- [ ] BRD/FRD/TRD/RTM updates
-- [ ] Agent ownership updates
+- [x] Unit and integration tests for payment services (21 tests)
+- [x] BRD/FRD/TRD/RTM updates
+- [x] Agent ownership updates
 
 **Key packages:** `ledger/payment/` (model, dto, repository, service, controller)  
 **API endpoints:** `/api/payment-register`, `/api/payment-batches`, `/api/payment-batches/{id}/generate-file`  
 **Migrations:** `V11__payment_processing.sql`, `V13__merge_financial_events_into_payment_register.sql`
+**Tests:** PaymentRegisterServiceTest, PaymentBatchServiceTest, PaymentFileGeneratorServiceTest, PaymentRegisterControllerTest, PaymentBatchControllerTest
 
 ### M12 — Employee Advances & Settlement 📝
 - [ ] Per-employee advance limit configuration
