@@ -723,38 +723,38 @@ Feature: Reports
 
 | File | Package | Purpose |
 |------|---------|---------|
-| `EmployeeAdvance.java` | `com.nexus.onebook.ledger.advance.model` | JPA entity for employee advance header |
-| `ExpenseVoucher.java` | `com.nexus.onebook.ledger.advance.model` | JPA entity for expense voucher |
-| `AdvanceReceipt.java` | `com.nexus.onebook.ledger.advance.model` | JPA entity for advance receipt |
-| `PaymentAdvice.java` | `com.nexus.onebook.ledger.advance.model` | JPA entity for payment advice (reimbursement) |
-| `EmployeeAdvanceConfig.java` | `com.nexus.onebook.ledger.advance.model` | JPA entity for per-employee advance limit config |
-| `EmployeeAdvanceBalance.java` | `com.nexus.onebook.ledger.advance.model` | JPA entity for outstanding advance cache |
-| `EmployeeAdvanceDto.java` | `com.nexus.onebook.ledger.advance.dto` | DTO for advance request/response |
-| `ExpenseVoucherDto.java` | `com.nexus.onebook.ledger.advance.dto` | DTO for expense voucher |
-| `AdvanceReceiptDto.java` | `com.nexus.onebook.ledger.advance.dto` | DTO for advance receipt |
-| `PaymentAdviceDto.java` | `com.nexus.onebook.ledger.advance.dto` | DTO for payment advice |
-| `AdvanceApprovalRequest.java` | `com.nexus.onebook.ledger.advance.dto` | DTO for approve/reject action |
-| `SettlementResult.java` | `com.nexus.onebook.ledger.advance.dto` | DTO returned by settlement logic |
-| `EmployeeAdvanceRepository.java` | `com.nexus.onebook.ledger.advance.repository` | Spring Data JPA repository |
-| `ExpenseVoucherRepository.java` | `com.nexus.onebook.ledger.advance.repository` | Spring Data JPA repository |
-| `AdvanceReceiptRepository.java` | `com.nexus.onebook.ledger.advance.repository` | Spring Data JPA repository |
-| `PaymentAdviceRepository.java` | `com.nexus.onebook.ledger.advance.repository` | Spring Data JPA repository |
-| `EmployeeAdvanceConfigRepository.java` | `com.nexus.onebook.ledger.advance.repository` | Advance limit config per employee |
-| `EmployeeAdvanceBalanceRepository.java` | `com.nexus.onebook.ledger.advance.repository` | Outstanding advance balance cache |
-| `AdvanceLimitCheckService.java` | `com.nexus.onebook.ledger.advance.service` | Validates advance limit; handles override logging |
-| `ApprovalTierResolver.java` | `com.nexus.onebook.ledger.advance.service` | Resolves approval chain from amount |
-| `AdvanceSettlementService.java` | `com.nexus.onebook.ledger.advance.service` | Core settlement logic on expense approval |
-| `EmployeeAdvanceService.java` | `com.nexus.onebook.ledger.advance.service` | CRUD + workflow for advances |
-| `ExpenseVoucherService.java` | `com.nexus.onebook.ledger.advance.service` | CRUD + workflow for expense vouchers |
-| `AdvanceReceiptService.java` | `com.nexus.onebook.ledger.advance.service` | CRUD + posting for advance receipts |
-| `PaymentAdviceService.java` | `com.nexus.onebook.ledger.advance.service` | List + mark-paid for payment advices |
-| `AdvanceReportService.java` | `com.nexus.onebook.ledger.advance.service` | Outstanding aging, pending approvals, reimbursements, overrides |
-| `EmployeeAdvanceController.java` | `com.nexus.onebook.ledger.advance.controller` | REST endpoints for advances |
-| `ExpenseVoucherController.java` | `com.nexus.onebook.ledger.advance.controller` | REST endpoints for expense vouchers |
-| `AdvanceReceiptController.java` | `com.nexus.onebook.ledger.advance.controller` | REST endpoints for advance receipts |
-| `PaymentAdviceController.java` | `com.nexus.onebook.ledger.advance.controller` | REST endpoints for payment advices |
-| `AdvanceReportController.java` | `com.nexus.onebook.ledger.advance.controller` | REST endpoints for reports |
-| `AdvanceLimitExceededException.java` | `com.nexus.onebook.ledger.advance.exception` | Domain exception for limit violation |
+| `EmployeeAdvance.java` | `com.nexus.onebook.advance.model` | JPA entity for employee advance header |
+| `ExpenseVoucher.java` | `com.nexus.onebook.advance.model` | JPA entity for expense voucher |
+| `AdvanceReceipt.java` | `com.nexus.onebook.advance.model` | JPA entity for advance receipt |
+| `PaymentAdvice.java` | `com.nexus.onebook.advance.model` | JPA entity for payment advice (reimbursement) |
+| `EmployeeAdvanceConfig.java` | `com.nexus.onebook.advance.model` | JPA entity for per-employee advance limit config |
+| `EmployeeAdvanceBalance.java` | `com.nexus.onebook.advance.model` | JPA entity for outstanding advance cache |
+| `EmployeeAdvanceDto.java` | `com.nexus.onebook.advance.dto` | DTO for advance request/response |
+| `ExpenseVoucherDto.java` | `com.nexus.onebook.advance.dto` | DTO for expense voucher |
+| `AdvanceReceiptDto.java` | `com.nexus.onebook.advance.dto` | DTO for advance receipt |
+| `PaymentAdviceDto.java` | `com.nexus.onebook.advance.dto` | DTO for payment advice |
+| `AdvanceApprovalRequest.java` | `com.nexus.onebook.advance.dto` | DTO for approve/reject action |
+| `SettlementResult.java` | `com.nexus.onebook.advance.dto` | DTO returned by settlement logic |
+| `EmployeeAdvanceRepository.java` | `com.nexus.onebook.advance.repository` | Spring Data JPA repository |
+| `ExpenseVoucherRepository.java` | `com.nexus.onebook.advance.repository` | Spring Data JPA repository |
+| `AdvanceReceiptRepository.java` | `com.nexus.onebook.advance.repository` | Spring Data JPA repository |
+| `PaymentAdviceRepository.java` | `com.nexus.onebook.advance.repository` | Spring Data JPA repository |
+| `EmployeeAdvanceConfigRepository.java` | `com.nexus.onebook.advance.repository` | Advance limit config per employee |
+| `EmployeeAdvanceBalanceRepository.java` | `com.nexus.onebook.advance.repository` | Outstanding advance balance cache |
+| `AdvanceLimitCheckService.java` | `com.nexus.onebook.advance.service` | Validates advance limit; handles override logging |
+| `ApprovalTierResolver.java` | `com.nexus.onebook.advance.service` | Resolves approval chain from amount |
+| `AdvanceSettlementService.java` | `com.nexus.onebook.advance.service` | Core settlement logic on expense approval |
+| `EmployeeAdvanceService.java` | `com.nexus.onebook.advance.service` | CRUD + workflow for advances |
+| `ExpenseVoucherService.java` | `com.nexus.onebook.advance.service` | CRUD + workflow for expense vouchers |
+| `AdvanceReceiptService.java` | `com.nexus.onebook.advance.service` | CRUD + posting for advance receipts |
+| `PaymentAdviceService.java` | `com.nexus.onebook.advance.service` | List + mark-paid for payment advices |
+| `AdvanceReportService.java` | `com.nexus.onebook.advance.service` | Outstanding aging, pending approvals, reimbursements, overrides |
+| `EmployeeAdvanceController.java` | `com.nexus.onebook.advance.controller` | REST endpoints for advances |
+| `ExpenseVoucherController.java` | `com.nexus.onebook.advance.controller` | REST endpoints for expense vouchers |
+| `AdvanceReceiptController.java` | `com.nexus.onebook.advance.controller` | REST endpoints for advance receipts |
+| `PaymentAdviceController.java` | `com.nexus.onebook.advance.controller` | REST endpoints for payment advices |
+| `AdvanceReportController.java` | `com.nexus.onebook.advance.controller` | REST endpoints for reports |
+| `AdvanceLimitExceededException.java` | `com.nexus.onebook.advance.exception` | Domain exception for limit violation |
 
 ### 5.2 Modified Files
 

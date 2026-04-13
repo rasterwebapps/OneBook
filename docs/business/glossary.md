@@ -75,7 +75,7 @@ The systematic allocation of a fixed asset's cost over its useful life. OneBook 
 The foundational accounting principle that every financial transaction must be recorded with at least one debit and one credit of equal value. OneBook enforces this at three layers: service, database trigger, and exception surfacing.
 
 ### DTO (Data Transfer Object)
-A Java record used to transfer data between API layers. In OneBook, JPA entities are never exposed in REST responses — all responses use DTO records in the `ledger/dto/` package.
+A Java record used to transfer data between API layers. In OneBook, JPA entities are never exposed in REST responses — all responses use DTO records in the module's `dto/` package.
 
 ### e-Invoice (IRN)
 **Invoice Reference Number** — a unique identifier assigned by the GST Network (GSTN) for B2B invoices above the prescribed threshold (₹5 lakh). OneBook generates e-Invoices via `ComplianceService.java` and stores the IRN and QR code with the voucher.

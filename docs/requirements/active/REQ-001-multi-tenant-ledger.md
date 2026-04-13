@@ -238,11 +238,11 @@ Feature: Multi-Tenant Ledger Isolation
 ### 5.1 New Files Created
 | File | Package | Purpose |
 |------|---------|---------|
-| `LedgerAccount.java` | `com.nexus.onebook.ledger.entity` | JPA entity for ledger accounts |
-| `LedgerAccountService.java` | `com.nexus.onebook.ledger.service` | Business logic for account management |
-| `LedgerController.java` | `com.nexus.onebook.ledger.controller` | REST endpoints for ledger operations |
-| `LedgerAccountRepository.java` | `com.nexus.onebook.ledger.repository` | Spring Data JPA repository |
-| `TenantContextFilter.java` | `com.nexus.onebook.ledger.security` | Sets per-request tenant context |
+| `LedgerAccount.java` | `com.nexus.onebook.entity` | JPA entity for ledger accounts |
+| `LedgerAccountService.java` | `com.nexus.onebook.service` | Business logic for account management |
+| `LedgerController.java` | `com.nexus.onebook.controller` | REST endpoints for ledger operations |
+| `LedgerAccountRepository.java` | `com.nexus.onebook.repository` | Spring Data JPA repository |
+| `TenantContextFilter.java` | `com.nexus.onebook.security` | Sets per-request tenant context |
 
 ### 5.2 Modified Files
 | File | Change Description |
