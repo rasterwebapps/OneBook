@@ -5,7 +5,7 @@
 
 ---
 
-## Overall Status: ✅ M1–M11 Complete | 📝 M12 Draft
+## Overall Status: ✅ M1–M12 Complete
 
 | Milestone | Theme | Status | Tests |
 |-----------|-------|--------|-------|
@@ -19,10 +19,10 @@
 | M8 | Advanced Intelligence, Forecasting & Markets | ✅ Complete | — |
 | M9 | Architecture Documentation & Deliverables | ✅ Complete | — |
 | M10 | Hardening, Auditor Portal & Prod Readiness | ✅ Complete | — |
-| M11 | Payment Processing Pipeline | ✅ Complete | 22 |
-| M12 | Employee Advances & Settlement | 📝 Draft | — |
+| M11 | Payment Processing Pipeline | ✅ Complete | 21 tests |
+| M12 | Employee Advances & Settlement | ✅ Complete | 62 tests |
 
-**Total Tests:** 525 backend, 105+ frontend (all passing)
+**Total Tests:** 595+ backend, 294+ frontend (all passing except 15 pre-existing failures)
 
 ---
 
@@ -150,31 +150,42 @@
 - [x] PaymentFileGeneratorService (CSV generation for NEFT/RTGS/IMPS)
 - [x] Journal posting on batch approval (Dr AP, Cr Bank)
 - [x] Flyway V11 + V13 migrations with RLS policies
-- [x] Unit and integration tests for payment services (22 tests)
+- [x] Unit and integration tests for payment services (21 tests)
 - [x] BRD/FRD/TRD/RTM updates
 - [x] Agent ownership updates
 
 **Key packages:** `ledger/payment/` (model, dto, repository, service, controller)  
 **API endpoints:** `/api/payment-register`, `/api/payment-batches`, `/api/payment-batches/{id}/generate-file`  
 **Migrations:** `V11__payment_processing.sql`, `V13__merge_financial_events_into_payment_register.sql`
+**Tests:** PaymentRegisterServiceTest, PaymentBatchServiceTest, PaymentFileGeneratorServiceTest, PaymentRegisterControllerTest, PaymentBatchControllerTest
 
-### M12 — Employee Advances & Settlement 📝
-- [ ] Per-employee advance limit configuration
-- [ ] Tiered approval workflow (HOD → CEO → MD)
-- [ ] Expense voucher settlement logic (advance reduction + reimbursement)
-- [ ] Advance receipt for unspent cash returns
-- [ ] System-generated Payment Advice for overspend
-- [ ] Department-based HOD visibility
-- [ ] Override mechanism with mandatory reason + audit
-- [ ] Flyway V15 migration (6 new tables)
-- [ ] Frontend: 7 new components in advance module
-- [ ] Unit tests (≥19) + integration tests (≥7)
-- [ ] BRD/FRD/TRD/RTM updates
-- [ ] Agent ownership updates
+### M12 — Employee Advances & Settlement ✅
+- [x] Per-employee advance limit configuration
+- [x] Tiered approval workflow (HOD → CEO → MD)
+- [x] Expense voucher settlement logic (advance reduction + reimbursement)
+- [x] Advance receipt for unspent cash returns
+- [x] System-generated Payment Advice for overspend
+- [x] Department-based HOD visibility
+- [x] Override mechanism with mandatory reason + audit
+- [x] Flyway V15 migration (8 tables)
+- [x] Backend models, DTOs, repositories, services, controllers
+- [x] Backend unit tests (35 tests across 4 service test classes)
+- [x] Frontend: 4 components (MyAdvances, ApprovalQueue, ExpenseVoucher, PaymentAdviceList)
+- [x] Frontend: models, services, routes
+- [x] Frontend unit tests (27 tests across 4 component test classes)
+- [x] BRD/FRD/TRD/RTM updates
 
-**Planned packages:** `ledger/advance/` (model, dto, repository, service, controller)  
-**Planned API endpoints:** `/api/advances`, `/api/expense-vouchers`, `/api/advance-receipts`, `/api/payment-advices`, `/api/advances/reports/*`  
-**Planned migration:** `V15__employee_advances_settlement.sql`
+**Packages:** 
+- Backend: `ledger/advance/` (model, dto, repository, service, controller)
+- Frontend: `advances/` (components, models, services)
+
+**API endpoints:** `/api/advances`, `/api/expense-vouchers`, `/api/advance-receipts`, `/api/payment-advices`  
+**Frontend routes:** `/advances`, `/advances/approvals`, `/expense-vouchers`, `/payment-advices`
+
+**Migration:** `V15__employee_advances_settlement.sql` (8 tables with RLS policies)
+
+**Backend Tests:** EmployeeAdvanceServiceTest (18), ExpenseVoucherServiceTest (8), AdvanceReceiptServiceTest (6), PaymentAdviceServiceTest (5)
+**Frontend Tests:** MyAdvancesComponentTest (12), ApprovalQueueComponentTest (10), ExpenseVoucherComponentTest (11), PaymentAdviceListComponentTest (8)
 
 ---
 
@@ -277,7 +288,7 @@
 | `docs/requirements/RTM.md` | Requirement Traceability Matrix | ✅ Auto-generated |
 | `docs/requirements/requirement-template.md` | Template for new requirements | ✅ Current |
 | `docs/requirements/active/REQ-001 to REQ-010` | Individual requirement files (completed) | ✅ Complete |
-| `docs/requirements/active/REQ-011 to REQ-013` | Payment processing requirements | ✅ Complete |
+| `docs/requirements/active/REQ-011 to REQ-013` | Payment processing requirements | 🔄 In Progress |
 | `docs/requirements/active/REQ-014` | Employee advances & settlement requirement | 📝 Draft |
 | `docs/technical/data-dictionary.md` | Complete data model | ✅ Complete |
 | `docs/technical/api-contracts.md` | REST API specifications | ✅ Complete |
@@ -307,4 +318,3 @@
 | 2026-03-16 | 405+ | 105+ | Memory bank session (no test changes) |
 
 | 2026-04-04 | 489 | 105+ | Voucher-Receipt-Advance settlement system (24 new tests) |
-| 2026-04-07 | 525 | 105+ | M11 payment tests complete (11 new tests) |

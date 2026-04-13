@@ -5,7 +5,7 @@
 **Owner:** @LedgerExpert  
 **Milestone:** M11  
 **Created:** 2026-03-19  
-**Last Updated:** 2026-04-07  
+**Last Updated:** 2026-04-13  
 **Linked BRD:** [BR-012](../../business/BRD.md#br-012-payment-batch-processing)  
 **Linked FRD:** [FR-016](../../business/FRD.md#req-012-payment-batch-processing)  
 **Linked TRD:** [TR-008](../../business/TRD.md#tr-008-payment-processing-pipeline)

@@ -1,0 +1,393 @@
+.advances-screen {
+  padding: var(--nx-space-md);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SUMMARY GRID
+// ═══════════════════════════════════════════════════════════════════════════
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--nx-space-md);
+  margin-bottom: var(--nx-space-lg);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════════════════════════════════════
+
+.advances-tabs {
+  display: flex;
+  gap: var(--nx-space-xs);
+  margin-bottom: var(--nx-space-md);
+  border-bottom: 1px solid var(--nx-border);
+  padding-bottom: var(--nx-space-xs);
+}
+
+.tab-btn {
+  padding: var(--nx-space-sm) var(--nx-space-md);
+  background: transparent;
+  border: none;
+  border-radius: var(--nx-radius) var(--nx-radius) 0 0;
+  color: var(--nx-text-muted);
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.15s ease;
+  position: relative;
+
+  &:hover {
+    color: var(--nx-text-primary);
+    background: var(--nx-surface-elevated);
+  }
+
+  &.active {
+    color: var(--nx-primary);
+    background: var(--nx-surface);
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--nx-primary);
+    }
+  }
+}
+
+.tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  margin-left: 6px;
+  background: var(--nx-warning);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 10px;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TOOLBAR
+// ═══════════════════════════════════════════════════════════════════════════
+
+.advances-toolbar {
+  margin-bottom: var(--nx-space-md);
+  max-width: 400px;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ADVANCES LIST
+// ═══════════════════════════════════════════════════════════════════════════
+
+.advances-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nx-space-md);
+}
+
+.advance-card {
+  background: var(--nx-surface);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius-lg);
+  padding: var(--nx-space-md);
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: var(--nx-primary);
+    box-shadow: var(--nx-shadow-sm);
+  }
+
+  &.pending {
+    border-left: 4px solid var(--nx-warning);
+  }
+}
+
+.advance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--nx-space-sm);
+}
+
+.advance-amount {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--nx-text-primary);
+}
+
+.advance-purpose {
+  font-size: 1rem;
+  color: var(--nx-text-primary);
+  margin-bottom: var(--nx-space-sm);
+  line-height: 1.4;
+}
+
+.advance-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nx-space-md);
+  font-size: 0.85rem;
+  color: var(--nx-text-muted);
+}
+
+.meta-item {
+  display: flex;
+  gap: var(--nx-space-xs);
+}
+
+.meta-label {
+  color: var(--nx-text-muted);
+}
+
+.meta-value {
+  color: var(--nx-text-primary);
+  font-weight: 500;
+
+  &.tier {
+    color: var(--nx-primary);
+    font-weight: 600;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SETTLEMENT PROGRESS
+// ═══════════════════════════════════════════════════════════════════════════
+
+.settlement-section {
+  margin-top: var(--nx-space-md);
+  padding-top: var(--nx-space-sm);
+  border-top: 1px solid var(--nx-border);
+}
+
+.settlement-bar {
+  height: 6px;
+  background: var(--nx-surface-elevated);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: var(--nx-space-xs);
+}
+
+.settlement-progress {
+  height: 100%;
+  background: var(--nx-emerald);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.settlement-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--nx-text-muted);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// APPROVAL CHAIN
+// ═══════════════════════════════════════════════════════════════════════════
+
+.approval-chain {
+  display: flex;
+  align-items: center;
+  gap: var(--nx-space-xs);
+  margin-top: var(--nx-space-md);
+  padding-top: var(--nx-space-sm);
+  border-top: 1px solid var(--nx-border);
+}
+
+.approval-step {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: var(--nx-surface-elevated);
+  border-radius: var(--nx-radius);
+  font-size: 0.8rem;
+
+  &.completed {
+    background: var(--nx-success-bg);
+    color: var(--nx-success);
+  }
+
+  &.required:not(.completed) {
+    background: var(--nx-warning-bg);
+    color: var(--nx-warning);
+  }
+}
+
+.step-icon {
+  font-size: 0.9rem;
+}
+
+.step-label {
+  font-weight: 600;
+}
+
+.approval-arrow {
+  color: var(--nx-text-muted);
+  font-size: 0.9rem;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MODAL
+// ═══════════════════════════════════════════════════════════════════════════
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--nx-space-md);
+}
+
+.modal-box {
+  background: var(--nx-surface);
+  border-radius: var(--nx-radius-lg);
+  box-shadow: var(--nx-shadow-lg);
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--nx-space-md);
+  border-bottom: 1px solid var(--nx-border);
+
+  h3 {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  color: var(--nx-text-muted);
+  padding: 4px 8px;
+  border-radius: var(--nx-radius);
+
+  &:hover {
+    background: var(--nx-surface-elevated);
+    color: var(--nx-text-primary);
+  }
+}
+
+.modal-body {
+  padding: var(--nx-space-md);
+  overflow-y: auto;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--nx-space-sm);
+  padding: var(--nx-space-md);
+  border-top: 1px solid var(--nx-border);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// FORM
+// ═══════════════════════════════════════════════════════════════════════════
+
+.form-group {
+  margin-bottom: var(--nx-space-md);
+}
+
+.form-label {
+  display: block;
+  margin-bottom: var(--nx-space-xs);
+  font-weight: 500;
+  color: var(--nx-text-primary);
+
+  .required {
+    color: var(--nx-danger);
+  }
+}
+
+.form-control {
+  width: 100%;
+  padding: var(--nx-space-sm);
+  border: 1px solid var(--nx-border);
+  border-radius: var(--nx-radius);
+  font-size: 1rem;
+  background: var(--nx-surface);
+  color: var(--nx-text-primary);
+  transition: border-color 0.15s ease;
+
+  &:focus {
+    outline: none;
+    border-color: var(--nx-primary);
+    box-shadow: 0 0 0 3px var(--nx-primary-alpha);
+  }
+
+  &::placeholder {
+    color: var(--nx-text-muted);
+  }
+}
+
+textarea.form-control {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-hint {
+  margin-top: var(--nx-space-xs);
+  font-size: 0.8rem;
+  color: var(--nx-primary);
+  font-weight: 500;
+}
+
+.info-box {
+  background: var(--nx-info-bg);
+  border: 1px solid var(--nx-info);
+  border-radius: var(--nx-radius);
+  padding: var(--nx-space-sm);
+  font-size: 0.85rem;
+
+  strong {
+    display: block;
+    margin-bottom: var(--nx-space-xs);
+    color: var(--nx-info);
+  }
+
+  ul {
+    margin: 0;
+    padding-left: var(--nx-space-md);
+    color: var(--nx-text-primary);
+
+    li {
+      margin-bottom: 2px;
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// DARK MODE
+// ═══════════════════════════════════════════════════════════════════════════
+
+@media (prefers-color-scheme: dark) {
+  .modal-overlay {
+    background: rgba(0, 0, 0, 0.7);
+  }
+}

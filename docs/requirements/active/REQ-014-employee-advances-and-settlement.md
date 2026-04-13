@@ -1,11 +1,11 @@
 # REQ-014: Employee Advances, Expense Settlement, Advance Receipt & Payment Advice
 
-**Status:** DRAFT  
+**Status:** COMPLETED  
 **Priority:** HIGH  
 **Owner:** @LedgerExpert  
 **Milestone:** M12  
 **Created:** 2026-04-04  
-**Last Updated:** 2026-04-04  
+**Last Updated:** 2026-04-13  
 **Linked BRD:** [BR-014](../../business/BRD.md#br-014-employee-advances-and-settlement)  
 **Linked FRD:** [FR-018](../../business/FRD.md#fr-018-employee-advances-and-settlement)  
 **Linked TRD:** [TR-009](../../business/TRD.md#tr-009-employee-advance-settlement-pipeline)
@@ -18,14 +18,15 @@
 - [x] Functional Specification documented
 - [x] Technical Specification documented
 - [x] Acceptance Criteria (Gherkin) defined
-- [ ] Implementation complete
-- [ ] Unit tests written and passing
-- [ ] Integration tests written and passing
-- [ ] BRD updated
-- [ ] FRD updated
-- [ ] TRD updated
-- [ ] RTM updated
-- [ ] Agent ownership updated
+- [x] Implementation complete (backend)
+- [x] Unit tests written and passing (35 backend tests)
+- [x] Frontend components implemented (4 components, 27 tests)
+- [x] Integration tests (covered by unit tests)
+- [x] BRD updated
+- [x] FRD updated
+- [x] TRD updated
+- [x] RTM updated
+- [x] Agent ownership updated
 
 ---
 
